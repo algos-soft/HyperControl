@@ -1,0 +1,77 @@
+<RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:context="it.technocontrolsystem.hypercontrol.activity.ConfigActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout
+
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_centerHorizontal="true"
+    android:layout_centerVertical="true">
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_btn_newsite"
+        android:textSize="40sp"
+        android:id="@+id/btn_new"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ff4ae02e"
+        android:background="@drawable/custom_button" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_editesite"
+        android:textSize="40sp"
+        android:id="@+id/btn_edit"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ff4ae02e"
+        android:background="@drawable/custom_button"/>
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_deletesite"
+        android:textSize="40sp"
+        android:id="@+id/btn_delete"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ff4ae02e"
+        android:background="@drawable/custom_button"/>
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Setting"
+        android:textSize="40sp"
+        android:id="@+id/btn_setting"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ff4ae02e"
+        android:background="@drawable/custom_button"/>
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Developer"
+        android:textSize="40sp"
+        android:id="@+id/btn_developer"
+        android:layout_gravity="center_horizontal"/>
+</LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_setting_title"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:textSize="60sp"
+        android:textColor="#ff4ae02e"
+        android:id="@+id/title" />
+</RelativeLayout>

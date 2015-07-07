@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stato schede"
+        android:id="@+id/stateboardtitle"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#ff4ae02e"
+        android:textSize="30sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/stateboardscroll"
+        android:layout_below="@+id/stateboardtitle"
+        android:layout_centerHorizontal="true" >
+        <LinearLayout
+            android:id="@+id/stateboardpanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" ></LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

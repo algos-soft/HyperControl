@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/edit_plantnumber"
+        android:textColorHint="#ff4ae02e"
+        android:hint="Numero Impianto"
+        android:textSize="10sp"
+        android:numeric="integer"
+        android:layout_below="@+id/textView6"
+        android:layout_toLeftOf="@+id/btn_plantstate"
+        android:layout_toStartOf="@+id/btn_plantstate"
+        android:layout_marginTop="35dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stato Impianti"
+        android:id="@+id/textView6"
+        android:textColor="#ff4ae02e"
+        android:textSize="30sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:id="@+id/edit_areanumber"
+        android:textColorHint="#ff4ae02e"
+        android:hint="Numero Area"
+        android:textSize="10sp"
+        android:layout_above="@+id/btn_plantstate"
+        android:layout_toRightOf="@+id/btn_plantstate"
+        android:layout_toEndOf="@+id/btn_plantstate"
+        android:inputType="number" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Richiedi stato"
+        android:id="@+id/btn_plantstate"
+        android:textColor="#ff4ae02e"
+        android:background="@drawable/custom_button"
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/edit_plantnumber"
+        android:layout_centerHorizontal="true" />
+    <LinearLayout
+        android:id="@+id/titleofscroll"
+        android:layout_below="@+id/btn_plantstate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Impianto"
+            android:gravity="center"
+            android:id="@+id/plant_title"
+            android:textColor="#ff4ae02e"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Area"
+            android:gravity="center"
+            android:id="@+id/area_title"
+            android:textColor="#ff4ae02e"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/tabletitle"
+        android:layout_below="@+id/titleofscroll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nome"
+            android:gravity="center"
+            android:id="@+id/plant_num"
+            android:textColor="#ff4ae02e"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stato"
+            android:gravity="center"
+            android:id="@+id/plant_state"
+            android:textColor="#ff4ae02e"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Nome"
+            android:gravity="center"
+            android:id="@+id/area_num"
+            android:textColor="#ff4ae02e"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stato"
+            android:gravity="center"
+            android:id="@+id/area_state"
+            android:textColor="#ff4ae02e"
+            android:textSize="20sp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/plantstatescroll"
+        android:layout_below="@+id/tabletitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp" >
+        <LinearLayout
+            android:id="@+id/globalpanel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/stateplantspanel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical" />
+        <LinearLayout
+                android:id="@+id/stateareaspanel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

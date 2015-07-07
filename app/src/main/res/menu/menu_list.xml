@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+xmlns:android="http://schemas.android.com/apk/res/android">
+
+<item android:id="@+id/Abilita"
+    android:icon="@android:drawable/ic_menu_add"
+    android:title="Abilita" />
+
+<item android:id="@+id/Test"
+    android:icon="@android:drawable/ic_menu_edit"
+    android:title="Attiva Test" />
+
+<item android:id="@+id/Cancella"
+    android:icon="@android:drawable/sym_call_missed"
+    android:title="Cancella" />
+
+</menu>

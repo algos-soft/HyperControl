@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="text_btn_edit">Modifica</string>
+    <string name="text_btn_delete">Cancella</string>
+    <string name="text_btn_save">Salva</string>
+    <string name="text_btn_login">Login</string>
+    <string name="text_btn_newsite">Nuovo Sito</string>
+    <string name="text_btn_config">Impostazioni</string>
+    <string name="text_btn_confirm">Conferma</string>
+    <string name="text_btn_cancel">Annulla</string>
+    <string name="text_btn_deleted">Cancellato</string>
+
+    <string name="text_tog_btn_enabled">Abilitato</string>
+    <string name="text_tog_btn_disabled">Disabilitato</string>
+
+    <string name="text_editesite">Modifica Sito</string>
+    <string name="text_deletesite">Cancella Sito</string>
+    <string name="text_question">Vuoi veramente cancellare:</string>
+    <string name="text_url_error">Url non valido</string>
+    <string name="text_toast_error">Selezionare un sito</string>
+
+    <string name="text_editfields_name">Nome</string>
+    <string name="text_editfields_address">Indirizzo</string>
+    <string name="text_editfields_port">Porta</string>
+    <string name="text_editfields_user">Utente</string>
+    <string name="text_editfields_psw">Password</string>
+
+
+    <string name="text_setting_title">Impostazioni</string>
+    <string name="text_select_site_title">Siti</string>
+
+    <string name="error_incorrect_password">Password non corretta</string>
+    <string name="error_field_required">Questo campo è richiesto</string>
+
+</resources>

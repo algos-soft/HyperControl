@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="it.technocontrolsystem.hypercontrol" >
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <!-- potrebbe essere necessario commentare le seguenti tre righe -->
+    <permission
+        android:name="it.technocontrolsystem.hypercontrol.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="it.technocontrolsystem.hypercontrol.C2D_MESSAGE" />
+
+    <application
+        android:name=".HyperControlApp"
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/MyTheme" >
+        <activity
+            android:name=".activity.SplashActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.AuthActivity"
+            android:label="@string/title_activity_auth"
+            android:windowSoftInputMode="adjustResize|stateVisible" >
+        </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/title_activity_main" >
+        </activity>
+        <activity
+            android:name=".activity.SelectSiteActivity"
+            android:label="@string/title_activity_select" >
+        </activity>
+        <activity
+            android:name=".activity.SiteActivity"
+            android:label="@string/title_activity_plant" >
+        </activity>
+        <activity
+            android:name=".activity.ConfigActivity"
+            android:label="@string/title_activity_config" >
+        </activity>
+        <activity
+            android:name=".activity.EditSiteActivity"
+            android:label="@string/title_activity_edit_plant" >
+        </activity>
+        <activity
+            android:name=".activity.RadioSelectSiteActivity"
+            android:label="@string/title_activity_radio_select_site" >
+        </activity>
+        <activity
+            android:name=".activity.PlantActivity"
+            android:label="@string/title_activity_plant" >
+        </activity>
+        <activity
+            android:name=".activity.AreaActivity"
+            android:label="@string/title_activity_sensor" >
+        </activity>
+        <activity
+            android:name=".service.DemoActivity"
+            android:label="@string/title_activity_demo" >
+        </activity>
+        <!--
+        <activity
+            android:name=".Client3Activity"
+            android:label="@string/title_activity_client3" >
+        </activity>
+        <activity
+            android:name=".AlarmActivity"
+            android:label="@string/title_activity_alarm" >
+        </activity>
+        -->
+        <activity
+            android:name=".activity.BoardActivity"
+            android:label="@string/title_activity_board" >
+        </activity>
+        <!--
+        <activity android:name=".BoardsStateActivity" >
+        </activity>
+        <activity android:name=".InputsStatusActivity" >
+        </activity>
+        <activity android:name=".PlantsStatusActivity" >
+        </activity>
+        -->
+        <activity
+            android:name=".activity.DeveloperActivity"
+            android:label="@string/title_activity_deveoloper" >
+        </activity>
+        <activity
+            android:name=".activity.MenuActivity"
+            android:label="@string/title_activity_menu" >
+        </activity>
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="@string/title_activity_setting" >
+        </activity>
+
+        <receiver
+            android:name=".service.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="it.technocontrolsystem.hypercontrol" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".service.GcmIntentService" />
+
+        <activity
+            android:name=".activity.EventiActivity"
+            android:label="@string/title_activity_eventi" >
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,27 @@
+package it.technocontrolsystem.hypercontrol.communication;
+
+/**
+ *
+ */
+public class ListPlantsRequest extends Request {
+
+    public String getMessage() {
+        return "";
+    }
+
+    @Override
+    public String getCommandId() {
+        return "Partitions";
+    }
+
+    @Override
+    public int getTimeout() {
+        return 0;
+    }
+
+    @Override
+    public Class getResponseClass() {
+        return ListPlantsResponse.class;
+    }
+
+}
