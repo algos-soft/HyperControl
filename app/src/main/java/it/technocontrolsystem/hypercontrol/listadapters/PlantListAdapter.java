@@ -61,18 +61,8 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
 
     @Override
     public void update(Integer[] numbers) {
-        PlantModel model;
-        PlantsStatusResponse resp;
-        Connection conn = SiteActivity.getConnection();
-
         for (int number:numbers){
-            model=(PlantModel) getModel(number);
-            PlantsStatusRequest request = new PlantsStatusRequest(number);
-            resp = (PlantsStatusResponse) conn.sendRequest(request);
-            int status = resp.getStatus();
-            boolean alarm = resp.isAlarm();
-            model.setStatus(status);
-            model.setAlarm(alarm);
+            update(number);
         }
 
         //notifyDataSetChanged() va sempre invocato sullo UI Thread!
@@ -85,10 +75,47 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
 
     }
 
+    /**
+     * Update one single item
+     */
+    public void update(int number){
+        PlantModel model;
+        PlantsStatusResponse resp;
+        Connection conn = SiteActivity.getConnection();
+
+        model=(PlantModel) getModel(number);
+        PlantsStatusRequest request = new PlantsStatusRequest(number);
+        resp = (PlantsStatusResponse) conn.sendRequest(request);
+        int status = resp.getStatus();
+        boolean alarm = resp.isAlarm();
+        model.setStatus(status);
+        model.setAlarm(alarm);
+
+    }
+
     @Override
     public void live(LiveMessage message) throws IOException, XmlPullParserException {
         Integer[] numbers = message.getPlantNumbers();
         new UpdateTask().execute(numbers);
     }
 
+    /**
+     * Elimina le informazioni di stato da tutti gli elementi
+     */
+    public void clearStatus(){
+
+        PlantModel model;
+        for(int i = 0; i<getCount();i++){
+            model = getItem(i);
+            model.clearStatus();
+        }
+
+        // da eseguire sempre nello UI thread
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+    }
 }

@@ -21,6 +21,7 @@ import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Plant;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.AreaListAdapter;
+import it.technocontrolsystem.hypercontrol.listadapters.PlantListAdapter;
 import it.technocontrolsystem.hypercontrol.model.AreaModel;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
@@ -42,6 +43,9 @@ public class PlantActivity extends HCActivity {
         if (idPlant != 0) {
 
             progress = new ProgressDialog(this);
+            //progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progress.setIndeterminate(true);
 
             loadPlantTitle();
 
@@ -97,7 +101,7 @@ public class PlantActivity extends HCActivity {
             workingInBg = true;
 
             // mostra il dialogo
-            publishProgress(1);
+            publishProgress(-1);
 
             try {
 
@@ -105,11 +109,16 @@ public class PlantActivity extends HCActivity {
                  * Carica le aree dell'impianto dal DB nell'adapter
                  */
                 Area[] areas = DB.getAreasByPlant(idPlant);
+                publishProgress(-2, areas.length);
+
                 AreaModel model;
                 listAdapter.clear();
+                int i=0;
                 for (final Area area : areas) {
                     model = new AreaModel(area);
                     listAdapter.add(model);
+                    i++;
+                    publishProgress(-3,i);
                 }
 
             } catch (Exception e1) {
@@ -123,13 +132,33 @@ public class PlantActivity extends HCActivity {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            int code = values[0];
-            if(code==1){    // background started
-                Lib.lockOrientation(PlantActivity.this);
-                lock = Lib.acquireWakeLock();
-                progress.setMessage("caricamento aree...");
-                progress.show();
+            int param1=0, param2=0;
+            param1 = values[0];
+            if(values.length>1){
+                param2 = values[1];
             }
+            switch (param1){
+                case -1:{
+                    Lib.lockOrientation(PlantActivity.this);
+                    lock = Lib.acquireWakeLock();
+                    progress.setMessage("caricamento aree...");
+                    progress.setProgress(0);
+                    progress.show();
+                    break;
+                }
+
+                case -2:{
+                    progress.setMax(param2);
+                    break;
+                }
+
+                case -3:{
+                    progress.setProgress(param2);
+                    break;
+                }
+
+            }
+
         }
 
 
@@ -159,13 +188,19 @@ public class PlantActivity extends HCActivity {
             workingInBg = true;
 
             // mostra il dialogo
-            publishProgress(1);
+            publishProgress(-1);
 
             try {
 
+                publishProgress(-2, listAdapter.getCount());
+
                 // aggiorna lo stato
                 if (SiteActivity.getConnection() != null) {
-                    listAdapter.update();
+                    for(int i=0;i<listAdapter.getCount();i++){
+                        AreaModel model = (AreaModel)listAdapter.getItem(i);
+                        ((AreaListAdapter)listAdapter).update(model.getNumber());
+                        publishProgress(-3,i+1);
+                    }
                 }
 
             } catch (Exception e1) {
@@ -181,12 +216,31 @@ public class PlantActivity extends HCActivity {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            int code = values[0];
-            if(code==1){    // background started
-                Lib.lockOrientation(PlantActivity.this);
-                lock = Lib.acquireWakeLock();
-                progress.setMessage("aggiornamento stato...");
-                progress.show();
+            int param1=0, param2=0;
+            param1 = values[0];
+            if(values.length>1){
+                param2 = values[1];
+            }
+            switch (param1){
+                case -1:{
+                    Lib.lockOrientation(PlantActivity.this);
+                    lock = Lib.acquireWakeLock();
+                    progress.setMessage("aggiornamento stato...");
+                    progress.setProgress(0);
+                    progress.show();
+                    break;
+                }
+
+                case -2:{
+                    progress.setMax(param2);
+                    break;
+                }
+
+                case -3:{
+                    progress.setProgress(param2);
+                    break;
+                }
+
             }
         }
 

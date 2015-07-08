@@ -15,9 +15,12 @@ import it.technocontrolsystem.hypercontrol.communication.AreaStatusRequest;
 import it.technocontrolsystem.hypercontrol.communication.AreaStatusResponse;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
+import it.technocontrolsystem.hypercontrol.communication.PlantsStatusRequest;
+import it.technocontrolsystem.hypercontrol.communication.PlantsStatusResponse;
 import it.technocontrolsystem.hypercontrol.display.AreaDisplay;
 import it.technocontrolsystem.hypercontrol.model.AreaModel;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
+import it.technocontrolsystem.hypercontrol.model.PlantModel;
 
 /**
  * Adapter per le liste di Area
@@ -61,19 +64,8 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
 
     @Override
     public void update(Integer[] numbers) {
-        AreaModel model;
-        AreaStatusResponse resp;
-        Connection conn = SiteActivity.getConnection();
-
         for (int number:numbers){
-            model=(AreaModel) getModel(number);
-            int plantNum= model.getArea().getPlant().getNumber();
-            AreaStatusRequest request = new AreaStatusRequest(plantNum,number);
-            resp = (AreaStatusResponse) conn.sendRequest(request);
-            int status = resp.getStatus();
-            boolean alarm = resp.isAlarm();
-            model.setStatus(status);
-            model.setAlarm(alarm);
+            update(number);
         }
 
         //notifyDataSetChanged() va sempre invocato sullo UI Thread!
@@ -85,6 +77,27 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
         });
 
     }
+
+    /**
+     * Update one single item
+     * @param number the area number (not the position)
+     */
+    public void update(int number){
+        AreaModel model;
+        AreaStatusResponse resp;
+        Connection conn = SiteActivity.getConnection();
+
+        model=(AreaModel) getModel(number);
+        int plantNum= model.getArea().getPlant().getNumber();
+        AreaStatusRequest request = new AreaStatusRequest(plantNum,number);
+        resp = (AreaStatusResponse) conn.sendRequest(request);
+        int status = resp.getStatus();
+        boolean alarm = resp.isAlarm();
+        model.setStatus(status);
+        model.setAlarm(alarm);
+
+    }
+
 
     @Override
     public void live(LiveMessage message) throws IOException, XmlPullParserException {

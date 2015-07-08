@@ -39,4 +39,13 @@ public class PlantModel implements ModelIF {
     public int getNumber() {
         return getPlant().getNumber();
     }
+
+    /**
+     * Elimina le informazioni di stato
+     */
+    public void clearStatus(){
+        this.status=-1; // valore iniziale: unknown
+        this.alarm=false;
+    }
+
 }

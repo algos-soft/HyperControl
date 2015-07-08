@@ -22,6 +22,7 @@ public class StatusButtonListener implements CompoundButton.OnCheckedChangeListe
             new ConnectionTask(activity).execute();
         }else{
             activity.setConnection(null);
+            activity.getListAdapter().clearStatus();
         }
     }
 
