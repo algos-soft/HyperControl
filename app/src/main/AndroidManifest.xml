@@ -34,7 +34,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AuthActivity"
+            android:name=".activity.AuthActivityOld"
             android:label="@string/title_activity_auth"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
@@ -124,6 +124,14 @@
         <activity
             android:name=".activity.EventiActivity"
             android:label="@string/title_activity_eventi" >
+        </activity>
+        <activity
+            android:name=".activity.PasswordActivity"
+            android:label="@string/title_activity_password" >
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="@string/title_activity_login" >
         </activity>
     </application>
 

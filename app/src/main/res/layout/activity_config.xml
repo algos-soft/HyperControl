@@ -56,10 +56,16 @@
         android:textColor="#ff4ae02e"
         android:background="@drawable/custom_button"/>
     <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set master password"
+        android:id="@+id/btn_password"
+        android:layout_gravity="center_horizontal"/>
+
+    <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Developer"
-        android:textSize="40sp"
         android:id="@+id/btn_developer"
         android:layout_gravity="center_horizontal"/>
 </LinearLayout>

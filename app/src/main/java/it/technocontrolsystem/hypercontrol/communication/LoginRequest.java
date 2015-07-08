@@ -1,5 +1,6 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.service.DemoActivity;
 
 /**
@@ -15,8 +16,11 @@ public class LoginRequest extends Request {
     }
 
     public String getMessage() {
-
-       return "<User>"+siteuser+"</User><Pwd>"+sitepsw+"</Pwd><MAC>999999</MAC><RegId>"+ DemoActivity.regid.replace("-","\\-")+"</RegId>";
+        String msg="<User>"+siteuser+"</User>";
+        msg+="<Pwd>"+sitepsw+"</Pwd>";
+        msg+="<MAC>"+ Lib.getDeviceID()+"</MAC>";
+        msg+="<RegId>"+ DemoActivity.regid.replace("-","\\-")+"</RegId>";
+       return msg;
     }
 
     @Override

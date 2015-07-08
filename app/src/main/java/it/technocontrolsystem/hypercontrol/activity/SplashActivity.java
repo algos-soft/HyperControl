@@ -64,7 +64,7 @@ public class SplashActivity extends Activity {
                 Intent intent = new Intent();
 
                 intent.setClass( SplashActivity.this,DemoActivity.class);
-                //intent.setClass(SplashActivity.this, AuthActivity.class);
+                //intent.setClass(SplashActivity.this, AuthActivityOld.class);
 
                 SplashActivity.this.startActivity(intent);
                 SplashActivity.this.finish();

@@ -25,13 +25,15 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 
 
 /**
  * A login screen that offers login via email/password.
  */
-public class AuthActivity extends Activity  {
+public class AuthActivityOld extends Activity  {
+
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -40,6 +42,7 @@ public class AuthActivity extends Activity  {
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -57,9 +60,9 @@ public class AuthActivity extends Activity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
-        // Set up the login form.
-        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
-        populateAutoComplete();
+//        // Set up the login form.
+//        mUsernameView = (AutoCompleteTextView) findViewById(R.id.username);
+//        populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -83,7 +86,10 @@ public class AuthActivity extends Activity  {
 
         mLoginFormView = findViewById(R.id.login_form);
         int a =1;
+
+
     }
+
 
     private void populateAutoComplete() {
 
@@ -226,7 +232,7 @@ public class AuthActivity extends Activity  {
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(AuthActivity.this,
+                new ArrayAdapter<String>(AuthActivityOld.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mUsernameView.setAdapter(adapter);

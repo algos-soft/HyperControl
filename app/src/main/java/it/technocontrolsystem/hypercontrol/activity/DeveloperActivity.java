@@ -1,11 +1,14 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import it.technocontrolsystem.hypercontrol.Lib;
+import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.database.LibDev;
 import it.technocontrolsystem.hypercontrol.R;
 
@@ -38,6 +41,27 @@ public class DeveloperActivity extends ActionBarActivity {
                 //LibDev.deleteAllRecords();
             }
         });
+
+
+        Button bDeviceId = (Button) findViewById(R.id.showDeviceId);
+        bDeviceId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(DeveloperActivity.this, Lib.getDeviceID(),Toast.LENGTH_LONG).show();
+            }
+
+        });
+
+        Button bResetPassword = (Button) findViewById(R.id.resetPassword);
+        bResetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Prefs.remove("password");
+                Toast.makeText(DeveloperActivity.this, "Password resettata.",Toast.LENGTH_LONG).show();
+            }
+
+        });
+
 
     }
 

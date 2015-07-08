@@ -82,6 +82,15 @@ public class ConfigActivity extends Activity {
             }
         });
 
+        Button bSetPassword = (Button)findViewById(R.id.btn_password);
+        bSetPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(ConfigActivity.this, PasswordActivity.class);
+                startActivity(intent);
+            }
+        });
 
         Button bDeveloper = (Button) findViewById(R.id.btn_developer);
         bDeveloper.setOnClickListener(new View.OnClickListener() {

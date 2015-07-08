@@ -58,5 +58,7 @@
     </string-array>
 
     <string name="title_activity_eventi">EventiActivity</string>
+    <string name="title_activity_password">PasswordActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
 
 </resources>

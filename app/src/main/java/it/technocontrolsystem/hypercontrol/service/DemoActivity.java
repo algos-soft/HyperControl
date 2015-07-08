@@ -1,32 +1,27 @@
 package it.technocontrolsystem.hypercontrol.service;
 
-        import com.google.android.gms.common.ConnectionResult;
-        import com.google.android.gms.common.GooglePlayServicesUtil;
-        import com.google.android.gms.gcm.GoogleCloudMessaging;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
-        import android.app.Activity;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.content.SharedPreferences;
-        import android.content.pm.PackageInfo;
-        import android.content.pm.PackageManager.NameNotFoundException;
-        import android.os.AsyncTask;
-        import android.os.Bundle;
-        import android.util.Log;
-        import android.view.View;
-        import android.widget.Button;
-        import android.widget.TextView;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
-        import java.io.IOException;
-        import java.util.concurrent.atomic.AtomicInteger;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
-        import it.technocontrolsystem.hypercontrol.R;
-        import it.technocontrolsystem.hypercontrol.activity.AuthActivity;
-        import it.technocontrolsystem.hypercontrol.activity.SelectSiteActivity;
-        import it.technocontrolsystem.hypercontrol.activity.SplashActivity;
-        import it.technocontrolsystem.hypercontrol.communication.LoginRequest;
-        import it.technocontrolsystem.hypercontrol.communication.Request;
-        import it.technocontrolsystem.hypercontrol.communication.Response;
+import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.activity.LoginActivity;
 
 /**
  * Main UI for the demo app.
@@ -83,7 +78,7 @@ public class DemoActivity extends Activity {
 
                         Intent intent = new Intent();
 
-                        intent.setClass(DemoActivity.this, AuthActivity.class);
+                        intent.setClass(DemoActivity.this, LoginActivity.class);
                         startActivity(intent);
                         finish();
 

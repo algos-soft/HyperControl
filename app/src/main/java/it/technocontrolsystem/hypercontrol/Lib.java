@@ -2,16 +2,20 @@ package it.technocontrolsystem.hypercontrol;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
+
+import it.technocontrolsystem.hypercontrol.activity.SettingActivity;
 
 /**
  * Created by Federico on 27/03/2015.
@@ -101,6 +105,24 @@ public class Lib {
 
     public static boolean hasKitKat() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+    }
+
+    public static String getDeviceID(){
+        return Settings.Secure.getString(HyperControlApp.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+    }
+
+    /**
+     * Controlla se una password è valida
+     */
+    public static boolean checkPassword(String testPassword) {
+        boolean valida=false;
+        String currPassword=Prefs.getPassword();
+        if(currPassword!=null && testPassword!=null){
+            if(testPassword.equals(currPassword)){
+                valida=true;
+            }
+        }
+        return valida;
     }
 
 }

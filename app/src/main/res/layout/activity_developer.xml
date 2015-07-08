@@ -21,4 +21,17 @@
         android:text="Delete All Records"
         android:id="@+id/deleteAllRecords"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show device ID"
+        android:id="@+id/showDeviceId"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset password"
+        android:id="@+id/resetPassword"/>
+
+
 </LinearLayout>
