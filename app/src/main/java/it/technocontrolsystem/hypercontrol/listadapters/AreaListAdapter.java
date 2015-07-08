@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import it.technocontrolsystem.hypercontrol.activity.AreaActivity;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.AreaStatusRequest;
 import it.technocontrolsystem.hypercontrol.communication.AreaStatusResponse;
@@ -22,11 +23,9 @@ import it.technocontrolsystem.hypercontrol.model.ModelIF;
  * Adapter per le liste di Area
  */
 public class AreaListAdapter extends HCListAdapter<AreaModel>{
-    int num;//!!!!!!!!!!!!!!!!!!!!!sembrerebbe non servire più neanche nel costruttore
-    public AreaListAdapter(Context context,int num) {
-        super(context);
-        this.num=num;
 
+    public AreaListAdapter(Context context) {
+        super(context);
     }
 
     @Override
@@ -47,27 +46,7 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
         return display;
     }
 
-   /* @Override
-    public void update() {
 
-
-        Connection conn = SiteActivity.getConnection();
-        AreaModel model;
-        AreaStatusResponse resp;
-        for(int i=0; i<getCount();i++){
-            model=getItem(i);
-            int numar=model.getArea().getNumber();
-            AreaStatusRequest request = new AreaStatusRequest(num,numar);
-            resp = (AreaStatusResponse)conn.sendRequest(request);
-            int status=resp.getStatus();
-            boolean alarm=resp.isAlarm();
-
-            model.setStatus(status);
-            model.setAlarm(alarm);
-
-        }
-
-    }*/
    @Override
    public void update() {
        ArrayList<Integer> numbers=new ArrayList<>();
@@ -96,12 +75,19 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
             model.setStatus(status);
             model.setAlarm(alarm);
         }
-        notifyDataSetChanged();
+
+        //notifyDataSetChanged() va sempre invocato sullo UI Thread!
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override
     public void live(LiveMessage message) throws IOException, XmlPullParserException {
-        //Integer[] numbers = message.getPlantNumbers();
         Integer[] numbers = message.getAreaNumbers();
         new UpdateTask().execute(numbers);
     }

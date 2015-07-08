@@ -62,7 +62,15 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
             int status = resp.getStatus();
             model.setStatus(status);
         }
-        notifyDataSetChanged();
+
+        //notifyDataSetChanged() va sempre invocato sullo UI Thread!
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override

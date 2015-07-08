@@ -2,9 +2,11 @@ package it.technocontrolsystem.hypercontrol.communication;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.PowerManager;
 
 import java.util.Locale;
 
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
@@ -23,6 +25,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
     ProgressDialog progress;
     Exception exception;
     boolean success=false;
+    private PowerManager.WakeLock lock;
 
     public SyncSiteTask(SiteActivity activity) {
         this.activity=activity;
@@ -30,7 +33,8 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPreExecute() {
-        progress = ProgressDialog.show(activity, "Sincronizzazione database", "acquisizione dati in corso...", true);
+        lock= Lib.acquireWakeLock();
+        progress = ProgressDialog.show(activity, null, "acquisizione dati in corso...", true);
     }
 
     @Override
@@ -60,6 +64,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         progress.dismiss();
         activity.updateSiteUI();
+        Lib.releaseWakeLock(lock);
     }
 
 

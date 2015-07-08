@@ -2,6 +2,7 @@ package it.technocontrolsystem.hypercontrol.communication;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.PowerManager;
 import android.view.View;
 
 import java.net.SocketException;
@@ -21,9 +22,10 @@ import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
  */
 public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
 
-    SiteActivity activity;
-    boolean success;
-    ProgressDialog progress;
+    private  SiteActivity activity;
+    private boolean success;
+    private ProgressDialog progress;
+    private PowerManager.WakeLock lock;
 
 
     public ConnectionTask(SiteActivity activity) {
@@ -36,12 +38,14 @@ public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
         // protegge il workflow seguente da cambio orientamento,
         // verrà riattivato al temine dei background tasks
         Lib.lockOrientation(activity);
+        lock=Lib.acquireWakeLock();
+
 
         activity.setConnection(null);
         activity.setLastConnectionError(null);
         activity.getErrorButton().setVisibility(View.GONE);
 
-        progress = ProgressDialog.show(activity, "Connessione alla centrale", "connessione in corso...", true);
+        progress = ProgressDialog.show(activity, null, "connessione in corso...", true);
     }
 
 
@@ -116,6 +120,8 @@ public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
         }
 
         activity.getConnectButton().setOnCheckedChangeListener(new StatusButtonListener(activity));
+
+        Lib.releaseWakeLock(lock);
 
 
     }

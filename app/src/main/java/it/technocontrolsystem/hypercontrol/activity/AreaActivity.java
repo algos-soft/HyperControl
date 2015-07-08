@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.Objects;
 
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.communication.SensorCommandRequest;
@@ -27,12 +29,15 @@ import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.SensorListAdapter;
+import it.technocontrolsystem.hypercontrol.model.AreaModel;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 
 public class AreaActivity extends HCActivity {
     private int idArea;
+    boolean workingInBg=false;
     private SensorModel sensMod;
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,22 +48,177 @@ public class AreaActivity extends HCActivity {
 
         if (idArea != 0) {
 
+            progress = new ProgressDialog(this);
+
             loadAreaTitle();
 
             // crea l'adapter per la ListView
             listAdapter = new SensorListAdapter(AreaActivity.this, getArea());
 
-            ActivityTask task = new ActivityTask();
+            // carica i dati
+            PopulateTask task = new PopulateTask();
             task.execute();
 
-            ListView list = (ListView) findViewById(R.id.list);
-            //  registerForContextMenu(list);
+//            ActivityTask task = new ActivityTask();
+//            task.execute();
+
 
         } else {
             finish();
         }
 
     }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // aggiorna le aree (se sta ancora caricando, aspetta in background)
+        UpdateTask task = new UpdateTask();
+        task.execute();
+
+    }
+
+
+    /**
+     * Task per caricare i dati dal db nell'adapter.
+     * Dopo aver caricato i dati assegna l'adapter alla ListView.
+     */
+    class PopulateTask extends AsyncTask<Void, Integer, Void> {
+
+        private PowerManager.WakeLock lock;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            // attende che si liberi il semaforo
+            waitForSemaphore();
+            workingInBg = true;
+
+            // mostra il dialogo
+            publishProgress(1);
+
+            try {
+
+                /**
+                 * Carica i sensori dell'impianto dal DB nell'adapter
+                 */
+                Sensor[] sensors = DB.getSensorsByArea(idArea);
+                SensorModel aModel;
+                for (final Sensor sensor : sensors) {
+                    aModel = new SensorModel(sensor);
+                    listAdapter.add(aModel);
+                }
+
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+            workingInBg = false;
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            int code = values[0];
+            if(code==1){    // background started
+                Lib.lockOrientation(AreaActivity.this);
+                lock = Lib.acquireWakeLock();
+                progress.setMessage("caricamento sensori...");
+                progress.show();
+            }
+        }
+
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+            progress.dismiss();
+            getListView().setAdapter(listAdapter);
+            Lib.unlockOrientation(AreaActivity.this);
+            Lib.releaseWakeLock(lock);
+
+
+            //a cosa serve questo? - alex lug-2015
+            //con questo listener  riesco a recuperare le info del sensore,
+            // ma non riesco a visualizzare il menu contestuale
+            getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                    sensMod = (SensorModel) getListView().getItemAtPosition(position);
+                    registerForContextMenu(parent);
+                    openContextMenu(parent);
+                    return true;
+                }
+
+
+            });
+
+        }
+    }
+
+    /**
+     * Task per aggiornare lo stato dalla centrale.
+     */
+    class UpdateTask extends AsyncTask<Void, Integer, Void> {
+
+        private PowerManager.WakeLock lock;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            // attende che si liberi il semaforo
+            waitForSemaphore();
+            workingInBg = true;
+
+            // mostra il dialogo
+            publishProgress(1);
+
+            try {
+
+                // aggiorna lo stato
+                if (SiteActivity.getConnection() != null) {
+                    listAdapter.update();
+                }
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+            // spegne il semaforo
+            workingInBg = false;
+
+            return null;
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            int code = values[0];
+            if(code==1){    // background started
+                Lib.lockOrientation(AreaActivity.this);
+                lock = Lib.acquireWakeLock();
+                progress.setMessage("aggiornamento stato...");
+                progress.show();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progress.dismiss();
+            listAdapter.notifyDataSetChanged();
+            Lib.unlockOrientation(AreaActivity.this);
+            Lib.releaseWakeLock(lock);
+        }
+    }
+
+
 
     /**
      * MENU
@@ -129,69 +289,6 @@ public class AreaActivity extends HCActivity {
 
     }
 
-    class ActivityTask extends AsyncTask<Void, Integer, Void> {
-
-        ProgressDialog progress;
-
-        @Override
-        protected void onPreExecute() {
-            progress = ProgressDialog.show(AreaActivity.this, "Caricamento sensori", "caricamento...", true);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-
-                // popola l'adapter per la ListView
-                populateAdapter();
-
-                if(SiteActivity.getConnection()!=null){
-                    publishProgress(-1);
-                    listAdapter.update();
-                }
-
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-            return null;
-        }
-
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            int num = values[0];
-            if (num==-1){   // started update
-                progress.setMessage("aggiornamento stato...");
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            // assegna l'adapter alla ListView
-            final ListView list = (ListView) findViewById(R.id.list);
-            list.setAdapter(listAdapter);
-
-
-            //con questo listener  riesco a recuperare le info del sensore,ma non riesco a visualizzare il menu contestuale
-            list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    sensMod = (SensorModel) list.getItemAtPosition(position);
-                    registerForContextMenu(parent);
-                    openContextMenu(parent);
-                    return true;
-                }
-
-
-            });
-
-
-            progress.dismiss();
-        }
-    }
-
 
     private void loadAreaTitle() {
 
@@ -232,6 +329,23 @@ public class AreaActivity extends HCActivity {
     @Override
     public int getParamAreaNumCode() {
         return getArea().getNumber();
+    }
+
+    private ListView getListView() {
+        return (ListView) findViewById(R.id.list);
+    }
+
+    /**
+     * Attende che si liberi il semaforo
+     */
+    private void waitForSemaphore() {
+        while (workingInBg) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 

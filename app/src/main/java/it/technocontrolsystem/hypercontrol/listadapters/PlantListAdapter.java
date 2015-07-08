@@ -74,7 +74,15 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
             model.setStatus(status);
             model.setAlarm(alarm);
         }
-        notifyDataSetChanged();
+
+        //notifyDataSetChanged() va sempre invocato sullo UI Thread!
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
     @Override

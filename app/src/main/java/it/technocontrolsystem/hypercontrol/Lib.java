@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.Display;
@@ -76,6 +77,18 @@ public class Lib {
     public static void unlockOrientation(Activity activity){
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
+
+    public static PowerManager.WakeLock acquireWakeLock(){
+        PowerManager pm = (PowerManager)HyperControlApp.getContext().getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock lock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "HCTag");
+        lock.acquire();
+        return lock;
+    }
+
+    public static void releaseWakeLock(PowerManager.WakeLock lock){
+        lock.release();
+    }
+
 
     public static boolean hasFroyo() {
         // Can use static final constants like FROYO, declared in later versions

@@ -40,6 +40,7 @@ public class EventiActivity extends Activity {
 
     private int idSite;
     EventListAdapter listAdapter;
+    private int lastIdEvento=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,14 +51,15 @@ public class EventiActivity extends Activity {
         if (idSite != 0) {
             if(SiteActivity.getConnection()!=null){
 
-                // creo un adapter e lo assegno alla ListView
+                // creo un adapter
                 listAdapter = new EventListAdapter(this);
-                ListView lv = (ListView)findViewById(R.id.list);
-                lv.setAdapter(listAdapter);
 
-                // riempio l'adapter
-                ActivityTask task = new ActivityTask();
-                task.execute();
+                // assegna l'adapter alla ListView
+                ListView list = (ListView) findViewById(R.id.list);
+                list.setAdapter(listAdapter);
+
+                // carico gli eventi
+                loadEventi();
 
             }else{
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -76,6 +78,14 @@ public class EventiActivity extends Activity {
             finish();
         }
 
+    }
+
+    /**
+     * Carica un blocco di eventi e li aggiunge all'adapter
+     */
+    public void loadEventi(){
+        ActivityTask task = new ActivityTask();
+        task.execute();
     }
 
 
@@ -97,7 +107,7 @@ public class EventiActivity extends Activity {
 
         @Override
         protected void onPreExecute() {
-            progress=ProgressDialog.show(EventiActivity.this,"Caricamento eventi","caricamento in corso...",true);
+            progress=ProgressDialog.show(EventiActivity.this,null,"caricamento in corso...",true);
         }
 
         @Override
@@ -117,6 +127,7 @@ public class EventiActivity extends Activity {
         @Override
         protected void onPostExecute(Void aVoid){
             progress.dismiss();
+            listAdapter.notifyDataSetChanged();
         }
     }
 
@@ -128,20 +139,25 @@ public class EventiActivity extends Activity {
     private void populateAdapter() throws Exception {
 
 
-        Request request = new ListEventRequest(0);
+        Request request = new ListEventRequest(lastIdEvento, 10);
         Response resp = SiteActivity.getConnection().sendRequest(request);
-        ListEventResponse vResp = (ListEventResponse) resp;
+        final ListEventResponse vResp = (ListEventResponse) resp;
 
         if (vResp != null) {
 
             if (vResp.isSuccess()) {
 
-                listAdapter.clear();
-
-                Event[] events = vResp.getEvents();
-                for(Event e : events){
-                    listAdapter.add(e);
-                }
+                // in questo caso l'adapter è già attaccato alla lista
+                // e il metodo listAdapter.add() deve eseguire nello UI Thread
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Event[] events = vResp.getEvents();
+                        for(Event e : events){
+                            listAdapter.add(e);
+                            lastIdEvento=e.getId();
+                        }
+                    }
+                });
 
             } else {  // list events request failed
                 throw new Exception(resp.getText());

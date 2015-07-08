@@ -1,5 +1,6 @@
 package it.technocontrolsystem.hypercontrol.listadapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ArrayAdapter;
@@ -70,6 +71,18 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
 
     public ModelIF getModel(int number) {
         return modelMap.get(number);
+    }
+
+    /**
+     * Ritorna il Context come Activity
+     */
+    public Activity getActivity(){
+        Activity a=null;
+        Context c = getContext();
+        if(c instanceof Activity){
+            a=(Activity)c;
+        }
+        return a;
     }
 
     /**

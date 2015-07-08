@@ -111,7 +111,15 @@ public class SensorListAdapter extends HCListAdapter<SensorModel>{
             model.setAlarm(responseModel.isAlarm());
             model.setTest(responseModel.isTest());
         }
-        notifyDataSetChanged();
+
+        //notifyDataSetChanged() va sempre invocato sullo UI Thread!
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+
 
     }
 

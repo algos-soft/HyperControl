@@ -16,7 +16,7 @@ import android.widget.TextView;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends Activity {
 
     static final int PASS_ACTIVITY_CODE=1;
 

@@ -31,6 +31,7 @@ public class BoardActivity extends HCActivity {
             // crea l'adapter per la ListView
             listAdapter = new BoardListAdapter(BoardActivity.this);
 
+            // riempio l'adapter
             ActivityTask task = new ActivityTask();
             task.execute();
 
