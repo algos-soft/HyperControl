@@ -1,10 +1,14 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
+import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.domain.Site;
@@ -20,6 +24,15 @@ public abstract class HCActivity extends Activity {
     public static final int MENU_EVENTI = 3;
 
     protected HCListAdapter listAdapter;
+    protected boolean workingInBg=false;
+    protected ProgressDialog progress;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        progress = new ProgressDialog(this);
+    }
 
     @Override
     protected void onResume() {
@@ -104,5 +117,23 @@ public abstract class HCActivity extends Activity {
     }
 
     public abstract Site getSite();
+
+    /**
+     * Attende che si liberi il semaforo
+     */
+    protected void waitForSemaphore() {
+        while (workingInBg) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected ListView getListView() {
+        return (ListView) findViewById(R.id.list);
+    }
+
 
 }

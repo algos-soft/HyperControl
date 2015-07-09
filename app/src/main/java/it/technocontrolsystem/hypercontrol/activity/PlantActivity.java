@@ -23,8 +23,6 @@ import it.technocontrolsystem.hypercontrol.model.AreaModel;
 
 public class PlantActivity extends HCActivity {
     private int idPlant;
-    boolean workingInBg=false;
-    ProgressDialog progress;
 
 
     @Override
@@ -37,7 +35,6 @@ public class PlantActivity extends HCActivity {
 
         if (idPlant != 0) {
 
-            progress = new ProgressDialog(this);
             //progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progress.setIndeterminate(true);
@@ -278,21 +275,5 @@ public class PlantActivity extends HCActivity {
         return -1;
     }
 
-    private ListView getListView() {
-        return (ListView) findViewById(R.id.list);
-    }
-
-    /**
-     * Attende che si liberi il semaforo
-     */
-    private void waitForSemaphore() {
-        while (workingInBg) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
 }

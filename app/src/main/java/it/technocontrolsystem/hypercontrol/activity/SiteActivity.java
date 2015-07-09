@@ -3,7 +3,9 @@ package it.technocontrolsystem.hypercontrol.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.text.Html;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,7 +24,9 @@ import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.PlantDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Plant;
 import it.technocontrolsystem.hypercontrol.domain.Site;
+import it.technocontrolsystem.hypercontrol.listadapters.AreaListAdapter;
 import it.technocontrolsystem.hypercontrol.listadapters.PlantListAdapter;
+import it.technocontrolsystem.hypercontrol.model.AreaModel;
 import it.technocontrolsystem.hypercontrol.model.PlantModel;
 
 /**
@@ -133,7 +137,95 @@ public class SiteActivity extends HCActivity {
         // e se era ON invoca il listener. Ricordati che questo listener viene rimosso appena premi
         // il bottone e poi riattaccato alla fine di ConnectionTask
         getConnectButton().setOnCheckedChangeListener(new StatusButtonListener(this));
+
+        // aggiorna le aree (se sta ancora caricando, aspetta in background)
+        UpdateTask task = new UpdateTask();
+        task.execute();
+
     }
+
+    /**
+     * Task per aggiornare lo stato dalla centrale.
+     */
+    class UpdateTask extends AsyncTask<Void, Integer, Void> {
+
+        private PowerManager.WakeLock lock;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            // attende che si liberi il semaforo
+            waitForSemaphore();
+            workingInBg = true;
+
+            // mostra il dialogo
+            publishProgress(-1);
+
+            try {
+
+                publishProgress(-2, listAdapter.getCount());
+
+                // aggiorna lo stato
+                if (SiteActivity.getConnection() != null) {
+                    for(int i=0;i<listAdapter.getCount();i++){
+                        PlantModel model = (PlantModel)listAdapter.getItem(i);
+                        ((PlantListAdapter)listAdapter).update(model.getNumber());
+                        publishProgress(-3,i+1);
+                    }
+                }
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+            // spegne il semaforo
+            workingInBg = false;
+
+            return null;
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            int param1=0, param2=0;
+            param1 = values[0];
+            if(values.length>1){
+                param2 = values[1];
+            }
+            switch (param1){
+                case -1:{
+                    Lib.lockOrientation(SiteActivity.this);
+                    lock = Lib.acquireWakeLock();
+                    progress.setMessage("aggiornamento stato...");
+                    progress.setProgress(0);
+                    progress.show();
+                    break;
+                }
+
+                case -2:{
+                    progress.setMax(param2);
+                    break;
+                }
+
+                case -3:{
+                    progress.setProgress(param2);
+                    break;
+                }
+
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progress.dismiss();
+            listAdapter.notifyDataSetChanged();
+            Lib.unlockOrientation(SiteActivity.this);
+            Lib.releaseWakeLock(lock);
+        }
+    }
+
+
+
 
 
     /**

@@ -21,7 +21,6 @@ public class BoardActivity extends HCActivity {
 
     private int idSite = 0;
     boolean workingInBg=false;
-    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +30,6 @@ public class BoardActivity extends HCActivity {
         this.idSite = getIntent().getIntExtra("siteid", 0);
         if (idSite != 0) {
 
-            progress = new ProgressDialog(this);
 
 
             // crea l'adapter per la ListView
@@ -234,22 +232,6 @@ public class BoardActivity extends HCActivity {
 
 
 
-    private ListView getListView() {
-        return (ListView) findViewById(R.id.list);
-    }
-
-    /**
-     * Attende che si liberi il semaforo
-     */
-    private void waitForSemaphore() {
-        while (workingInBg) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public int getLiveCode() {
         return 4;

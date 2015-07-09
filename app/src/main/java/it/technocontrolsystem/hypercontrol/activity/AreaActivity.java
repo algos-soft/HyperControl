@@ -27,9 +27,7 @@ import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 public class AreaActivity extends HCActivity {
     private int idArea;
-    boolean workingInBg=false;
     private SensorModel sensMod;
-    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +37,6 @@ public class AreaActivity extends HCActivity {
         this.idArea = getIntent().getIntExtra("areaid", 0);
 
         if (idArea != 0) {
-
-            progress = new ProgressDialog(this);
 
             loadAreaTitle();
 
@@ -317,23 +313,6 @@ public class AreaActivity extends HCActivity {
     @Override
     public int getParamAreaNumCode() {
         return getArea().getNumber();
-    }
-
-    private ListView getListView() {
-        return (ListView) findViewById(R.id.list);
-    }
-
-    /**
-     * Attende che si liberi il semaforo
-     */
-    private void waitForSemaphore() {
-        while (workingInBg) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 

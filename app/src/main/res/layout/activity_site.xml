@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:singleLine="true"
-            android:text="Titolo del Site di prova"
+            android:text="Nome del sito"
             android:textColor="#ff4ae02e"
             android:elegantTextHeight="false"
             android:ellipsize="end"
