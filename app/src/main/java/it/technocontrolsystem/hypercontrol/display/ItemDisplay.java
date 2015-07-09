@@ -220,6 +220,11 @@ public abstract class ItemDisplay extends LinearLayout {
         valueView.setTypeface(null, Typeface.BOLD);
 
 
+        View switchView = createSwitchView();
+        params=createParams();
+        params.gravity=Gravity.CENTER_VERTICAL;
+        switchView.setLayoutParams(params);
+
 
         addView(valueView);
         addView(createSpacer());
@@ -233,7 +238,7 @@ public abstract class ItemDisplay extends LinearLayout {
         addView(createSpacer());
 //       addView(statusView);
       //  addView(createRadioButton());
-        addView(createSwitchView());
+        addView(switchView);
 //        addView(testView);
 //        addView(createSpacer());
         checkBox=createCheckBox();

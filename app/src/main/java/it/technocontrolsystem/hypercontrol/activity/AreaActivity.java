@@ -51,10 +51,6 @@ public class AreaActivity extends HCActivity {
             PopulateTask task = new PopulateTask();
             task.execute();
 
-//            ActivityTask task = new ActivityTask();
-//            task.execute();
-
-
         } else {
             finish();
         }

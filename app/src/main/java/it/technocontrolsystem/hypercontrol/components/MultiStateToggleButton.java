@@ -30,6 +30,10 @@ public class MultiStateToggleButton extends ToggleButton {
 
     public MultiStateToggleButton(Context context) {
         super(context, null);
+
+        setTextOff("OFF");
+        setTextOn("ON");
+
         if (this.isInEditMode()) {
             return;
         }

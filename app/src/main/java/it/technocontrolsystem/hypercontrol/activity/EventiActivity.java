@@ -24,7 +24,7 @@ import it.technocontrolsystem.hypercontrol.listadapters.EventListAdapter;
  * Si può usare solo se il sito è connesso.
  * Se non connesso visualizza un messaggio ed esce.
  */
-public class EventiActivity extends Activity {
+public class EventiActivity extends HCActivity {
 
 
     private int idSite;
@@ -84,11 +84,19 @@ public class EventiActivity extends Activity {
 
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
+    public int getLiveCode() {
+        return -1;
     }
 
+    @Override
+    public int getParamPlantNumCode() {
+        return -1;
+    }
 
+    @Override
+    public int getParamAreaNumCode() {
+        return -1;
+    }
 
     class ActivityTask extends AsyncTask<Void, Void, Void> {
 

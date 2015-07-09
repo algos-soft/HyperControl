@@ -52,15 +52,8 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
 
     @Override
     public void update(Integer[] numbers) {
-        BoardModel model;
-        BoardStatusResponse resp;
-        Connection conn = SiteActivity.getConnection();
         for (int number:numbers){
-            model=(BoardModel) getModel(number);
-            BoardStatusRequest request = new BoardStatusRequest(number);
-            resp = (BoardStatusResponse) conn.sendRequest(request);
-            int status = resp.getStatus();
-            model.setStatus(status);
+            update(number);
         }
 
         //notifyDataSetChanged() va sempre invocato sullo UI Thread!
@@ -72,6 +65,24 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
         });
 
     }
+
+    /**
+     * Update one single item
+     */
+    public void update(int number){
+        BoardModel model;
+        BoardStatusResponse resp;
+        Connection conn = SiteActivity.getConnection();
+
+        model=(BoardModel) getModel(number);
+        BoardStatusRequest request = new BoardStatusRequest(number);
+        resp = (BoardStatusResponse) conn.sendRequest(request);
+        int status = resp.getStatus();
+        model.setStatus(status);
+
+    }
+
+
 
     @Override
     public void live(LiveMessage message) throws IOException, XmlPullParserException {

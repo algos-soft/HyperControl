@@ -101,7 +101,7 @@ public class PlantActivity extends HCActivity {
             try {
 
                 /**
-                 * Carica le aree dell'impianto dal DB nell'adapter
+                 * Carica gli elementi dal DB nell'adapter
                  */
                 Area[] areas = DB.getAreasByPlant(idPlant);
                 publishProgress(-2, areas.length);
