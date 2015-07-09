@@ -1,13 +1,10 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.ProgressDialog;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
-import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,20 +13,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Objects;
-
 import it.technocontrolsystem.hypercontrol.Lib;
+import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.Request;
-import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.communication.SensorCommandRequest;
 import it.technocontrolsystem.hypercontrol.database.DB;
-import it.technocontrolsystem.hypercontrol.R;
-import it.technocontrolsystem.hypercontrol.display.SensorDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.SensorListAdapter;
-import it.technocontrolsystem.hypercontrol.model.AreaModel;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 

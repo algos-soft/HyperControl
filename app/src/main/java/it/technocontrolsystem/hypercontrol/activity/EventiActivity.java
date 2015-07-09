@@ -5,30 +5,19 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
-import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.ListEventRequest;
 import it.technocontrolsystem.hypercontrol.communication.ListEventResponse;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.Response;
-import it.technocontrolsystem.hypercontrol.communication.VersionRequest;
-import it.technocontrolsystem.hypercontrol.communication.VersionResponse;
 import it.technocontrolsystem.hypercontrol.database.DB;
-import it.technocontrolsystem.hypercontrol.domain.Board;
 import it.technocontrolsystem.hypercontrol.domain.Event;
-import it.technocontrolsystem.hypercontrol.domain.Plant;
 import it.technocontrolsystem.hypercontrol.domain.Site;
-import it.technocontrolsystem.hypercontrol.listadapters.BoardListAdapter;
 import it.technocontrolsystem.hypercontrol.listadapters.EventListAdapter;
-import it.technocontrolsystem.hypercontrol.model.BoardModel;
 
 /**
  * Activity per la visualizzazione degli eventi direttamente dalla centrale.

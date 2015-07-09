@@ -9,18 +9,14 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import it.technocontrolsystem.hypercontrol.activity.AreaActivity;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.AreaStatusRequest;
 import it.technocontrolsystem.hypercontrol.communication.AreaStatusResponse;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
-import it.technocontrolsystem.hypercontrol.communication.PlantsStatusRequest;
-import it.technocontrolsystem.hypercontrol.communication.PlantsStatusResponse;
 import it.technocontrolsystem.hypercontrol.display.AreaDisplay;
 import it.technocontrolsystem.hypercontrol.model.AreaModel;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
-import it.technocontrolsystem.hypercontrol.model.PlantModel;
 
 /**
  * Adapter per le liste di Area

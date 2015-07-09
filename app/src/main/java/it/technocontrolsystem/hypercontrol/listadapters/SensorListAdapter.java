@@ -1,16 +1,12 @@
 package it.technocontrolsystem.hypercontrol.listadapters;
 
 import android.content.Context;
-import android.os.Debug;
-import android.util.EventLog;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
@@ -24,8 +20,6 @@ import it.technocontrolsystem.hypercontrol.display.DigitalSensorDisplay;
 import it.technocontrolsystem.hypercontrol.display.QuadriSensorDisplay;
 import it.technocontrolsystem.hypercontrol.display.SensorDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Area;
-import it.technocontrolsystem.hypercontrol.domain.Sensor;
-import it.technocontrolsystem.hypercontrol.model.ModelIF;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 /**

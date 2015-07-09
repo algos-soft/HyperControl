@@ -1,7 +1,5 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
-import android.app.Activity;
-
 /**
  * A request sent to the Unit
  */

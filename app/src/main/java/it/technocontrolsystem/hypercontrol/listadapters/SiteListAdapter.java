@@ -4,11 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import it.technocontrolsystem.hypercontrol.display.SiteDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Site;
-import it.technocontrolsystem.hypercontrol.model.ModelIF;
 import it.technocontrolsystem.hypercontrol.model.SiteModel;
 
 /**

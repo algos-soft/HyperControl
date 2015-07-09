@@ -6,7 +6,6 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-
 import java.util.ArrayList;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;

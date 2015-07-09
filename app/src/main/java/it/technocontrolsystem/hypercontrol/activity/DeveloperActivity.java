@@ -1,16 +1,15 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
-import android.content.SharedPreferences;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
-import it.technocontrolsystem.hypercontrol.database.LibDev;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.database.LibDev;
 
 public class DeveloperActivity extends ActionBarActivity {
 

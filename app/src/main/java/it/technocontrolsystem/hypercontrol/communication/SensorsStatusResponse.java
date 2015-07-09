@@ -1,15 +1,11 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
-import android.support.v4.util.SimpleArrayMap;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 /**

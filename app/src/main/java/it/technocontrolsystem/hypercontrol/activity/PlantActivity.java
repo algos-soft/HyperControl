@@ -4,26 +4,21 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PowerManager;
-import android.os.SystemClock;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import it.technocontrolsystem.hypercontrol.Lib;
-import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.AreaDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Plant;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.AreaListAdapter;
-import it.technocontrolsystem.hypercontrol.listadapters.PlantListAdapter;
 import it.technocontrolsystem.hypercontrol.model.AreaModel;
-import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
 
 public class PlantActivity extends HCActivity {

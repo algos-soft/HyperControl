@@ -2,7 +2,6 @@ package it.technocontrolsystem.hypercontrol;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -15,8 +14,6 @@ import android.util.TypedValue;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
-
-import it.technocontrolsystem.hypercontrol.activity.SettingActivity;
 
 /**
  * Created by Federico on 27/03/2015.

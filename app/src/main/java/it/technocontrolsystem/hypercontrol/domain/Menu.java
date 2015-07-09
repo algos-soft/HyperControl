@@ -1,7 +1,5 @@
 package it.technocontrolsystem.hypercontrol.domain;
 
-import java.util.ArrayList;
-
 /**
  * Created by Federico on 30/03/2015.
  */

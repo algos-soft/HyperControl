@@ -1,7 +1,5 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 

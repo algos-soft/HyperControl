@@ -3,8 +3,6 @@ package it.technocontrolsystem.hypercontrol;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import it.technocontrolsystem.hypercontrol.activity.SettingActivity;
-
 /**
  * Libreria per l'accesso alle preferenze della applicazione.
  */

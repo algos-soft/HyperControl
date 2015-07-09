@@ -4,11 +4,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import it.technocontrolsystem.hypercontrol.domain.Board;
-import it.technocontrolsystem.hypercontrol.model.BoardModel;
 
 /**
  * Risposta ad una BoardsStatusRequest

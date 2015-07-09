@@ -25,7 +25,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 
 

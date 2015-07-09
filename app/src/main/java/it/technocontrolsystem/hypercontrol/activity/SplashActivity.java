@@ -1,16 +1,9 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.ErrorDialogFragment;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.drive.Drive;
+import android.os.Handler;
 
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.service.DemoActivity;
