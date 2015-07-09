@@ -1,12 +1,10 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.ListView;
 
 import it.technocontrolsystem.hypercontrol.R;
