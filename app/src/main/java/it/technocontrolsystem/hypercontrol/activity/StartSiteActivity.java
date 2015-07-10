@@ -3,7 +3,9 @@ package it.technocontrolsystem.hypercontrol.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.communication.ConnectionTask;
 import it.technocontrolsystem.hypercontrol.communication.SyncSiteTask;
@@ -17,15 +19,30 @@ import it.technocontrolsystem.hypercontrol.domain.Site;
  * automaticamente dopo che ha lanciato il sito.
  */
 public class StartSiteActivity extends Activity {
+    private static final String TAG="STARTSITE";
 
     private int idSite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG, "StartSite - onCreate()");
+
         idSite = getIntent().getIntExtra("siteid", 0);
 
+        /**
+         * Distrugge la Connection.
+         * Distrugge le variabili statiche che devono essere distrutte.
+         * In Android, le variabili statiche possono essere ritenute
+         * tra una sessione e l'altra della applicazione perché
+         * il sistema non necessariamente distrugge il processo e ferma la JVM
+         */
+        HyperControlApp.setConnection(null);
+
         if (Lib.isNetworkAvailable()) {
+            Log.d(TAG, "Network is available");
+
             Lib.lockOrientation(this);
 
             Runnable successRunnable = new Runnable() {
@@ -39,6 +56,7 @@ public class StartSiteActivity extends Activity {
             Runnable failRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    HyperControlApp.setConnection(null);
                     startSite();
                 }
             };
@@ -47,6 +65,7 @@ public class StartSiteActivity extends Activity {
             task.execute();
 
         } else {
+            Log.d(TAG, "Network unavailable");
             startSite();
         }
     }

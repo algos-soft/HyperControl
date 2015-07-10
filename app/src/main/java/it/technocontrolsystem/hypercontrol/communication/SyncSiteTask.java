@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.util.Log;
 
 import java.util.Locale;
 
@@ -33,6 +34,9 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
     boolean success=false;
     private PowerManager.WakeLock lock;
 
+    private static final String TAG="SYNCDB";
+
+
     public SyncSiteTask(Context context, Site site, Runnable successRunnable, Runnable failRunnable) {
         this.context=context;
         this.site=site;
@@ -42,6 +46,8 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPreExecute() {
+        Log.d(TAG, "Start sync database");
+
         lock= Lib.acquireWakeLock();
         progress = ProgressDialog.show(context, null, "acquisizione dati in corso...", true);
     }
@@ -78,10 +84,12 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
             if(successRunnable!=null){
                 successRunnable.run();
             }
+            Log.d(TAG, "database sync successful");
         }else{
             if(failRunnable!=null){
                 failRunnable.run();
             }
+            Log.d(TAG, "database sync failed");
         }
 
         Lib.releaseWakeLock(lock);

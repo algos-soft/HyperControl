@@ -42,8 +42,12 @@ public class Connection {
     // dopo che la risposta è stata processata
     private static boolean processingResponse = false;
 
+    private static final String TAG="CONN";
+
 
     public Connection(Site site) throws Exception {
+        Log.d(TAG,"creating new connection...");
+
         this.site = site;
 
         requestQueue = new ArrayList();
@@ -55,7 +59,9 @@ public class Connection {
             createRequestThread();
             createReceiveThread();
             doLogin();
+            Log.d(TAG,"connection created successfully");
         }else{
+            Log.d(TAG,"create connection failed");
             throw new NetworkUnavailableException();
         }
 

@@ -2,6 +2,7 @@ package it.technocontrolsystem.hypercontrol.activity;
 
 import android.os.Bundle;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Board;
@@ -43,7 +44,9 @@ public class BoardActivity extends HCActivity {
         super.onResume();
 
         // aggiorna i dati
-        new UpdateTask().execute();
+        if(HyperControlApp.getConnection()!=null){
+            new UpdateTask().execute();
+        }
 
     }
 

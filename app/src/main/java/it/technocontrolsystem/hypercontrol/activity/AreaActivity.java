@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.SensorCommandRequest;
@@ -53,7 +54,9 @@ public class AreaActivity extends HCActivity {
         super.onResume();
 
         // aggiorna i dati
-        new UpdateTask().execute();
+        if(HyperControlApp.getConnection()!=null){
+            new UpdateTask().execute();
+        }
 
     }
 

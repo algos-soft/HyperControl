@@ -1,9 +1,9 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.text.Html;
+import android.view.View;
 import android.widget.CompoundButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
@@ -12,7 +12,7 @@ import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 /**
  * Created by alex on 5-07-2015.
  */
-public class StatusButtonListener implements CompoundButton.OnCheckedChangeListener {
+public class StatusButtonListener implements CompoundButton.OnClickListener {
 
     SiteActivity activity;
 
@@ -20,22 +20,26 @@ public class StatusButtonListener implements CompoundButton.OnCheckedChangeListe
         this.activity=activity;
     }
 
-    public void onCheckedChanged(final CompoundButton button, boolean isChecked) {
-        if(isChecked){
-            button.setOnCheckedChangeListener(null);
-            button.setChecked(false);
-            button.setOnCheckedChangeListener(this);
+    @Override
+    public void onClick(View v) {
+
+        final CompoundButton button = (CompoundButton)v;
+
+        if(button.isChecked()){// going ON
+
 
             Runnable successRunnable = new Runnable() {
                 @Override
                 public void run() {
                     activity.update();
+                    button.setChecked(true);
                 }
             };
 
             Runnable failRunnable = new Runnable() {
                 @Override
                 public void run() {
+                    HyperControlApp.setConnection(null);
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setTitle("Errore di connessione");
                     builder.setMessage(Html.fromHtml(HyperControlApp.getLastConnectionError()));
@@ -46,17 +50,16 @@ public class StatusButtonListener implements CompoundButton.OnCheckedChangeListe
                         }
                     });
                     builder.show();
-
-                    button.setOnCheckedChangeListener(null);
                     button.setChecked(false);
-                    button.setOnCheckedChangeListener(StatusButtonListener.this);
-
+                    activity.getErrorButton().setVisibility(View.VISIBLE);
                 }
             };
 
+            activity.getErrorButton().setVisibility(View.GONE);
             new ConnectionTask(activity, activity.getSite(), successRunnable, failRunnable).execute();
 
-        }else{
+        }else{ // going OFF
+
             HyperControlApp.setConnection(null);
             activity.getListAdapter().clearStatus();
             activity.runOnUiThread(new Runnable() {
@@ -65,8 +68,9 @@ public class StatusButtonListener implements CompoundButton.OnCheckedChangeListe
                     activity.getListAdapter().notifyDataSetChanged();
                 }
             });
+            button.setChecked(false);
 
         }
-    }
 
+    }
 }

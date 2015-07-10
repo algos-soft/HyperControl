@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -31,15 +32,18 @@ import it.technocontrolsystem.hypercontrol.model.PlantModel;
  */
 
 public class SiteActivity extends HCActivity {
+    private static final String TAG="SiteActivity";
     private int idSite = 0;
     private int version = 0;//federico
     private static Activity activityA;
-    private boolean loadingConfig;
-    private boolean loadingSite;
+//    private boolean loadingConfig;
+    //private boolean loadingSite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "SiteActivity - onCreate()");
+
 
         this.idSite = getIntent().getIntExtra("siteid", 0);
 
@@ -53,8 +57,12 @@ public class SiteActivity extends HCActivity {
             TextView text = (TextView) findViewById(R.id.title);
             text.setText(getSite().getName());
 
+            // uso un inClickListener per poter gestire lo stato senza invocare il listener
+            getConnectButton().setOnClickListener(new StatusButtonListener(this));
+
             // regola il bottone CONNECTED in base allo stato della connessione
             getConnectButton().setChecked(getConnection()!=null);
+
 
             // attacca un listener e poi rende invisibile l'icona di errore connessione
             getErrorButton().setOnClickListener(new View.OnClickListener() {
@@ -63,7 +71,7 @@ public class SiteActivity extends HCActivity {
                     errorButtonClicked();
                 }
             });
-            //getErrorButton().setVisibility(View.GONE);
+            getErrorButton().setVisibility(View.GONE);
 
 
             // crea l'adapter
@@ -92,17 +100,20 @@ public class SiteActivity extends HCActivity {
                 }
             });
 
+            Log.d(TAG, "Connection is: "+HyperControlApp.getConnection());
+
+            Log.d(TAG, "create + execute PopulateTask");
 
             // carica i dati
             new PopulateTask().execute();
 
-            // un listener notificato quando cambia lo stato della connessione
-            HyperControlApp.addOnConnectionStatusChangedListener(new HyperControlApp.OnConnectionStatusChangedListener() {
-                @Override
-                public void connectionStatusChanged(Connection conn) {
-                    getConnectButton().setChecked(conn!=null);
-                }
-            });
+//            // un listener notificato quando cambia lo stato della connessione
+//            HyperControlApp.addOnConnectionStatusChangedListener(new HyperControlApp.OnConnectionStatusChangedListener() {
+//                @Override
+//                public void connectionStatusChanged(Connection conn) {
+//                    getConnectButton().setChecked(conn!=null);
+//                }
+//            });
 
         } else {
             finish();
@@ -116,19 +127,15 @@ public class SiteActivity extends HCActivity {
     protected void onResume() {
         super.onResume();
 
-        // questo listener va aggiunto in onResume - in onCreate Android cerca di ripristinare lo stato
-        // e se era ON invoca il listener. Ricordati che questo listener viene rimosso appena premi
-        // il bottone e poi riattaccato alla fine di ConnectionTask
-        getConnectButton().setOnCheckedChangeListener(new StatusButtonListener(this));
-
         // aggiorna lo stato
         update();
     }
 
 
     public void update(){
-        new UpdateTask().execute();
-
+        if(getConnection()!=null){
+            new UpdateTask().execute();
+        }
     }
 
 
@@ -138,28 +145,29 @@ public class SiteActivity extends HCActivity {
     class PopulateTask extends AbsPopulateTask {
 
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            // devo aspettare che abbia finito di controllare / caricare la configurazione
-            while (isLoadingConfig()){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return super.doInBackground(params);
-        }
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//
+//            // devo aspettare che abbia finito di controllare / caricare la configurazione
+//            while (isLoadingConfig()){
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            return super.doInBackground(params);
+//        }
 
         @Override
         public void populateAdapter() {
+            Log.d(TAG, "Start populate adapter");
             Plant[] plants = DB.getPlants(idSite);
             publishProgress(-2, plants.length);
             PlantModel model;
@@ -171,7 +179,7 @@ public class SiteActivity extends HCActivity {
                 i++;
                 publishProgress(-3, i);
             }
-            int a = 87;
+            Log.d(TAG, "End populate adapter");
         }
 
         @Override
@@ -180,11 +188,11 @@ public class SiteActivity extends HCActivity {
         }
 
 
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            setLoadingSite(false);
-        }
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            setLoadingSite(false);
+//        }
     }
 
 
@@ -192,31 +200,31 @@ public class SiteActivity extends HCActivity {
      * Task per aggiornare lo stato dalla centrale.
      */
     class UpdateTask extends AbsUpdateTask {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            // se sta caricando il sito devo aspettare che abbia finito
-            while (isLoadingSite()){
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return super.doInBackground(params);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//
+//            // se sta caricando il sito devo aspettare che abbia finito
+//            while (isLoadingSite()){
+//                try {
+//                    Thread.sleep(100);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            return super.doInBackground(params);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//        }
     }
 
 
@@ -381,22 +389,22 @@ public class SiteActivity extends HCActivity {
         return -1;
     }
 
-    public boolean isLoadingConfig() {
-        return loadingConfig;
-    }
+//    public boolean isLoadingConfig() {
+//        return loadingConfig;
+//    }
+//
+//    public void setLoadingConfig(boolean loadingConfig) {
+//        this.loadingConfig = loadingConfig;
+//    }
 
-    public void setLoadingConfig(boolean loadingConfig) {
-        this.loadingConfig = loadingConfig;
-    }
 
-
-    public synchronized boolean isLoadingSite() {
-        return loadingSite;
-    }
-
-    public synchronized void setLoadingSite(boolean loadingSite) {
-        this.loadingSite = loadingSite;
-    }
+//    public synchronized boolean isLoadingSite() {
+//        return loadingSite;
+//    }
+//
+//    public synchronized void setLoadingSite(boolean loadingSite) {
+//        this.loadingSite = loadingSite;
+//    }
 
     public static Activity getInstance() {
         return activityA;

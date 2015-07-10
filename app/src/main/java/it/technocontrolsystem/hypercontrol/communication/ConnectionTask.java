@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.View;
 
 import java.net.SocketException;
@@ -62,6 +63,7 @@ public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
 
             conn = new Connection(site);
             success=true;
+
 
         }catch(NetworkUnavailableException e){
             exc=e;

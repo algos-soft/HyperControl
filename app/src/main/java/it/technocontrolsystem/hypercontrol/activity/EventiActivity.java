@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.ListEventRequest;
@@ -107,7 +108,9 @@ public class EventiActivity extends HCActivity {
      * Carica un blocco di eventi e li aggiunge all'adapter
      */
     public void loadEventi(){
-        new PopulateTask().execute();
+        if(HyperControlApp.getConnection()!=null){
+            new PopulateTask().execute();
+        }
     }
 
 

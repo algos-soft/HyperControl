@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.AreaDisplay;
@@ -64,8 +65,10 @@ public class PlantActivity extends HCActivity {
     protected void onResume() {
         super.onResume();
 
-        // aggiorna lo stato
-        new UpdateTask().execute();
+        // aggiorna i dati
+        if(HyperControlApp.getConnection()!=null){
+            new UpdateTask().execute();
+        }
 
     }
 

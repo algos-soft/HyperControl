@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
@@ -22,6 +24,7 @@ import it.technocontrolsystem.hypercontrol.model.ModelIF;
  *
  */
 public abstract class HCActivity extends Activity {
+    private static final String TAG="HCActivity";
 
     public static final int MENU_SETTINGS = 1;
     public static final int MENU_BOARDS = 2;
@@ -42,7 +45,7 @@ public abstract class HCActivity extends Activity {
     protected void onResume() {
         super.onResume();
         try {
-            if(SiteActivity.getConnection()!=null){
+            if(HyperControlApp.getConnection()!=null){
                 listAdapter.attachLiveListener();
                 startLive();
             }
@@ -64,6 +67,8 @@ public abstract class HCActivity extends Activity {
         @Override
         protected Void doInBackground(Void... params) {
 
+            Log.d(TAG, "PopulateTask - startBackground");
+
             // attende che si liberi il semaforo
             waitForSemaphore();
             workingInBg = true;
@@ -80,6 +85,8 @@ public abstract class HCActivity extends Activity {
             }
 
             workingInBg = false;
+
+            Log.d(TAG, "PopulateTask - endBackground");
 
             return null;
         }
@@ -152,6 +159,8 @@ public abstract class HCActivity extends Activity {
         @Override
         protected Void doInBackground(Void... params) {
 
+            Log.d(TAG, "UpdateTask - startBackground");
+
             // attende che si liberi il semaforo
             waitForSemaphore();
             workingInBg = true;
@@ -180,6 +189,9 @@ public abstract class HCActivity extends Activity {
 
             // spegne il semaforo
             workingInBg = false;
+
+            Log.d(TAG, "UpdateTask - endBackground");
+
 
             return null;
         }
