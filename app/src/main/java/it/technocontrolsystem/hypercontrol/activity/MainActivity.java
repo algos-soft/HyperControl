@@ -15,7 +15,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-       setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);
 
 
         autoselect();
@@ -46,15 +46,14 @@ public class MainActivity extends Activity {
     }
 
 
-
-
-    private void noSite(){
+    private void noSite() {
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, EditSiteActivity.class);
-        intent.putExtra("destinationactivity", SiteActivity.class);
+        intent.putExtra("destinationactivity", StartSiteActivity.class);
         startActivity(intent);
     }
-    private void singleSite(){
+
+    private void singleSite() {
 //        Intent intent = new Intent();
 //        intent.setClass(MainActivity.this, SiteActivity.class);
 //        Site site= DB.getSites() [0];
@@ -65,21 +64,22 @@ public class MainActivity extends Activity {
 
         Intent intent = new Intent();
         intent.setClass(this, StartSiteActivity.class);
-        Site site= DB.getSites() [0];
-        intent.putExtra("siteid",site.getId());
+        Site site = DB.getSites()[0];
+        intent.putExtra("siteid", site.getId());
         startActivity(intent);
 
     }
-    private void manySites(){
+
+    private void manySites() {
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, SelectSiteActivity.class);
         startActivity(intent);
 
     }
 
-    private void autoselect(){
-        Results r=getSelect();
-        switch (r){
+    private void autoselect() {
+        Results r = getSelect();
+        switch (r) {
             case NONE:
                 noSite();
                 break;
@@ -93,16 +93,16 @@ public class MainActivity extends Activity {
         finish();
     }
 
-    private Results getSelect(){
-        Results r=null;
-       int numSites=DB.getSiteCount();
-        if(numSites==0){
-            r=Results.NONE;
-        }else{
-            if(numSites==1){
-                r=Results.ONE;
-            }else{
-                r=Results.MANY;
+    private Results getSelect() {
+        Results r = null;
+        int numSites = DB.getSiteCount();
+        if (numSites == 0) {
+            r = Results.NONE;
+        } else {
+            if (numSites == 1) {
+                r = Results.ONE;
+            } else {
+                r = Results.MANY;
             }
 
         }
@@ -110,7 +110,7 @@ public class MainActivity extends Activity {
         return r;
     }
 
-    private enum Results{NONE, ONE, MANY}
+    private enum Results {NONE, ONE, MANY}
 
 
 }

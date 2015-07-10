@@ -33,8 +33,8 @@ public class StartSiteActivity extends Activity {
 
         /**
          * Distrugge la Connection.
-         * Distrugge le variabili statiche che devono essere distrutte.
-         * In Android, le variabili statiche possono essere ritenute
+         * In Android, le variabili statiche (in questo caso il Singleton della app,
+         * con tutte le sue variabili anche non statiche) possono essere ritenute
          * tra una sessione e l'altra della applicazione perché
          * il sistema non necessariamente distrugge il processo e ferma la JVM
          */

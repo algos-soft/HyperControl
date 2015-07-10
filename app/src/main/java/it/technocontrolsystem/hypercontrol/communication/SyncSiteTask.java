@@ -23,7 +23,7 @@ import it.technocontrolsystem.hypercontrol.domain.Site;
 /**
  * Created by alex on 5-07-2015.
  */
-public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
+public class SyncSiteTask  extends AsyncTask<Void, Integer, Void> {
 
     private Context context;
     private Site site;
@@ -34,7 +34,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
     boolean success=false;
     private PowerManager.WakeLock lock;
 
-    private static final String TAG="SYNCDB";
+    private static final String TAG="SyncDB";
 
 
     public SyncSiteTask(Context context, Site site, Runnable successRunnable, Runnable failRunnable) {
@@ -49,7 +49,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
         Log.d(TAG, "Start sync database");
 
         lock= Lib.acquireWakeLock();
-        progress = ProgressDialog.show(context, null, "acquisizione dati in corso...", true);
+        progress = ProgressDialog.show(context, "Controllo configurazione", "Verifica configurazione centrale...", true);
     }
 
     @Override
@@ -75,6 +75,19 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
         }
         return null;
     }
+
+
+    @Override
+    protected void onProgressUpdate(Integer... values) {
+        int updateCode=values[0];
+        switch (updateCode){
+            case -1:
+                progress.setMessage("Scaricamento configurazione in corso...");
+                break;
+        }
+        super.onProgressUpdate(values);
+    }
+
 
     @Override
     protected void onPostExecute(Void aVoid) {
@@ -126,19 +139,30 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
         Request request;
         Response resp;
 
+        Log.d(TAG, "Sending version request");
         request = new VersionRequest();
         resp = getConnection().sendRequest(request);
         VersionResponse vResp = (VersionResponse) resp;
 
         if (vResp != null) {
 
+            Log.d(TAG, "Version response received");
+
             if (vResp.isSuccess()) {
 
                 int remoteConfig = vResp.getConfigurationNumber();
+                Log.d(TAG, "Remote config #"+vResp.getConfigurationNumber());
                 int localConfig = getSite().getVersion();
+                Log.d(TAG, "Local config #"+localConfig);
+
 
                 if (localConfig != remoteConfig) {
+
+                    Log.d(TAG, "Starting configuration download");
+                    publishProgress(-1);    // scaricamento configurazione in corso
                     fillDB();
+
+                    Log.d(TAG, "Set local site version number to: "+remoteConfig);
                     Site site = getSite();
                     site.setVersion(remoteConfig);
                     DB.saveSite(site);
@@ -162,18 +186,23 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
      */
     private void fillDB() throws Exception {
         // Cancella tutti gli impianti e tutti i record collegati a cascata
+        Log.d(TAG, "delete all records");
         deleteAllRecords();
 
         // Riempie il DB con impianti e aree
+        Log.d(TAG, "start receive plants and areas");
         fillPlantsAndAreas();
 
         // Riempie il DB con i sensori e la tabella di incrocio aree-sensori
+        Log.d(TAG, "start receive sensors");
         fillSensors();
 
         // Riempie il DB con le schede
+        Log.d(TAG, "start receive boards");
         fillBoards();
 
         // Riempie il DB con i menu
+        Log.d(TAG, "start receive menus");
         fillMenus();
 
     }
@@ -184,6 +213,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
         Plant[] plants = getSite().getPlants();
         for (Plant plant : plants) {
             DB.deletePlant(plant.getId());
+            Log.d(TAG, "Plant id "+plant.getId()+" "+plant.getName()+" deleted");
         }
     }
 
@@ -200,10 +230,13 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
                 p.setIdSite(getSite().getId());
                 int idPlant = DB.savePlant(p);
                 p.setId(idPlant);
+                Log.d(TAG, "Plant id "+p.getId()+" "+p.getName()+" created");
+
                 for (Area area : p.getAreas()) {
                     area.setIdPlant(idPlant);
                     int idArea = DB.saveArea(area);
                     area.setId(idArea);
+                    Log.d(TAG, "Area id "+area.getId()+" "+area.getName()+" created");
                 }
             }
         } else {
@@ -232,6 +265,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
                     sensor.setIdPlant(plant.getId());
                     int id = DB.saveSensor(sensor);
                     sensor.setId(id);
+                    Log.d(TAG, "Sensor "+sensor.getId()+" "+sensor.getName()+" created");
 
                     // crea i record nella tabella di incrocio
                     Integer[] areaNums = sensor.getAreaNums();
@@ -257,6 +291,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
             for (Board board : sResp.getBoards()) {
                 board.setIdSite(getSite().getId());
                 DB.saveBoard(board);
+                Log.d(TAG, "Board "+board.getId()+" "+board.getName()+" created");
             }
         }
     }
@@ -272,6 +307,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
             for (Menu menu : sResp.getMenus()) {
                 menu.setIdSite(getSite().getId());
                 DB.saveMenu(menu);
+                Log.d(TAG, "Menu "+menu.getId()+" "+menu.getName()+" created");
             }
         }
     }

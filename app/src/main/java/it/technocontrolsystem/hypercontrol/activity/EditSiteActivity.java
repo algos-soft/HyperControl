@@ -169,9 +169,11 @@ public class EditSiteActivity extends Activity {
     private void saveSite() {
         Site site = createSite();
         try {
+
+            // save the new site in the database
             int id= DB.saveSite(site);
-            //if a destination activity was specified
-            //start the activity
+
+            //if a destination activity was specified, start the activity
             Serializable ser = getIntent().getSerializableExtra("destinationactivity");
             if (ser != null) {
                 if (ser instanceof Class) {
@@ -181,16 +183,18 @@ public class EditSiteActivity extends Activity {
                     startActivity(intent);
                 }
             }
-            SiteActivity.getInstance().finish();
-            ConfigActivity.getInstance().finish();
+//            SiteActivity.getInstance().finish();
+//            ConfigActivity.getInstance().finish();
 //            Intent i = new Intent(EditSiteActivity.this, SiteActivity.class);
 //            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
 //            i.putExtra("restarta",1);
 //            startActivity(i);
-            Intent intent=new Intent();
-            intent.putExtra("siteid",id);
-            intent.setClass(EditSiteActivity.this,SiteActivity.class);
-            startActivity(intent);
+
+
+//            Intent intent=new Intent();
+//            intent.putExtra("siteid",id);
+//            intent.setClass(EditSiteActivity.this,SiteActivity.class);
+//            startActivity(intent);
 
 
         } catch (Exception e) {

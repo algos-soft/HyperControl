@@ -35,9 +35,7 @@ public class SiteActivity extends HCActivity {
     private static final String TAG="SiteActivity";
     private int idSite = 0;
     private int version = 0;//federico
-    private static Activity activityA;
-//    private boolean loadingConfig;
-    //private boolean loadingSite;
+//    private static Activity activityA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +49,7 @@ public class SiteActivity extends HCActivity {
 
             setContentView(R.layout.activity_site);
             this.version = getIntent().getIntExtra("siteversion", 0);//federico
-            activityA = this;
+//            activityA = this;
 
             // titolo della schermata
             TextView text = (TextView) findViewById(R.id.title);
@@ -145,26 +143,6 @@ public class SiteActivity extends HCActivity {
     class PopulateTask extends AbsPopulateTask {
 
 
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//
-//            // devo aspettare che abbia finito di controllare / caricare la configurazione
-//            while (isLoadingConfig()){
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            return super.doInBackground(params);
-//        }
-
         @Override
         public void populateAdapter() {
             Log.d(TAG, "Start populate adapter");
@@ -188,11 +166,6 @@ public class SiteActivity extends HCActivity {
         }
 
 
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//            setLoadingSite(false);
-//        }
     }
 
 
@@ -200,116 +173,7 @@ public class SiteActivity extends HCActivity {
      * Task per aggiornare lo stato dalla centrale.
      */
     class UpdateTask extends AbsUpdateTask {
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//
-//            // se sta caricando il sito devo aspettare che abbia finito
-//            while (isLoadingSite()){
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            return super.doInBackground(params);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            super.onPostExecute(aVoid);
-//        }
     }
-
-
-//    /**
-//     * Task per aggiornare lo stato dalla centrale.
-//     */
-//    class UpdateTask extends AsyncTask<Void, Integer, Void> {
-//
-//        private PowerManager.WakeLock lock;
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//
-//            // attende che si liberi il semaforo
-//            waitForSemaphore();
-//            workingInBg = true;
-//
-//            // mostra il dialogo
-//            publishProgress(-1);
-//
-//            try {
-//
-//                publishProgress(-2, listAdapter.getCount());
-//
-//                // aggiorna lo stato
-//                if (SiteActivity.getConnection() != null) {
-//                    for(int i=0;i<listAdapter.getCount();i++){
-//                        PlantModel model = (PlantModel)listAdapter.getItem(i);
-//                        listAdapter.updateByNumber(model.getNumber());
-//                        publishProgress(-3,i+1);
-//                    }
-//                }
-//
-//            } catch (Exception e1) {
-//                e1.printStackTrace();
-//            }
-//
-//            // spegne il semaforo
-//            workingInBg = false;
-//
-//            return null;
-//        }
-//
-//
-//        @Override
-//        protected void onProgressUpdate(Integer... values) {
-//            int param1=0, param2=0;
-//            param1 = values[0];
-//            if(values.length>1){
-//                param2 = values[1];
-//            }
-//            switch (param1){
-//                case -1:{
-//                    Lib.lockOrientation(SiteActivity.this);
-//                    lock = Lib.acquireWakeLock();
-//                    progress.setMessage("aggiornamento stato...");
-//                    progress.setProgress(0);
-//                    progress.show();
-//                    break;
-//                }
-//
-//                case -2:{
-//                    progress.setMax(param2);
-//                    break;
-//                }
-//
-//                case -3:{
-//                    progress.setProgress(param2);
-//                    break;
-//                }
-//
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            progress.dismiss();
-//            listAdapter.notifyDataSetChanged();
-//            Lib.unlockOrientation(SiteActivity.this);
-//            Lib.releaseWakeLock(lock);
-//        }
-//    }
-//
-
-
 
 
 
@@ -370,7 +234,6 @@ public class SiteActivity extends HCActivity {
 
     }
 
-
     public static Connection getConnection() {
         return HyperControlApp.getConnection();
     }
@@ -389,24 +252,7 @@ public class SiteActivity extends HCActivity {
         return -1;
     }
 
-//    public boolean isLoadingConfig() {
-//        return loadingConfig;
+//    public static Activity getInstance() {
+//        return activityA;
 //    }
-//
-//    public void setLoadingConfig(boolean loadingConfig) {
-//        this.loadingConfig = loadingConfig;
-//    }
-
-
-//    public synchronized boolean isLoadingSite() {
-//        return loadingSite;
-//    }
-//
-//    public synchronized void setLoadingSite(boolean loadingSite) {
-//        this.loadingSite = loadingSite;
-//    }
-
-    public static Activity getInstance() {
-        return activityA;
-    }
 }
