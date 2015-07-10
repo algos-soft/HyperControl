@@ -38,7 +38,7 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
 
 
     @Override
-    public void update() {
+    public void updateAll() {
         ArrayList<Integer> numbers=new ArrayList<>();
         ModelIF model;
 
@@ -53,7 +53,7 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
     @Override
     public void update(Integer[] numbers) {
         for (int number:numbers){
-            update(number);
+            updateByNumber(number);
         }
 
         //notifyDataSetChanged() va sempre invocato sullo UI Thread!
@@ -69,7 +69,7 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
     /**
      * Update one single item
      */
-    public void update(int number){
+    public void updateByNumber(int number){
         BoardModel model;
         BoardStatusResponse resp;
         Connection conn = SiteActivity.getConnection();

@@ -55,12 +55,20 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
     private void singleSite(){
+//        Intent intent = new Intent();
+//        intent.setClass(MainActivity.this, SiteActivity.class);
+//        Site site= DB.getSites() [0];
+//        intent.putExtra("siteid",site.getId());
+//        intent.putExtra("siteversion",site.getVersion());//federico
+//        startActivity(intent);
+
+
         Intent intent = new Intent();
-        intent.setClass(MainActivity.this, SiteActivity.class);
+        intent.setClass(this, StartSiteActivity.class);
         Site site= DB.getSites() [0];
         intent.putExtra("siteid",site.getId());
-        intent.putExtra("siteversion",site.getVersion());//federico
         startActivity(intent);
+
     }
     private void manySites(){
         Intent intent = new Intent();

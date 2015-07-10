@@ -62,7 +62,7 @@ public class SensorListAdapter extends HCListAdapter<SensorModel>{
     }
 
     @Override
-    public void update() {
+    public void updateAll() {
         Connection conn = SiteActivity.getConnection();
         SensorModel model;
         SensorsStatusResponse resp;
@@ -86,24 +86,8 @@ public class SensorListAdapter extends HCListAdapter<SensorModel>{
 
     @Override
     public void update(Integer[] numbers) {
-        SensorModel model;
-        SensorsStatusResponse resp;
-        Connection conn = SiteActivity.getConnection();
         for (int number:numbers){
-            model=(SensorModel) getModel(number);
-            SensorsStatusRequest request = new SensorsStatusRequest(number);
-            resp = (SensorsStatusResponse) conn.sendRequest(request);
-
-            // capire se si può semplificare aggiungendo un metodo che mi permette di recuperare il singolo sensore
-            HashMap<Integer,SensorModel> responseMap=resp.getResponseMap();
-            SensorModel responseModel;
-
-            responseModel=responseMap.get(model.getSensor().getNumber());
-            model.setStatus(responseModel.getStatus());
-            model.setTamper(responseModel.isTamper());
-            model.setValue(responseModel.getValue());
-            model.setAlarm(responseModel.isAlarm());
-            model.setTest(responseModel.isTest());
+            updateByNumber(number);
         }
 
         //notifyDataSetChanged() va sempre invocato sullo UI Thread!
@@ -114,6 +98,28 @@ public class SensorListAdapter extends HCListAdapter<SensorModel>{
             }
         });
 
+    }
+
+    @Override
+    public void updateByNumber(int number) {
+        SensorModel model;
+        SensorsStatusResponse resp;
+        Connection conn = SiteActivity.getConnection();
+
+        model=(SensorModel) getModel(number);
+        SensorsStatusRequest request = new SensorsStatusRequest(number);
+        resp = (SensorsStatusResponse) conn.sendRequest(request);
+
+        // capire se si può semplificare aggiungendo un metodo che mi permette di recuperare il singolo sensore
+        HashMap<Integer,SensorModel> responseMap=resp.getResponseMap();
+        SensorModel responseModel;
+
+        responseModel=responseMap.get(model.getSensor().getNumber());
+        model.setStatus(responseModel.getStatus());
+        model.setTamper(responseModel.isTamper());
+        model.setValue(responseModel.getValue());
+        model.setAlarm(responseModel.isAlarm());
+        model.setTest(responseModel.isTest());
 
     }
 

@@ -70,4 +70,13 @@ public class SensorModel implements ModelIF {
     public int getNumber() {
         return getSensor().getNumber();
     }
+
+    @Override
+    public void clearStatus() {
+        setAlarm(false);
+        setTamper(false);
+        setTest(false);
+        setValue("");
+        setStatus(0);
+    }
 }

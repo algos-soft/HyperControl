@@ -1,13 +1,16 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 
 import java.util.Locale;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
+import it.technocontrolsystem.hypercontrol.activity.StartSiteActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Board;
@@ -21,28 +24,34 @@ import it.technocontrolsystem.hypercontrol.domain.Site;
  */
 public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
 
-    SiteActivity activity;
+    private Context context;
+    private Site site;
+    private Runnable successRunnable;
+    private Runnable failRunnable;
     ProgressDialog progress;
     Exception exception;
     boolean success=false;
     private PowerManager.WakeLock lock;
 
-    public SyncSiteTask(SiteActivity activity) {
-        this.activity=activity;
+    public SyncSiteTask(Context context, Site site, Runnable successRunnable, Runnable failRunnable) {
+        this.context=context;
+        this.site=site;
+        this.successRunnable=successRunnable;
+        this.failRunnable=failRunnable;
     }
 
     @Override
     protected void onPreExecute() {
         lock= Lib.acquireWakeLock();
-        progress = ProgressDialog.show(activity, null, "acquisizione dati in corso...", true);
+        progress = ProgressDialog.show(context, null, "acquisizione dati in corso...", true);
     }
 
     @Override
     protected Void doInBackground(Void... params) {
+
         try {
 
-            // provvisorio
-            //Thread.sleep(6000);
+            HyperControlApp.setLastSyncDBError(null);
 
             // Invia alla centrale una richiesta di impostazione lingua
             languageCheck();
@@ -55,6 +64,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
         } catch (Exception e) {
             exception=e;
             success=false;
+            HyperControlApp.setLastSyncDBError(e.getMessage());
             e.printStackTrace();
         }
         return null;
@@ -63,8 +73,19 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         progress.dismiss();
-        activity.updateSiteUI();
+
+        if(success) {
+            if(successRunnable!=null){
+                successRunnable.run();
+            }
+        }else{
+            if(failRunnable!=null){
+                failRunnable.run();
+            }
+        }
+
         Lib.releaseWakeLock(lock);
+
     }
 
 
@@ -249,11 +270,11 @@ public class SyncSiteTask  extends AsyncTask<Void, Void, Void> {
 
 
     private Connection getConnection(){
-        return activity.getConnection();
+        return HyperControlApp.getConnection();
     }
 
     private Site getSite(){
-        return activity.getSite();
+        return site;
     }
 
 }

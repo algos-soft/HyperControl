@@ -3,16 +3,20 @@ package it.technocontrolsystem.hypercontrol.activity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
+import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
 /**
  *
@@ -38,12 +42,189 @@ public abstract class HCActivity extends Activity {
     protected void onResume() {
         super.onResume();
         try {
-            listAdapter.attachLiveListener();
-            startLive();
+            if(SiteActivity.getConnection()!=null){
+                listAdapter.attachLiveListener();
+                startLive();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+
+
+    /**
+     * Task per caricare i dati dal db nell'adapter.
+     * Dopo aver caricato i dati assegna l'adapter alla ListView.
+     */
+    abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Void> {
+
+        PowerManager.WakeLock lock;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            // attende che si liberi il semaforo
+            waitForSemaphore();
+            workingInBg = true;
+
+            // mostra il dialogo
+            publishProgress(-1);
+
+            try {
+
+                populateAdapter();
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+            workingInBg = false;
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            int param1=0, param2=0;
+            param1 = values[0];
+            if(values.length>1){
+                param2 = values[1];
+            }
+            switch (param1){
+                case -1:{
+                    Lib.lockOrientation(HCActivity.this);
+                    lock = Lib.acquireWakeLock();
+                    progress.setMessage("caricamento "+getType()+"...");
+                    progress.setProgress(0);
+                    progress.show();
+                    break;
+                }
+
+                case -2:{
+                    progress.setMax(param2);
+                    break;
+                }
+
+                case -3:{
+                    progress.setProgress(param2);
+                    break;
+                }
+
+            }
+
+        }
+
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progress.dismiss();
+            getListView().setAdapter(listAdapter);
+            Lib.unlockOrientation(HCActivity.this);
+            Lib.releaseWakeLock(lock);
+        }
+
+        /**
+         * Popola l'adapter dal database o da altra sorgente
+         */
+        public abstract void populateAdapter();
+
+        /**
+         * Ritorna il nome degli oggetti trattati
+         */
+        public abstract String getType();
+
+
+    }
+
+
+
+
+
+    /**
+     * Task per aggiornare lo stato dalla centrale.
+     */
+    abstract class AbsUpdateTask extends AsyncTask<Void, Integer, Void> {
+
+        private PowerManager.WakeLock lock;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            // attende che si liberi il semaforo
+            waitForSemaphore();
+            workingInBg = true;
+
+            // mostra il dialogo
+            publishProgress(-1);
+
+            try {
+
+                publishProgress(-2, listAdapter.getCount());
+
+                // aggiorna lo stato
+                if (SiteActivity.getConnection() != null) {
+                    for (int i = 0; i < listAdapter.getCount(); i++) {
+                        ModelIF model = (ModelIF) listAdapter.getItem(i);
+                        listAdapter.updateByNumber(model.getNumber());
+                        publishProgress(-3, i + 1);
+                    }
+                }else{
+                    listAdapter.clearStatus();
+                }
+
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+
+            // spegne il semaforo
+            workingInBg = false;
+
+            return null;
+        }
+
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            int param1=0, param2=0;
+            param1 = values[0];
+            if(values.length>1){
+                param2 = values[1];
+            }
+            switch (param1){
+                case -1:{
+                    Lib.lockOrientation(HCActivity.this);
+                    lock = Lib.acquireWakeLock();
+                    progress.setMessage("aggiornamento stato...");
+                    progress.setProgress(0);
+                    progress.show();
+                    break;
+                }
+
+                case -2:{
+                    progress.setMax(param2);
+                    break;
+                }
+
+                case -3:{
+                    progress.setProgress(param2);
+                    break;
+                }
+
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            progress.dismiss();
+            listAdapter.notifyDataSetChanged();
+            Lib.unlockOrientation(HCActivity.this);
+            Lib.releaseWakeLock(lock);
+        }
+    }
+
+
 
 
     /**
@@ -129,6 +310,7 @@ public abstract class HCActivity extends Activity {
                 e.printStackTrace();
             }
         }
+        int a = 0;
     }
 
     protected ListView getListView() {

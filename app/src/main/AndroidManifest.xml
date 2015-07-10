@@ -133,6 +133,10 @@
             android:name=".activity.LoginActivity"
             android:label="@string/title_activity_login" >
         </activity>
+        <activity
+            android:name=".activity.StartSiteActivity"
+            android:label="@string/title_activity_start_site" >
+        </activity>
     </application>
 
 </manifest>

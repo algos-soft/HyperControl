@@ -199,7 +199,7 @@ public class AuthActivityOld extends Activity  {
     }
 
     /**
-     * Use an AsyncTask to fetch the user's email addresses on a background thread, and update
+     * Use an AsyncTask to fetch the user's email addresses on a background thread, and updateAll
      * the email text field with results on the main UI thread.
      */
     class SetupEmailAutoCompleteTask extends AsyncTask<Void, Void, List<String>> {

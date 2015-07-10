@@ -30,7 +30,6 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         PlantModel model = getItem(position);
-        PlantDisplay display;
         // Non usare la convertView perché c'è attaccato il listener con l'itemId
         // Creare sempre nuove view
 //        if (convertView != null) {
@@ -38,14 +37,15 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
 //        } else {
 //            display = new PlantDisplay(getContext(), model.getPlant().getId());
 //        }
-        display = new PlantDisplay(getContext(), model.getPlant().getId());
+
+        PlantDisplay display = new PlantDisplay(getContext(), model.getPlant().getId());
         display.update(model);
         return display;
     }
 
 
     @Override
-    public void update() {
+    public void updateAll() {
         ArrayList<Integer> numbers=new ArrayList<>();
         ModelIF model;
         for (int i = 0; i < getCount(); i++) {
@@ -60,7 +60,7 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
     @Override
     public void update(Integer[] numbers) {
         for (int number:numbers){
-            update(number);
+            updateByNumber(number);
         }
 
         //notifyDataSetChanged() va sempre invocato sullo UI Thread!
@@ -76,7 +76,7 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
     /**
      * Update one single item
      */
-    public void update(int number){
+    public void updateByNumber(int number){
         PlantModel model;
         PlantsStatusResponse resp;
         Connection conn = SiteActivity.getConnection();
@@ -97,23 +97,23 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
         new UpdateTask().execute(numbers);
     }
 
-    /**
-     * Elimina le informazioni di stato da tutti gli elementi
-     */
-    public void clearStatus(){
-
-        PlantModel model;
-        for(int i = 0; i<getCount();i++){
-            model = getItem(i);
-            model.clearStatus();
-        }
-
-        // da eseguire sempre nello UI thread
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
-    }
+//    /**
+//     * Elimina le informazioni di stato da tutti gli elementi
+//     */
+//    public void clearStatus(){
+//
+//        PlantModel model;
+//        for(int i = 0; i<getCount();i++){
+//            model = getItem(i);
+//            model.clearStatus();
+//        }
+//
+//        // da eseguire sempre nello UI thread
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                notifyDataSetChanged();
+//            }
+//        });
+//    }
 }

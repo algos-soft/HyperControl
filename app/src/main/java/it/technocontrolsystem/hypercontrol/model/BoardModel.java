@@ -29,4 +29,9 @@ public class BoardModel implements ModelIF {
     public int getNumber() {
         return getBoard().getNumber();
     }
+
+    @Override
+    public void clearStatus() {
+        setStatus(-1);
+    }
 }

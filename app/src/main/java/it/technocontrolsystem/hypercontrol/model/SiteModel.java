@@ -20,4 +20,8 @@ public class SiteModel implements ModelIF {
     public int getNumber() {
         return getSite().getId();
     }
+
+    @Override
+    public void clearStatus() {}
+
 }

@@ -13,7 +13,10 @@ import java.util.HashMap;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
+import it.technocontrolsystem.hypercontrol.communication.PlantsStatusRequest;
+import it.technocontrolsystem.hypercontrol.communication.PlantsStatusResponse;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
+import it.technocontrolsystem.hypercontrol.model.PlantModel;
 
 /**
  *
@@ -56,11 +59,12 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
 
     /**
      * Aggiorna le informazioni dinamiche (stato) dalla centrale
+     * per tutti gli elementi
      */
-    public abstract void update();
+    public abstract void updateAll();
 
     /**
-     * Aggiorna lo stato di un elenco di oggetti
+     * Aggiorna lo stato di un dato elenco di oggetti
      *
      * @param numbers
      */
@@ -68,6 +72,23 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
 
     public ModelIF getModel(int number) {
         return modelMap.get(number);
+    }
+
+    /**
+     * Aggiorna lo stato di un elemento dato il suo numero
+     * @param number il numero dell'elemento
+     */
+    public abstract void updateByNumber(int number);
+
+    /**
+     * Elimina le informazioni di stato da tutti gli elementi
+     */
+    public void clearStatus(){
+        ModelIF model;
+        for(int i = 0; i<getCount();i++){
+            model = (ModelIF)getItem(i);
+            model.clearStatus();
+        }
     }
 
     /**
@@ -89,7 +110,7 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
 
     /**
      * AsyncTask che attende che si liberi la Connection e quando è
-     * libera fa partire la richiesta di update per gli oggetti variati
+     * libera fa partire la richiesta di updateAll per gli oggetti variati
      */
     class UpdateTask extends AsyncTask<Integer[], Void, Integer[]> {
         @Override

@@ -47,7 +47,7 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
 
 
    @Override
-   public void update() {
+   public void updateAll() {
        ArrayList<Integer> numbers=new ArrayList<>();
        ModelIF model;
        for (int i = 0; i < getCount(); i++) {
@@ -61,7 +61,7 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
     @Override
     public void update(Integer[] numbers) {
         for (int number:numbers){
-            update(number);
+            updateByNumber(number);
         }
 
         //notifyDataSetChanged() va sempre invocato sullo UI Thread!
@@ -75,10 +75,10 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
     }
 
     /**
-     * Update one single item
+     * Updates one single item
      * @param number the area number (not the position)
      */
-    public void update(int number){
+    public void updateByNumber(int number){
         AreaModel model;
         AreaStatusResponse resp;
         Connection conn = SiteActivity.getConnection();

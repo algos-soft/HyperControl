@@ -1,6 +1,7 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.view.View;
@@ -8,44 +9,42 @@ import android.view.View;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
+import it.technocontrolsystem.hypercontrol.activity.StartSiteActivity;
+import it.technocontrolsystem.hypercontrol.domain.Site;
 
 /**
- * AsyncTask per effettuare una nuova connessione.<br>
- * All'inizio mette subito la Connection a null nella activity.<br>
- * Se termina con successo, registra la nuova Connection nella activity.<br>
- * Se la Connection viene creata con successo, aggiorna l'indicatore di
- * stato della connessione nella Activity e lancia una SyncSiteTask (aggiornamento database)<br>
- * Se fallisce, registra l'eccezione nella activity e invoca updateSiteUI().
+ * AsyncTask per effettuare una nuova connessione e registrarla nella App.<br>
+ * All'inizio mette subito la Connection a null.<br>
+ * Se termina con successo, registra la nuova Connection e lancia
+ * una SyncSiteTask (aggiornamento database).<br>
+ * Se fallisce, registra l'errore e lancia la SiteActivity().
  * Created by alex on 5-07-2015.
  */
 public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
 
-    private  SiteActivity activity;
+    private Context context;
+    private Site site;
     private boolean success;
     private ProgressDialog progress;
     private PowerManager.WakeLock lock;
+    private Runnable successRunnable;
+    private Runnable failRunnable;
 
-
-    public ConnectionTask(SiteActivity activity) {
-        this.activity=activity;
+    public ConnectionTask(Context context, Site site, Runnable successRunnable, Runnable failRunnable) {
+        this.context=context;
+        this.site=site;
+        this.successRunnable=successRunnable;
+        this.failRunnable=failRunnable;
     }
 
     @Override
     protected void onPreExecute() {
-
-        // protegge il workflow seguente da cambio orientamento,
-        // verrà riattivato al temine dei background tasks
-        Lib.lockOrientation(activity);
         lock=Lib.acquireWakeLock();
-
-
-        activity.setConnection(null);
-        activity.setLastConnectionError(null);
-        activity.getErrorButton().setVisibility(View.GONE);
-
-        progress = ProgressDialog.show(activity, null, "connessione in corso...", true);
+        HyperControlApp.setLastConnectionError(null);
+        progress = ProgressDialog.show(context, null, "connessione in corso...", true);
     }
 
 
@@ -59,14 +58,9 @@ public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
 
         try{
 
-            // === provvisorio ====
-//            conn=new Connection();  // mock
-//            //conn=null;
-//            //throw new Exception("Password errata");
-//            success=true;
-            // ====================
+            HyperControlApp.setLastConnectionError(null);
 
-            conn = new Connection(activity.getSite());
+            conn = new Connection(site);
             success=true;
 
         }catch(NetworkUnavailableException e){
@@ -83,12 +77,12 @@ public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
             error="Errore di connessione";
         }
 
-        // se c'è stata una eccezione registra l'errore nella activity
+        // se c'è stata una eccezione registra l'errore
         if(exc!=null){
             String err="<b>"+error+"</b><p>"
                     +exc.getClass().getSimpleName()+"<p>"
                     +"<small>"+exc.getMessage()+"</small>";
-            activity.setLastConnectionError(err);
+            HyperControlApp.setLastConnectionError(err);
             success=false;
             exc.printStackTrace();
         }
@@ -100,29 +94,20 @@ public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
     @Override
     protected void onPostExecute(Connection conn) {
         progress.dismiss();
+
         if(success) {
-
-            // registra la Connection
-            activity.setConnection(conn);
-
-            // accendi il bottone CONNECTED senza lanciare un evento
-            // rimuove il listener e dopo lo rimette
-            activity.getConnectButton().setOnCheckedChangeListener(null);
-            activity.getConnectButton().setChecked(true);
-
-
-            // lancia la sincronizzazione DB
-            new SyncSiteTask(activity).execute();
-
-
+            HyperControlApp.setConnection(conn);
+            if(successRunnable!=null){
+                successRunnable.run();
+            }
         }else{
-            activity.updateSiteUI();
+            HyperControlApp.setConnection(null);
+            if(failRunnable!=null){
+                failRunnable.run();
+            }
         }
 
-        activity.getConnectButton().setOnCheckedChangeListener(new StatusButtonListener(activity));
-
         Lib.releaseWakeLock(lock);
-
 
     }
 

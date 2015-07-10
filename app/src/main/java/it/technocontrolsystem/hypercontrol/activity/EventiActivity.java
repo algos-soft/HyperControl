@@ -1,12 +1,11 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.ListEventRequest;
 import it.technocontrolsystem.hypercontrol.communication.ListEventResponse;
@@ -16,6 +15,7 @@ import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Event;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.EventListAdapter;
+import it.technocontrolsystem.hypercontrol.model.EventModel;
 
 /**
  * Activity per la visualizzazione degli eventi direttamente dalla centrale.
@@ -26,7 +26,6 @@ public class EventiActivity extends HCActivity {
 
 
     private int idSite;
-    EventListAdapter listAdapter;
     private int lastIdEvento=-1;
 
     @Override
@@ -67,12 +66,48 @@ public class EventiActivity extends HCActivity {
 
     }
 
+
+    /**
+     * AsyncTask per caricare i dati nell'adapter
+     */
+    class PopulateTask extends AbsPopulateTask {
+
+        @Override
+        public void populateAdapter() {
+            try {
+                addToAdapter();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public String getType() {
+            return "eventi";
+        }
+
+        @Override
+        /**
+         * Overridden perché qui non devo riassegnare l'adapter
+         * alla listView, se no la lista mi ritorna all'inizio.
+         * In questa activity l'adapter viene creato e attaccato
+         * in onCreate() e i dati vengono aggiunti progressivamente.
+         */
+        protected void onPostExecute(Void aVoid) {
+            progress.dismiss();
+            Lib.unlockOrientation(EventiActivity.this);
+            Lib.releaseWakeLock(lock);
+        }
+
+
+    }
+
+
     /**
      * Carica un blocco di eventi e li aggiunge all'adapter
      */
     public void loadEventi(){
-        ActivityTask task = new ActivityTask();
-        task.execute();
+        new PopulateTask().execute();
     }
 
 
@@ -96,42 +131,12 @@ public class EventiActivity extends HCActivity {
         return -1;
     }
 
-    class ActivityTask extends AsyncTask<Void, Void, Void> {
-
-        ProgressDialog progress;
-
-        @Override
-        protected void onPreExecute() {
-            progress=ProgressDialog.show(EventiActivity.this,null,"caricamento in corso...",true);
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-
-                // popola l'adapter per la ListView
-                populateAdapter();
-
-            }catch(Exception e1){
-                e1.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid){
-            progress.dismiss();
-            listAdapter.notifyDataSetChanged();
-        }
-    }
-
 
     /**
      * Carica gli impianti del sito dalla centrale nell'adapter.
      * Questo metodo viene invocato nel background task
      */
-    private void populateAdapter() throws Exception {
+    private void addToAdapter() throws Exception {
 
 
         Request request = new ListEventRequest(lastIdEvento, 10);
@@ -148,7 +153,8 @@ public class EventiActivity extends HCActivity {
                     public void run() {
                         Event[] events = vResp.getEvents();
                         for(Event e : events){
-                            listAdapter.add(e);
+                            EventModel model = new EventModel(e);
+                            listAdapter.add(model);
                             lastIdEvento=e.getId();
                         }
                     }
