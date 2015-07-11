@@ -15,6 +15,7 @@ import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
 import it.technocontrolsystem.hypercontrol.display.EventDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Event;
 import it.technocontrolsystem.hypercontrol.model.EventModel;
+import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
 /**
  * Adapter per la lista degli eventi.
@@ -41,9 +42,18 @@ public class EventListAdapter extends HCListAdapter<EventModel> {
 
     }
 
+    /**
+     * qui non fa niente
+     */
     @Override
     public void updateAll() {
 
+    }
+
+    /**
+     * qui non fa niente
+     */
+    public void clearStatus(){
     }
 
     @Override
