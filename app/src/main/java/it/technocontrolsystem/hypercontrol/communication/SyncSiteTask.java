@@ -10,8 +10,6 @@ import java.util.Locale;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
-import it.technocontrolsystem.hypercontrol.activity.StartSiteActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Board;

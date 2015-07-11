@@ -6,7 +6,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
@@ -17,8 +16,6 @@ import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.domain.Site;
-import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
-import it.technocontrolsystem.hypercontrol.listadapters.PlantListAdapter;
 import it.technocontrolsystem.hypercontrol.listadapters.SensorListAdapter;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
@@ -35,8 +32,6 @@ public class AreaActivity extends HCActivity {
         this.idArea = getIntent().getIntExtra("areaid", 0);
 
         if (idArea != 0) {
-
-            loadAreaTitle();
 
             // crea l'adapter per la ListView
             listAdapter = new SensorListAdapter(AreaActivity.this, getArea());
@@ -67,6 +62,20 @@ public class AreaActivity extends HCActivity {
         }
     }
 
+    public String getHeadline2(){
+        return getArea().getPlant().getName();
+    }
+
+    public String getHeadline3(){
+        return getArea().getName();
+    }
+
+    public String getItemsType(){return "Sensori";}
+
+    @Override
+    public int getNumItemsInList() {
+        return DB.getSensorCountByArea(getArea().getId());
+    }
 
     /**
      * AsyncTask per caricare i dati nell'adapter
@@ -194,14 +203,6 @@ public class AreaActivity extends HCActivity {
         }
 
     }
-
-
-    private void loadAreaTitle() {
-
-        TextView text = (TextView) findViewById(R.id.title);
-        text.setText(getArea().getPlant().getName() + " - " + getArea().getName());
-    }
-
 
     public Site getSite() {
         return getArea().getPlant().getSite();

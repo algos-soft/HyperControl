@@ -1,10 +1,8 @@
 package it.technocontrolsystem.hypercontrol.display;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -13,7 +11,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -67,7 +64,6 @@ public abstract class ItemDisplay extends LinearLayout {
         init();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void init() {
         LinearLayout.LayoutParams params;
 
@@ -329,14 +325,13 @@ public abstract class ItemDisplay extends LinearLayout {
         return spacer;
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private Switch createSwitch(){
-        Switch button=new Switch(getContext());
-        //Switch button=new HCSwitchButton(getContext());
-        button.setTextOn("On");
-        button.setTextOff("Off");
-        return button;
-    }
+//    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+//    private Switch createSwitch(){
+//        Switch button=new Switch(getContext());
+//        button.setTextOn("On");
+//        button.setTextOff("Off");
+//        return button;
+//    }
 
     private ToggleButton createToggle(){
         ToggleButton button=new ToggleButton(getContext());

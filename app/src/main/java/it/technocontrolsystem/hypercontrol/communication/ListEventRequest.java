@@ -39,6 +39,6 @@ public class ListEventRequest extends Request {
 
     @Override
     public int getTimeout() {
-        return 10;
+        return 20;
     }
 }

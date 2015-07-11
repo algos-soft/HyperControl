@@ -19,8 +19,9 @@ public abstract class CommandRequest extends Request {
     }
 
     @Override
+    // questi sono comandi, non devono impiegare molto
     public int getTimeout() {
-        return 60;
+        return 10;
     }
 
     @Override

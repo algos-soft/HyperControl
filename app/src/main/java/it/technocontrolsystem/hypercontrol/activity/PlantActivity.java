@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.TextView;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
@@ -35,8 +34,6 @@ public class PlantActivity extends HCActivity {
             //progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
             progress.setIndeterminate(true);
-
-            loadPlantTitle();
 
             // crea l'adapter per la ListView
             listAdapter = new AreaListAdapter(PlantActivity.this);
@@ -68,6 +65,21 @@ public class PlantActivity extends HCActivity {
         // aggiorna i dati
         updateStatus();
 
+    }
+
+    public String getHeadline2(){
+        return getPlant().getName();
+    }
+
+    public String getHeadline3(){
+        return null;
+    }
+
+    public String getItemsType(){return "Aree";}
+
+
+    public int getNumItemsInList() {
+        return DB.getAreasCountByPlant(getPlant().getId());
     }
 
     @Override
@@ -111,12 +123,6 @@ public class PlantActivity extends HCActivity {
      * Task per aggiornare lo stato dalla centrale.
      */
     class UpdateTask extends AbsUpdateTask {
-    }
-
-
-    private void loadPlantTitle() {
-        TextView text = (TextView) findViewById(R.id.title);
-        text.setText(getSite().getName() + " - " + getPlant().getName());
     }
 
     private Plant getPlant() {

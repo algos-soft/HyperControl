@@ -13,10 +13,7 @@ import java.util.HashMap;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
-import it.technocontrolsystem.hypercontrol.communication.PlantsStatusRequest;
-import it.technocontrolsystem.hypercontrol.communication.PlantsStatusResponse;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
-import it.technocontrolsystem.hypercontrol.model.PlantModel;
 
 /**
  *
@@ -89,6 +86,12 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
             model = (ModelIF)getItem(i);
             model.clearStatus();
         }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
     }
 
     /**

@@ -7,9 +7,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
@@ -28,10 +26,10 @@ import it.technocontrolsystem.hypercontrol.model.PlantModel;
  */
 
 public class SiteActivity extends HCActivity {
-    private static final String TAG="SiteActivity";
+    private static final String TAG = "SiteActivity";
     private int idSite = 0;
     private int version = 0;//federico
-//    private static Activity activityA;
+    //    private static Activity activityA;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +43,12 @@ public class SiteActivity extends HCActivity {
 
             setContentView(R.layout.activity_site);
             this.version = getIntent().getIntExtra("siteversion", 0);//federico
-//            activityA = this;
-
-            // titolo della schermata
-            TextView text = (TextView) findViewById(R.id.title);
-            text.setText(getSite().getName());
 
             // uso un inClickListener per poter gestire lo stato senza invocare il listener
             getConnectButton().setOnClickListener(new StatusButtonListener(this));
 
             // regola il bottone CONNECTED in base allo stato della connessione
-            getConnectButton().setChecked(getConnection()!=null);
+            syncConnectButton();
 
 
             // attacca un listener e poi rende invisibile l'icona di errore connessione
@@ -82,32 +75,14 @@ public class SiteActivity extends HCActivity {
                 }
             });
 
-            Button menu = (Button) findViewById(R.id.menu);
-            menu.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.putExtra("siteid", idSite);
-                    intent.setClass(SiteActivity.this, MenuActivity.class);
-                    startActivity(intent);
 
-                }
-            });
-
-            Log.d(TAG, "Connection is: "+HyperControlApp.getConnection());
+            Log.d(TAG, "Connection is: " + HyperControlApp.getConnection());
 
             Log.d(TAG, "create + execute PopulateTask");
 
             // carica i dati
             new PopulateTask().execute();
 
-//            // un listener notificato quando cambia lo stato della connessione
-//            HyperControlApp.addOnConnectionStatusChangedListener(new HyperControlApp.OnConnectionStatusChangedListener() {
-//                @Override
-//                public void connectionStatusChanged(Connection conn) {
-//                    getConnectButton().setChecked(conn!=null);
-//                }
-//            });
 
         } else {
             finish();
@@ -116,21 +91,54 @@ public class SiteActivity extends HCActivity {
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
+
+        // regola il bottone CONNECTED in base allo stato della connessione
+        syncConnectButton();
 
         // aggiorna lo stato
         updateStatus();
     }
 
+    public String getHeadline2(){
+        return null;
+    }
+
+    public String getHeadline3(){
+        return null;
+    }
+
+    public String getItemsType(){return "Impianti";}
+
     @Override
-    public void updateStatus(){
-        if(HyperControlApp.getConnection()!=null){
+    public int getNumItemsInList() {
+        return DB.getPlantsCountBySite(getSite().getId());
+    }
+
+    @Override
+    public void updateStatus() {
+        if (HyperControlApp.getConnection() != null) {
             new UpdateTask().execute();
         }
     }
+
+
+
+
+    /**
+     * Invocato quando cambia lo stato della connettività del device
+     */
+    public void connectivityHasChanged(boolean newStatus){
+        super.connectivityHasChanged(newStatus);
+
+        // se spento, qui in più sincronizza il pulsante
+        if(!newStatus){
+            syncConnectButton();
+        }
+    }
+
 
 
     /**
@@ -172,6 +180,13 @@ public class SiteActivity extends HCActivity {
     }
 
 
+    /**
+     * Sincronizza lo stato del bottone CONNECT in base allo stato della connessione
+     */
+    private void syncConnectButton(){
+        getConnectButton().setChecked(getConnection() != null);
+    }
+
 
     private void errorButtonClicked() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -184,14 +199,14 @@ public class SiteActivity extends HCActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putBoolean("errbuttonvisibility",getErrorButton().getVisibility()==View.VISIBLE);
+        outState.putBoolean("errbuttonvisibility", getErrorButton().getVisibility() == View.VISIBLE);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        if(savedInstanceState.getBoolean("errbuttonvisibility")){
+        if (savedInstanceState.getBoolean("errbuttonvisibility")) {
             getErrorButton().setVisibility(View.VISIBLE);
-        }else{
+        } else {
             getErrorButton().setVisibility(View.GONE);
         }
     }
@@ -216,12 +231,12 @@ public class SiteActivity extends HCActivity {
     }
 
 
-    public ToggleButton getConnectButton(){
-        return (ToggleButton)findViewById(R.id.connect_button);
+    public ToggleButton getConnectButton() {
+        return (ToggleButton) findViewById(R.id.connect_button);
     }
 
-    public ImageButton getErrorButton(){
-        return (ImageButton)findViewById(R.id.statusAlertButton);
+    public ImageButton getErrorButton() {
+        return (ImageButton) findViewById(R.id.statusAlertButton);
 
     }
 
@@ -243,7 +258,4 @@ public class SiteActivity extends HCActivity {
         return -1;
     }
 
-//    public static Activity getInstance() {
-//        return activityA;
-//    }
 }

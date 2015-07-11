@@ -48,6 +48,23 @@ public class BoardActivity extends HCActivity {
 
     }
 
+
+    public String getHeadline2(){
+        return null;
+    }
+
+    public String getHeadline3(){
+        return null;
+    }
+
+    public String getItemsType(){return "Schede";}
+
+    @Override
+    public int getNumItemsInList() {
+        return DB.getBoardsCountBySite(getSite().getId());
+    }
+
+
     @Override
     public void updateStatus(){
         if(HyperControlApp.getConnection()!=null){

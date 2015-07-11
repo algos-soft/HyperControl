@@ -3,12 +3,7 @@ package it.technocontrolsystem.hypercontrol.communication;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.PowerManager;
-import android.view.View;
 
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-
-import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 
 /**

@@ -30,8 +30,8 @@ public class LoginRequest extends Request {
 
     @Override
     public int getTimeout() {
-        return 0;
-    }//era 10(reimpostare alla fine)
+        return 10;
+    }
 
     @Override
     public Class getResponseClass() {

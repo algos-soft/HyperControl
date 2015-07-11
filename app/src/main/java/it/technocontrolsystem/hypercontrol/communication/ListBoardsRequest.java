@@ -11,7 +11,7 @@ public class ListBoardsRequest extends Request {
 
     @Override
     public int getTimeout() {
-        return 100;
+        return 60;
     }
 
     @Override

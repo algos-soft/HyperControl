@@ -51,6 +51,11 @@
     <string name="title_activity_setting">SettingActivity</string>
     <string name="title_activity_demo">DemoActivity</string>
 
+    <string name="btn_conn_connected">CONNECTED</string>
+    <string name="btn_conn_connecting">CONNECTING</string>
+    <string name="btn_conn_offline">OFFLINE</string>
+
+
     <string-array name="choice_array">
         <item>Off</item>
         <item>Total</item>

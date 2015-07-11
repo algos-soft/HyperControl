@@ -4,16 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
-import android.util.Log;
-import android.view.View;
 
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
-import it.technocontrolsystem.hypercontrol.activity.StartSiteActivity;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 
 /**

@@ -32,6 +32,7 @@ public abstract class CircleText extends TextView {
         ShapeDrawable circle = new ShapeDrawable( new OvalShape() );
         circle.getPaint().setStrokeWidth(10);
         circle.getPaint().setColor(getColor());
+        // ricordati di fornire sempre una alternativa
         if(Lib.hasJellyBean()){
             setBackground(circle);
         }else{

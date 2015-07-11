@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.text.Html;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ToggleButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
+import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 
 /**
@@ -23,15 +25,18 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
     @Override
     public void onClick(View v) {
 
-        final CompoundButton button = (CompoundButton)v;
+        final ToggleButton button = (ToggleButton)v;
 
         if(button.isChecked()){// going ON
 
+            button.setChecked(false);
+            button.setTextOff(activity.getString(R.string.btn_conn_connecting)); // cambia provvisoriamente
 
             Runnable successRunnable = new Runnable() {
                 @Override
                 public void run() {
                     activity.updateStatus();
+                    button.setTextOff(activity.getString(R.string.btn_conn_offline));  // rimette a posto in ogni caso
                     button.setChecked(true);
                 }
             };
@@ -50,6 +55,7 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
                         }
                     });
                     builder.show();
+                    button.setTextOff(activity.getString(R.string.btn_conn_offline));  // rimette a posto in ogni caso
                     button.setChecked(false);
                     activity.getErrorButton().setVisibility(View.VISIBLE);
                 }

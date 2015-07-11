@@ -15,7 +15,7 @@ public class VersionRequest extends Request {
 
     @Override
     public int getTimeout() {
-        return 5;
+        return 10;
     }
 
     @Override

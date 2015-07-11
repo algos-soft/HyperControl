@@ -38,11 +38,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AuthActivityOld"
-            android:label="@string/title_activity_auth"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
-        </activity>
-        <activity
             android:name=".activity.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>

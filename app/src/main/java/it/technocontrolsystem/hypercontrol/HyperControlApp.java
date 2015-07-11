@@ -1,12 +1,7 @@
 package it.technocontrolsystem.hypercontrol;
 
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -28,13 +23,28 @@ public class HyperControlApp extends Application {
     private String lastSyncDBError;// ultima eccezione nella fase di sync db
     private ArrayList<OnConnectionStatusChangedListener> connectionStatusChangedListeners;
     private ArrayList<OnConnectivityChangedListener> connectivityChangedListeners;
-
     private boolean hasConnectivity;// se il device è connesso alla rete
 
     public HyperControlApp() {
-        instance=this;
-        connectionStatusChangedListeners=new ArrayList<>();
-        connectivityChangedListeners=new ArrayList<>();
+        instance = this;
+        init();
+    }
+
+    /**
+     * Reinizializza tutte le variabili.
+     * In Android, le variabili statiche (in questo caso il Singleton della app,
+     * con tutte le sue variabili - anche non statiche) possono essere ritenute
+     * tra una sessione e l'altra della applicazione perché
+     * il sistema non necessariamente distrugge il processo e ferma la JVM.
+     * Quindi all'avvio della app il prima possibile le devo resettare.
+     */
+    public static void init() {
+        instance.conn=null;
+        instance.lastConnectionError=null;
+        instance.lastSyncDBError=null;
+        instance.connectionStatusChangedListeners=new ArrayList<>();
+        instance.connectivityChangedListeners=new ArrayList<>();
+        instance.hasConnectivity=false;
     }
 
     public static Context getContext() {
@@ -43,7 +53,7 @@ public class HyperControlApp extends Application {
 
     public static void setConnection(Connection newConn) {
         Connection oldConn = getInstance().conn;
-        getInstance().conn=newConn;
+        getInstance().conn = newConn;
 
         // check if changed and fire
         boolean fire = false;
@@ -92,11 +102,20 @@ public class HyperControlApp extends Application {
         return instance.hasConnectivity;
     }
 
+    /**
+     * Regola il flag di connettività.
+     * Se la connettività viene a mancare annulla la connessione
+     */
     public static void setHasConnectivity(boolean newStatus) {
         boolean oldStatus = instance.hasConnectivity;
-        if(newStatus!=oldStatus){
+        if (newStatus != oldStatus) {
             instance.hasConnectivity = newStatus;
-            for(OnConnectivityChangedListener l :instance.connectivityChangedListeners){
+
+            if (!instance.hasConnectivity) {
+                instance.conn = null;
+            }
+
+            for (OnConnectivityChangedListener l : instance.connectivityChangedListeners) {
                 l.connectivityChanged(newStatus);
             }
         }

@@ -107,6 +107,14 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
+
+    public static int getCount(String table) {
+        String query = "SELECT COUNT(*) FROM " + table;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    }
+
+
+
     // ================ END PARTE COMUNE ===================
 
 
@@ -224,9 +232,8 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
-    public static int getSiteCount() {
-        String query = "SELECT COUNT(*) FROM " + Tables.SITES.getName();
-        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    public static int getSitesCount() {
+        return getCount(Tables.SITES.getName());
     }
 
     //federico
@@ -322,6 +329,15 @@ public class DB extends SQLiteOpenHelper {
         sql += " WHERE " + PlantFields.ID.getName() + "=" + id;
         getWritableDb().execSQL(sql);
 
+    }
+
+    public static int getPlantsCount() {
+        return getCount(Tables.PLANTS.getName());
+    }
+
+    public static int getPlantsCountBySite(int idSite) {
+        String query = "SELECT COUNT(*) FROM " + Tables.PLANTS.getName()+" WHERE "+PlantFields.IDSITE.getName()+"="+idSite;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
 
 
@@ -502,6 +518,17 @@ public class DB extends SQLiteOpenHelper {
         return area;
     }
 
+    public static int getAreasCount() {
+        return getCount(Tables.AREAS.getName());
+    }
+
+    public static int getAreasCountByPlant(int idPlant) {
+        String query = "SELECT COUNT(*) FROM " + Tables.AREAS.getName()+" WHERE "+AreaFields.IDPLANT.getName()+"="+idPlant;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    }
+
+
+
 
     // ================ START SENSORS ===================
 
@@ -613,6 +640,18 @@ public class DB extends SQLiteOpenHelper {
         }
         return sensor;
     }
+
+    public static int getSensorsCount() {
+        return getCount(Tables.SENSORS.getName());
+    }
+
+    public static int getSensorCountByArea(int idArea) {
+        String query = "SELECT COUNT(*) FROM " + Tables.AREA_SENSOR.getName()+" WHERE "+AreaSensorFields.IDAREA.getName()+"="+idArea;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    }
+
+
+
 // ================ START AREA-SENSOR ===================
 
     private String getAreaSensorTableCreateString() {
@@ -731,6 +770,17 @@ public class DB extends SQLiteOpenHelper {
         return aboard;
 
     }
+
+    public static int getBoardsCount() {
+        return getCount(Tables.BOARDS.getName());
+    }
+
+    public static int getBoardsCountBySite(int idSite) {
+        String query = "SELECT COUNT(*) FROM " + Tables.BOARDS.getName()+" WHERE "+BoardFields.IDSITE.getName()+"="+idSite;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    }
+
+
 
     // ================ START MENUS ===================
 
@@ -851,6 +901,11 @@ public class DB extends SQLiteOpenHelper {
         Menu[] aMenus = menus.toArray(new Menu[0]);
         return aMenus;
 
+    }
+
+
+    public static int getMenusCount() {
+        return getCount(Tables.MENUS.getName());
     }
 
 }

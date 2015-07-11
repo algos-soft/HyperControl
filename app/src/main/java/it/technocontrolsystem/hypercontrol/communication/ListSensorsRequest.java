@@ -17,7 +17,7 @@ public class ListSensorsRequest extends Request {
 
     @Override
     public int getTimeout() {
-        return 0;
+        return 600;
     }
 
     @Override

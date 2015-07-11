@@ -31,14 +31,6 @@ public class StartSiteActivity extends Activity {
 
         idSite = getIntent().getIntExtra("siteid", 0);
 
-        /**
-         * Distrugge la Connection.
-         * In Android, le variabili statiche (in questo caso il Singleton della app,
-         * con tutte le sue variabili anche non statiche) possono essere ritenute
-         * tra una sessione e l'altra della applicazione perché
-         * il sistema non necessariamente distrugge il processo e ferma la JVM
-         */
-        HyperControlApp.setConnection(null);
 
         if (Lib.isNetworkAvailable()) {
             Log.d(TAG, "Network is available");

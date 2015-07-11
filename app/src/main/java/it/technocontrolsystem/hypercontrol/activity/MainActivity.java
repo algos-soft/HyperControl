@@ -1,16 +1,9 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
 
-import it.technocontrolsystem.hypercontrol.HyperControlApp;
-import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Site;
@@ -23,20 +16,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        // registra lo stato iniziale di connettività
-        HyperControlApp.setHasConnectivity(Lib.isNetworkAvailable());
-
-        /**
-         * Registra un BroadcastReceiver per i cambi di connettività
-         */
-        getApplicationContext().registerReceiver(new BroadcastReceiver() {
-            public void onReceive(Context context, Intent intent) {
-                boolean connected = !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-                HyperControlApp.setHasConnectivity(connected);
-            }
-        }, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-
 
         // seleziona il tipo di partenza dell'applicazione
         // in base al numero di siti presenti
@@ -94,7 +73,7 @@ public class MainActivity extends Activity {
 
     private Results getSelect() {
         Results r = null;
-        int numSites = DB.getSiteCount();
+        int numSites = DB.getSitesCount();
         if (numSites == 0) {
             r = Results.NONE;
         } else {

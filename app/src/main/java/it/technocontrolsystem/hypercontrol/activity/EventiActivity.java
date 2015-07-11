@@ -67,6 +67,20 @@ public class EventiActivity extends HCActivity {
 
     }
 
+    public String getHeadline2(){
+        return "Eventi";
+    }
+
+    public String getHeadline3(){
+        return null;
+    }
+
+    public String getItemsType(){return null;}
+
+    @Override
+    public int getNumItemsInList() {
+        return -1;
+    }
 
     /**
      * AsyncTask per caricare i dati nell'adapter

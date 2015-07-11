@@ -11,8 +11,8 @@ public class ListMenuRequest extends Request {
 
     @Override
     public int getTimeout() {
-        return 0;
-    }//50
+        return 30;
+    }
 
     @Override
     public String getMessage() {

@@ -1,20 +1,19 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
@@ -28,16 +27,20 @@ import it.technocontrolsystem.hypercontrol.model.ModelIF;
 /**
  *
  */
-public abstract class HCActivity extends Activity {
+public abstract class HCActivity extends ActionBarActivity {
     private static final String TAG = "HCActivity";
 
     public static final int MENU_SETTINGS = 1;
     public static final int MENU_BOARDS = 2;
     public static final int MENU_EVENTI = 3;
+    public static final int MENU_MENU = 4;
+    public static final int MENU_CREDITS = 5;
 
     protected HCListAdapter listAdapter;
     protected boolean workingInBg = false;
     protected ProgressDialog progress;
+
+    private View actionBarView;
 
 
     @Override
@@ -48,23 +51,34 @@ public abstract class HCActivity extends Activity {
         HyperControlApp.addOnConnectivityChangedListener(new HyperControlApp.OnConnectivityChangedListener() {
             @Override
             public void connectivityChanged(boolean newStatus) {
-                if(newStatus){
-                    updateStatus();
-                }else{
-                    clearStatus();
-                }
+                connectivityHasChanged(newStatus);
             }
         });
 
+        // non uso la ActionBar ma una custom header view.
+        // dichiaro l'activity come ActionBarActivity per avere un menu ben fatto
+        // se no il menu rimane trasparente e non si legge
+        getSupportActionBar().hide();
+
     }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        regolaHeader();
+    }
+
 
     @Override
     protected void onResume() {
         super.onResume();
         try {
-            if (HyperControlApp.getConnection() != null) {
+            if (Lib.isNetworkAvailable() && (HyperControlApp.getConnection() != null)) {
                 listAdapter.attachLiveListener();
                 startLive();
+            } else {
+                clearStatus();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,6 +96,83 @@ public abstract class HCActivity extends Activity {
     public void clearStatus() {
         getListAdapter().clearStatus();
     }
+
+    /**
+     * Ritorna il testo da visualizzare nella seconda riga dell'header
+     */
+    public abstract String getHeadline2();
+
+    /**
+     * Ritorna il testo da visualizzare nella terza riga dell'header
+     */
+    public abstract String getHeadline3();
+
+    /**
+     * Ritorna il testo da visualizzare in corrispondenza del numero di elementi
+     */
+    public abstract String getItemsType();
+
+    /**
+     * Ritorna il numero di elementi contenuti nel database e visualizzati in lista
+     * tornare -1 se l'informazione non è rilevante, in modo che non venga
+     * visualizzata nell'header
+     */
+    public abstract int getNumItemsInList();
+
+    private void regolaHeader(){
+        TextView view;
+
+        String line1=getSite().getName();
+        String line2= getHeadline2();
+        String line3= getHeadline3();
+
+        view=(TextView)findViewById(R.id.hdr_line1);
+        if(line1!=null && !line1.equals("")){
+            view.setText(line1);
+        }else{
+            view.setVisibility(View.GONE);
+        }
+
+        view=(TextView)findViewById(R.id.hdr_line2);
+        if(line2!=null && !line2.equals("")){
+            view.setText(line2);
+        }else{
+            view.setVisibility(View.GONE);
+        }
+
+        view=(TextView)findViewById(R.id.hdr_line3);
+        if(line3!=null && !line3.equals("")){
+            view.setText(line3);
+        }else{
+            view.setVisibility(View.GONE);
+        }
+
+        int number = getNumItemsInList();
+        String type = getItemsType();
+        TextView numView=(TextView)findViewById(R.id.hdr_item_num);
+        TextView typeView=(TextView)findViewById(R.id.hdr_item_type);
+        if(number>-1){
+            numView.setText(""+number);
+            typeView.setText(type);
+        }else{
+            numView.setVisibility(View.GONE);
+            typeView.setVisibility(View.GONE);
+        }
+
+    }
+
+
+    /**
+     * Invocato quando cambia lo stato della connettività del device
+     */
+    public void connectivityHasChanged(boolean newStatus) {
+        if (newStatus) {
+            updateStatus();
+        } else {
+            clearStatus();
+        }
+    }
+
 
     /**
      * Task per caricare i dati dal db nell'adapter.
@@ -288,9 +379,22 @@ public abstract class HCActivity extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, "Settings");
-        menu.add(Menu.NONE, MENU_BOARDS, Menu.NONE, "Boards");
-        menu.add(Menu.NONE, MENU_EVENTI, Menu.NONE, "Eventi");
+        MenuItem item;
+        item=menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, "Settings");
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        item=menu.add(Menu.NONE, MENU_BOARDS, Menu.NONE, "Boards");
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        item=menu.add(Menu.NONE, MENU_MENU, Menu.NONE, "Comandi rapidi");
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        item=menu.add(Menu.NONE, MENU_EVENTI, Menu.NONE, "Eventi");
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        item=menu.add(Menu.NONE, MENU_CREDITS, Menu.NONE, "Credits");
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
         return true;
     }
 
@@ -318,11 +422,32 @@ public abstract class HCActivity extends Activity {
                 break;
             }
 
+            case MENU_MENU: {
+                Intent intent = new Intent();
+                intent.setClass(this, MenuActivity.class);
+                intent.putExtra("siteid", getSite().getId());
+                startActivity(intent);
+                break;
+            }
+
             case MENU_EVENTI: {
                 Intent intent = new Intent();
                 intent.setClass(this, EventiActivity.class);
                 intent.putExtra("siteid", getSite().getId());
                 startActivity(intent);
+                break;
+            }
+
+            case MENU_CREDITS: {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("HyperControl\n©2015 Technocontrol System\ninfo@technocontrolsystem.it");
+                builder.setPositiveButton("continua", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
                 break;
             }
 
@@ -334,7 +459,7 @@ public abstract class HCActivity extends Activity {
 
     public abstract Site getSite();
 
-    public HCListAdapter getListAdapter(){
+    public HCListAdapter getListAdapter() {
         return listAdapter;
     }
 

@@ -1,10 +1,23 @@
 <resources>
 
     <!-- Base application theme. -->
-    <!--<style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
+    <!--<style name="MyTheme" parent="Theme.AppCompat.CompactMenu">-->
+    <!--<style name="MyTheme" parent="Theme.AppCompat.Light.DarkActionBar">-->
     <style name="MyTheme" parent="Theme.AppCompat">
 
         <!-- Customize your application theme. -->
+        <!--<item name="actionBarStyle">@style/CustomActionBar</item>-->
+
     </style>
+
+
+    <!--&lt;!&ndash;<style name="CustomActionBar" parent="@android:style/Widget.Holo.ActionBar">&ndash;&gt;-->
+    <!--<style name="CustomActionBar" parent="ThemeOverlay.AppCompat.ActionBar">-->
+        <!--&lt;!&ndash;<item name="android:height">200dp</item>&ndash;&gt;-->
+        <!--&lt;!&ndash;<item name="android:background">#ff0000</item>&ndash;&gt;-->
+        <!--&lt;!&ndash;<item name="android:background">@drawable/abc_btn_check_material</item>&ndash;&gt;-->
+
+    <!--</style>-->
+
 
 </resources>

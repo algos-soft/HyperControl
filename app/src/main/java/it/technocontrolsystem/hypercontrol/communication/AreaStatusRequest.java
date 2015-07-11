@@ -20,7 +20,7 @@ public class AreaStatusRequest extends Request {
 
     @Override
     public int getTimeout() {
-        return 0;
+        return 120;
     }
 
     @Override
