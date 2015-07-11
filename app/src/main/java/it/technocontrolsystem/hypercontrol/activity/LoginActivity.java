@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 
@@ -90,8 +91,12 @@ public class LoginActivity extends Activity {
             Intent intent=new Intent();
             intent.setClass(this,MainActivity.class);
             startActivity(intent);
+
+            Lib.hideKeyboard(this);
             finish();
+
         }else{
+
             AlertDialog.Builder dialogo = new AlertDialog.Builder(this);
             dialogo.setMessage("Password errata.");
             dialogo.setPositiveButton("OK",new DialogInterface.OnClickListener() {

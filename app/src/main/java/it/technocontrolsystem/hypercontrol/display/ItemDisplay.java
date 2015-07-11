@@ -79,7 +79,7 @@ public abstract class ItemDisplay extends LinearLayout {
         params=createParams();
         params.width= ViewGroup.LayoutParams.WRAP_CONTENT;
         descriptionView.setLayoutParams(params);
-        descriptionView.setTextSize(TypedValue.COMPLEX_UNIT_SP,22);
+        descriptionView.setTextSize(TypedValue.COMPLEX_UNIT_SP,18);
         descriptionView.setTypeface(null, Typeface.BOLD);
 
 

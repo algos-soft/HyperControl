@@ -68,7 +68,7 @@ public class EventiActivity extends HCActivity {
     }
 
     public String getHeadline2(){
-        return "Eventi";
+        return "Lista eventi";
     }
 
     public String getHeadline3(){

@@ -50,7 +50,7 @@ public class BoardActivity extends HCActivity {
 
 
     public String getHeadline2(){
-        return null;
+        return "Lista schede";
     }
 
     public String getHeadline3(){

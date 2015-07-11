@@ -47,7 +47,8 @@ public class SiteActivity extends HCActivity {
             setContentView(R.layout.activity_site);
             this.version = getIntent().getIntExtra("siteversion", 0);//federico
 
-            // uso un inClickListener per poter gestire lo stato senza invocare il listener
+            // uso un inClickListener per poter gestire lo stato
+            // senza invocare il checked change listener
             getConnectButton().setOnClickListener(new StatusButtonListener(this));
 
             // regola il bottone CONNECTED in base allo stato della connessione
@@ -106,7 +107,7 @@ public class SiteActivity extends HCActivity {
     }
 
     public String getHeadline2(){
-        return null;
+        return "Lista impianti";
     }
 
     public String getHeadline3(){

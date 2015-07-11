@@ -26,7 +26,11 @@ import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
 /**
- *
+ * Activity di base per tutte le liste di oggetti.
+ * Usiamo ActionBarActivity per avere la garanzia che l'option menu sia sempre accessibile.
+ * Senza la ActionBar dovremmo gestire l'option menu in modo custom
+ * perché il pulsante menu non è più garantito sui dispositivi.
+ * (nemmeno sui phones dopo una certa versione di Android)
  */
 public abstract class HCActivity extends ActionBarActivity {
     private static final String TAG = "HCActivity";
@@ -56,11 +60,6 @@ public abstract class HCActivity extends ActionBarActivity {
             }
         });
 
-        // non uso la ActionBar ma una custom header view.
-        // dichiaro l'activity come ActionBarActivity per avere un menu ben fatto
-        // se no il menu rimane trasparente e non si legge
-        //getSupportActionBar().hide();
-
         ActionBar bar = getSupportActionBar();
         bar.setDisplayShowHomeEnabled(true);
         bar.setIcon(R.drawable.ic_launcher);
@@ -73,6 +72,7 @@ public abstract class HCActivity extends ActionBarActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        getSupportActionBar().setSubtitle(getSite().getName()); // prima non abbiamo il site
         regolaHeader();
     }
 
@@ -129,16 +129,16 @@ public abstract class HCActivity extends ActionBarActivity {
     private void regolaHeader(){
         TextView view;
 
-        String line1=getSite().getName();
+//        String line1=getSite().getName();
         String line2= getHeadline2();
         String line3= getHeadline3();
 
-        view=(TextView)findViewById(R.id.hdr_line1);
-        if(line1!=null && !line1.equals("")){
-            view.setText(line1);
-        }else{
-            view.setVisibility(View.GONE);
-        }
+//        view=(TextView)findViewById(R.id.hdr_line1);
+//        if(line1!=null && !line1.equals("")){
+//            view.setText(line1);
+//        }else{
+//            view.setVisibility(View.GONE);
+//        }
 
         view=(TextView)findViewById(R.id.hdr_line2);
         if(line2!=null && !line2.equals("")){

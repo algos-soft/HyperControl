@@ -66,15 +66,32 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
 
         }else{ // going OFF
 
-            HyperControlApp.setConnection(null);
-            activity.getListAdapter().clearStatus();
-            activity.runOnUiThread(new Runnable() {
+            button.setChecked(true);
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage("Vuoi chiudere la connessione e andare offline?");
+            builder.setPositiveButton("Chiudi\nconnessione",new DialogInterface.OnClickListener() {
                 @Override
-                public void run() {
-                    activity.getListAdapter().notifyDataSetChanged();
+                public void onClick(DialogInterface dialog, int which) {
+                    HyperControlApp.setConnection(null);
+                    activity.getListAdapter().clearStatus();
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            activity.getListAdapter().notifyDataSetChanged();
+                        }
+                    });
+                    button.setChecked(false);
+                    dialog.dismiss();
                 }
             });
-            button.setChecked(false);
+            builder.setNegativeButton("Annulla",new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+
 
         }
 

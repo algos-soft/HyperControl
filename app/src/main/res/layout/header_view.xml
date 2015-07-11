@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="62dp"
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:background="#292929"
     >
-
-    <!--<ImageView-->
-        <!--android:src="@drawable/ic_launcher"-->
-        <!--android:layout_width="52dp"-->
-        <!--android:layout_height="52dp"-->
-        <!--android:adjustViewBounds="true"-->
-        <!--android:scaleType="fitXY"-->
-        <!--android:padding="10dp" />-->
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -22,15 +14,15 @@
         android:layout_weight="1"
         android:paddingLeft="16dp">
 
-        <TextView
-            android:id="@+id/hdr_line1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Line 1 text"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:singleLine="true"
-            android:ellipsize="middle"/>
+        <!--<TextView-->
+            <!--android:id="@+id/hdr_line1"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="Line 1 text"-->
+            <!--android:textSize="18sp"-->
+            <!--android:textStyle="bold"-->
+            <!--android:singleLine="true"-->
+            <!--android:ellipsize="middle"/>-->
 
         <TextView
             android:id="@+id/hdr_line2"
@@ -47,6 +39,7 @@
             android:layout_height="wrap_content"
             android:text="Line 3 text"
             android:textSize="16sp"
+            android:textStyle="bold"
             android:singleLine="true"
             android:ellipsize="middle" />
 
@@ -70,7 +63,7 @@
             android:text="999"
             android:gravity="center_vertical|center_horizontal"
             android:textStyle="bold"
-            android:textSize="24sp">
+            android:textSize="20sp">
         </TextView>
 
         <TextView
@@ -79,7 +72,7 @@
             android:layout_height="wrap_content"
             android:text="sensori"
             android:singleLine="true"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold" />
 
     </LinearLayout>

@@ -13,7 +13,9 @@ import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.Surface;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * Created by Federico on 27/03/2015.
@@ -134,5 +136,17 @@ public class Lib {
         }
         return valida;
     }
+
+    /**
+     * Chiude la soft keyboard
+     */
+    public static void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
 
 }
