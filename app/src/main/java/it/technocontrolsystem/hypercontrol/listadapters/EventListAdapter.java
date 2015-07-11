@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -68,6 +69,9 @@ public class EventListAdapter extends HCListAdapter<EventModel> {
             Event e = model.getEvent();
             displayView=new EventDisplay(getContext(),e);
         }else{  // ultima riga, mostro il bottone
+            // senza questo il bottone non è cliccabile se non è
+            // in fondo alla pagina... boh, così funziona!
+            bAltri.setFocusable(false);
             displayView=bAltri;
         }
         return displayView;
