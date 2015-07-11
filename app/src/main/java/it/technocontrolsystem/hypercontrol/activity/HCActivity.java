@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -58,7 +59,13 @@ public abstract class HCActivity extends ActionBarActivity {
         // non uso la ActionBar ma una custom header view.
         // dichiaro l'activity come ActionBarActivity per avere un menu ben fatto
         // se no il menu rimane trasparente e non si legge
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
+
+        ActionBar bar = getSupportActionBar();
+        bar.setDisplayShowHomeEnabled(true);
+        bar.setIcon(R.drawable.ic_launcher);
+        String name = getString(R.string.app_name);
+        bar.setTitle(name);
 
     }
 
