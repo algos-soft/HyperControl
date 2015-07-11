@@ -103,6 +103,11 @@ public class EventiActivity extends HCActivity {
 
     }
 
+    @Override
+    public void updateStatus(){
+    }
+
+
 
     /**
      * Carica un blocco di eventi e li aggiunge all'adapter

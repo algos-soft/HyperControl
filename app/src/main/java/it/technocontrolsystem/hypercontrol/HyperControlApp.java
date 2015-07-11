@@ -1,7 +1,12 @@
 package it.technocontrolsystem.hypercontrol;
 
 import android.app.Application;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -22,10 +27,14 @@ public class HyperControlApp extends Application {
     private String lastConnectionError;  // ultima eccezione nella fase di connection
     private String lastSyncDBError;// ultima eccezione nella fase di sync db
     private ArrayList<OnConnectionStatusChangedListener> connectionStatusChangedListeners;
+    private ArrayList<OnConnectivityChangedListener> connectivityChangedListeners;
+
+    private boolean hasConnectivity;// se il device è connesso alla rete
 
     public HyperControlApp() {
         instance=this;
         connectionStatusChangedListeners=new ArrayList<>();
+        connectivityChangedListeners=new ArrayList<>();
     }
 
     public static Context getContext() {
@@ -79,17 +88,36 @@ public class HyperControlApp extends Application {
         getInstance().lastSyncDBError = lastSyncDBError;
     }
 
+    public static boolean hasConnectivity() {
+        return instance.hasConnectivity;
+    }
+
+    public static void setHasConnectivity(boolean newStatus) {
+        boolean oldStatus = instance.hasConnectivity;
+        if(newStatus!=oldStatus){
+            instance.hasConnectivity = newStatus;
+            for(OnConnectivityChangedListener l :instance.connectivityChangedListeners){
+                l.connectivityChanged(newStatus);
+            }
+        }
+    }
 
     public static void addOnConnectionStatusChangedListener(OnConnectionStatusChangedListener l) {
         getInstance().connectionStatusChangedListeners.add(l);
     }
 
-    /**
-     * Created by alex on 10-07-2015.
-     */
-    public static interface OnConnectionStatusChangedListener {
+    public interface OnConnectionStatusChangedListener {
         public void connectionStatusChanged(Connection conn);
     }
+
+    public static void addOnConnectivityChangedListener(OnConnectivityChangedListener l) {
+        getInstance().connectivityChangedListeners.add(l);
+    }
+
+    public interface OnConnectivityChangedListener {
+        public void connectivityChanged(boolean newStatus);
+    }
+
 
     public static HyperControlApp getInstance() {
         return instance;

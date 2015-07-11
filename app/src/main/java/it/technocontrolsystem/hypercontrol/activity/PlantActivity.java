@@ -66,11 +66,17 @@ public class PlantActivity extends HCActivity {
         super.onResume();
 
         // aggiorna i dati
+        updateStatus();
+
+    }
+
+    @Override
+    public void updateStatus(){
         if(HyperControlApp.getConnection()!=null){
             new UpdateTask().execute();
         }
-
     }
+
 
     /**
      * AsyncTask per caricare i dati nell'adapter

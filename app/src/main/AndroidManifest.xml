@@ -18,6 +18,10 @@
 
     <uses-permission android:name="it.technocontrolsystem.hypercontrol.C2D_MESSAGE" />
 
+    <intent-filter>
+        <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+    </intent-filter>
+
     <application
         android:name=".HyperControlApp"
         android:allowBackup="true"

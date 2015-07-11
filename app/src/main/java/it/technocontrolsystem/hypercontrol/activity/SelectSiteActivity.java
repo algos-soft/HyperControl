@@ -44,7 +44,7 @@ public class SelectSiteActivity extends SimpleActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SiteDisplay display = (SiteDisplay) view;
                 Intent intent = new Intent();
-                intent.setClass(SelectSiteActivity.this, SiteActivity.class);
+                intent.setClass(SelectSiteActivity.this, StartSiteActivity.class);
                 int siteId=display.getItemId();
                 intent.putExtra("siteid", siteId);
                 int version= DB.getSite(siteId).getVersion();

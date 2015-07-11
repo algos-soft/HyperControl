@@ -17,6 +17,8 @@ import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.domain.Site;
+import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
+import it.technocontrolsystem.hypercontrol.listadapters.PlantListAdapter;
 import it.technocontrolsystem.hypercontrol.listadapters.SensorListAdapter;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
@@ -54,94 +56,16 @@ public class AreaActivity extends HCActivity {
         super.onResume();
 
         // aggiorna i dati
-        if(HyperControlApp.getConnection()!=null){
-            new UpdateTask().execute();
-        }
+        updateStatus();
 
     }
 
-//
-//    /**
-//     * Task per caricare i dati dal db nell'adapter.
-//     * Dopo aver caricato i dati assegna l'adapter alla ListView.
-//     */
-//    class PopulateTask extends AsyncTask<Void, Integer, Void> {
-//
-//        private PowerManager.WakeLock lock;
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//
-//            // attende che si liberi il semaforo
-//            waitForSemaphore();
-//            workingInBg = true;
-//
-//            // mostra il dialogo
-//            publishProgress(1);
-//
-//            try {
-//
-//                /**
-//                 * Carica i sensori dell'impianto dal DB nell'adapter
-//                 */
-//                Sensor[] sensors = DB.getSensorsByArea(idArea);
-//                SensorModel aModel;
-//                for (final Sensor sensor : sensors) {
-//                    aModel = new SensorModel(sensor);
-//                    listAdapter.add(aModel);
-//                }
-//
-//
-//            } catch (Exception e1) {
-//                e1.printStackTrace();
-//            }
-//
-//            workingInBg = false;
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Integer... values) {
-//            int code = values[0];
-//            if(code==1){    // background started
-//                Lib.lockOrientation(AreaActivity.this);
-//                lock = Lib.acquireWakeLock();
-//                progress.setMessage("caricamento sensori...");
-//                progress.show();
-//            }
-//        }
-//
-//
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//
-//            progress.dismiss();
-//            getListView().setAdapter(listAdapter);
-//            Lib.unlockOrientation(AreaActivity.this);
-//            Lib.releaseWakeLock(lock);
-//
-//
-//            //a cosa serve questo? - alex lug-2015
-//            //con questo listener  riesco a recuperare le info del sensore,
-//            // ma non riesco a visualizzare il menu contestuale
-//            getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//
-//
-//                @Override
-//                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                    sensMod = (SensorModel) getListView().getItemAtPosition(position);
-//                    registerForContextMenu(parent);
-//                    openContextMenu(parent);
-//                    return true;
-//                }
-//
-//
-//            });
-//
-//        }
-//    }
+    @Override
+    public void updateStatus(){
+        if(HyperControlApp.getConnection()!=null){
+            new UpdateTask().execute();
+        }
+    }
 
 
     /**
@@ -193,62 +117,6 @@ public class AreaActivity extends HCActivity {
 
         }
     }
-
-//
-//    /**
-//     * Task per aggiornare lo stato dalla centrale.
-//     */
-//    class UpdateTask extends AsyncTask<Void, Integer, Void> {
-//
-//        private PowerManager.WakeLock lock;
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//
-//            // attende che si liberi il semaforo
-//            waitForSemaphore();
-//            workingInBg = true;
-//
-//            // mostra il dialogo
-//            publishProgress(1);
-//
-//            try {
-//
-//                // aggiorna lo stato
-//                if (SiteActivity.getConnection() != null) {
-//                    listAdapter.updateAll();
-//                }
-//
-//            } catch (Exception e1) {
-//                e1.printStackTrace();
-//            }
-//
-//            // spegne il semaforo
-//            workingInBg = false;
-//
-//            return null;
-//        }
-//
-//
-//        @Override
-//        protected void onProgressUpdate(Integer... values) {
-//            int code = values[0];
-//            if (code == 1) {    // background started
-//                Lib.lockOrientation(AreaActivity.this);
-//                lock = Lib.acquireWakeLock();
-//                progress.setMessage("aggiornamento stato...");
-//                progress.show();
-//            }
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void aVoid) {
-//            progress.dismiss();
-//            listAdapter.notifyDataSetChanged();
-//            Lib.unlockOrientation(AreaActivity.this);
-//            Lib.releaseWakeLock(lock);
-//        }
-//    }
 
     /**
      * Task per aggiornare lo stato dalla centrale.

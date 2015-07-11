@@ -2,7 +2,12 @@ package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -24,14 +29,14 @@ import it.technocontrolsystem.hypercontrol.model.ModelIF;
  *
  */
 public abstract class HCActivity extends Activity {
-    private static final String TAG="HCActivity";
+    private static final String TAG = "HCActivity";
 
     public static final int MENU_SETTINGS = 1;
     public static final int MENU_BOARDS = 2;
     public static final int MENU_EVENTI = 3;
 
     protected HCListAdapter listAdapter;
-    protected boolean workingInBg=false;
+    protected boolean workingInBg = false;
     protected ProgressDialog progress;
 
 
@@ -39,13 +44,25 @@ public abstract class HCActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         progress = new ProgressDialog(this);
+
+        HyperControlApp.addOnConnectivityChangedListener(new HyperControlApp.OnConnectivityChangedListener() {
+            @Override
+            public void connectivityChanged(boolean newStatus) {
+                if(newStatus){
+                    updateStatus();
+                }else{
+                    clearStatus();
+                }
+            }
+        });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         try {
-            if(HyperControlApp.getConnection()!=null){
+            if (HyperControlApp.getConnection() != null) {
                 listAdapter.attachLiveListener();
                 startLive();
             }
@@ -54,7 +71,17 @@ public abstract class HCActivity extends Activity {
         }
     }
 
+    /**
+     * Aggiorna lo stato corrente di tutti gli elementi dalla centrale
+     */
+    public abstract void updateStatus();
 
+    /**
+     * Svuota lo stato corrente di tutti gli elementi
+     */
+    public void clearStatus() {
+        getListAdapter().clearStatus();
+    }
 
     /**
      * Task per caricare i dati dal db nell'adapter.
@@ -93,27 +120,27 @@ public abstract class HCActivity extends Activity {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            int param1=0, param2=0;
+            int param1 = 0, param2 = 0;
             param1 = values[0];
-            if(values.length>1){
+            if (values.length > 1) {
                 param2 = values[1];
             }
-            switch (param1){
-                case -1:{
+            switch (param1) {
+                case -1: {
                     Lib.lockOrientation(HCActivity.this);
                     lock = Lib.acquireWakeLock();
-                    progress.setMessage("caricamento "+getType()+"...");
+                    progress.setMessage("caricamento " + getType() + "...");
                     progress.setProgress(0);
                     progress.show();
                     break;
                 }
 
-                case -2:{
+                case -2: {
                     progress.setMax(param2);
                     break;
                 }
 
-                case -3:{
+                case -3: {
                     progress.setProgress(param2);
                     break;
                 }
@@ -121,7 +148,6 @@ public abstract class HCActivity extends Activity {
             }
 
         }
-
 
 
         @Override
@@ -144,9 +170,6 @@ public abstract class HCActivity extends Activity {
 
 
     }
-
-
-
 
 
     /**
@@ -179,7 +202,7 @@ public abstract class HCActivity extends Activity {
                         listAdapter.updateByNumber(model.getNumber());
                         publishProgress(-3, i + 1);
                     }
-                }else{
+                } else {
                     listAdapter.clearStatus();
                 }
 
@@ -199,13 +222,13 @@ public abstract class HCActivity extends Activity {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            int param1=0, param2=0;
+            int param1 = 0, param2 = 0;
             param1 = values[0];
-            if(values.length>1){
+            if (values.length > 1) {
                 param2 = values[1];
             }
-            switch (param1){
-                case -1:{
+            switch (param1) {
+                case -1: {
                     Lib.lockOrientation(HCActivity.this);
                     lock = Lib.acquireWakeLock();
                     progress.setMessage("aggiornamento stato...");
@@ -214,12 +237,12 @@ public abstract class HCActivity extends Activity {
                     break;
                 }
 
-                case -2:{
+                case -2: {
                     progress.setMax(param2);
                     break;
                 }
 
-                case -3:{
+                case -3: {
                     progress.setProgress(param2);
                     break;
                 }
@@ -237,13 +260,11 @@ public abstract class HCActivity extends Activity {
     }
 
 
-
-
     /**
-     *attiva la trasmissione aggiornamenti live
+     * attiva la trasmissione aggiornamenti live
      */
-    private void startLive() throws Exception{
-        LiveRequest request=new LiveRequest(getLiveCode(), getParamPlantNumCode(),getParamAreaNumCode());
+    private void startLive() throws Exception {
+        LiveRequest request = new LiveRequest(getLiveCode(), getParamPlantNumCode(), getParamAreaNumCode());
 
         Response resp = SiteActivity.getConnection().sendRequest(request);
         if (resp != null) {
@@ -258,9 +279,11 @@ public abstract class HCActivity extends Activity {
     /**
      * Ritorna il codice di attivazione live (Set) per questa activity
      */
-   public abstract int getLiveCode();
-   public abstract int getParamPlantNumCode();
-   public abstract int getParamAreaNumCode();
+    public abstract int getLiveCode();
+
+    public abstract int getParamPlantNumCode();
+
+    public abstract int getParamAreaNumCode();
 
 
     @Override
@@ -284,13 +307,13 @@ public abstract class HCActivity extends Activity {
                 Intent intent = new Intent();
                 intent.setClass(this, ConfigActivity.class);
                 startActivity(intent);
-                 break;
+                break;
             }
 
             case MENU_BOARDS: {
                 Intent intent = new Intent();
                 intent.setClass(this, BoardActivity.class);
-                intent.putExtra("siteid",getSite().getId());
+                intent.putExtra("siteid", getSite().getId());
                 startActivity(intent);
                 break;
             }
@@ -298,7 +321,7 @@ public abstract class HCActivity extends Activity {
             case MENU_EVENTI: {
                 Intent intent = new Intent();
                 intent.setClass(this, EventiActivity.class);
-                intent.putExtra("siteid",getSite().getId());
+                intent.putExtra("siteid", getSite().getId());
                 startActivity(intent);
                 break;
             }
@@ -310,6 +333,10 @@ public abstract class HCActivity extends Activity {
     }
 
     public abstract Site getSite();
+
+    public HCListAdapter getListAdapter(){
+        return listAdapter;
+    }
 
     /**
      * Attende che si liberi il semaforo

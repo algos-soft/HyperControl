@@ -1,9 +1,7 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -15,10 +13,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
-import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
-import it.technocontrolsystem.hypercontrol.communication.ConnectionTaskOld;
 import it.technocontrolsystem.hypercontrol.communication.StatusButtonListener;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.PlantDisplay;
@@ -126,12 +122,12 @@ public class SiteActivity extends HCActivity {
         super.onResume();
 
         // aggiorna lo stato
-        update();
+        updateStatus();
     }
 
-
-    public void update(){
-        if(getConnection()!=null){
+    @Override
+    public void updateStatus(){
+        if(HyperControlApp.getConnection()!=null){
             new UpdateTask().execute();
         }
     }
@@ -212,11 +208,6 @@ public class SiteActivity extends HCActivity {
             model = new PlantModel(plant);
             listAdapter.add(model);
         }
-    }
-
-
-    public PlantListAdapter getListAdapter(){
-        return (PlantListAdapter)listAdapter;
     }
 
 

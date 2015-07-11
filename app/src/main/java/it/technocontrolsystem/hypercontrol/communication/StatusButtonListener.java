@@ -31,7 +31,7 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
             Runnable successRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    activity.update();
+                    activity.updateStatus();
                     button.setChecked(true);
                 }
             };
