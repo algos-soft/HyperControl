@@ -1,82 +1,138 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import it.technocontrolsystem.hypercontrol.R;
-import it.technocontrolsystem.hypercontrol.communication.MenuCommandRequest;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Menu;
+import it.technocontrolsystem.hypercontrol.domain.Site;
+import it.technocontrolsystem.hypercontrol.listadapters.MenuListAdapter;
+import it.technocontrolsystem.hypercontrol.model.MenuModel;
 
 
-public class MenuActivity extends Activity {
+public class MenuActivity extends HCActivity {
     private int idSite;
     private int idPage;
     private String title;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu);
+        setContentView(R.layout.activity_menu2);
+
         idSite = getIntent().getIntExtra("siteid", 0);
         idPage = getIntent().getIntExtra("pageid", -1);
         title=getIntent().getStringExtra("title");
-        fillButtonPanel();
+
+        if (idSite != 0) {
+
+            getListView().setDivider(null);
+
+            // crea l'adapter per la ListView
+            listAdapter = new MenuListAdapter(MenuActivity.this);
+
+            // carica i dati
+            new PopulateTask().execute();
+
+        } else {
+            finish();
+        }
+
     }
 
-    private void fillButtonPanel() {
-        int numero;
-        TextView txtTitle=(TextView) findViewById(R.id.title);
 
-        if(title!=null) {
-            txtTitle.setText(title);
+
+    /**
+     * AsyncTask per caricare i dati nell'adapter
+     */
+    class PopulateTask extends AbsPopulateTask {
+
+        @Override
+        public void populateAdapter() {
+
+            Menu[] menus = DB.getMenusBySiteAndPage(idSite, idPage);
+
+            //Menu[] menus = DB.getMenus(idSite);
+            publishProgress(-2, menus.length);
+
+            MenuModel model;
+            listAdapter.clear();
+            int i = 0;
+            for (final Menu menu : menus) {
+                model = new MenuModel(menu);
+                listAdapter.add(model);
+                i++;
+                publishProgress(-3, i);
+            }
+
         }
-        LinearLayout panel = (LinearLayout) findViewById(R.id.btnPanel);
-        Menu[] menus = DB.getMenusFromPage(idSite, idPage);
-        Button bot;
-        for (final Menu menu : menus) {
 
-                bot = new Button(this);
-                bot.setText(menu.getName());
-                numero = menu.getNumber();
-                bot.setId(numero);
-                bot.setTextColor(Color.parseColor("#ff4ae02e"));
-                panel.addView(bot);
+        @Override
+        public String getType() {
+            return "menu";
+        }
 
-                final Button finalBot = bot;
-                if (menu.getAction() == 0) {
-
-                    bot.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent();
-                            intent.putExtra("siteid", idSite);
-                            intent.putExtra("title", finalBot.getText());
-                            intent.putExtra("pageid", menu.getNumber());
-                            intent.setClass(MenuActivity.this, MenuActivity.class);
-                            startActivity(intent);
-                        }
-                    });
-                } else {
-                    bot.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            MenuCommandRequest request = new MenuCommandRequest(finalBot.getId());
-                            SiteActivity.getConnection().sendRequest(request);
-                        }
-                    });
-
-
-                }
-
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            regolaHeader();
         }
     }
+
+
+
+    @Override
+    public void updateStatus() {
+    }
+
+    @Override
+    public String getHeadline2() {
+        String testo;
+        if(title!=null && !title.equals("")){
+            testo=title;
+        }else{
+            testo="Comandi";
+        }
+        return testo;
+    }
+
+    @Override
+    public String getHeadline3() {
+        return null;
+    }
+
+    @Override
+    public String getItemsType() {
+        return "comandi";
+    }
+
+    @Override
+    public int getNumItemsInList() {
+        return DB.getMenusCountBySiteAndPage(idSite, idPage);
+    }
+
+    @Override
+    public int getLiveCode() {
+        return 0;
+    }
+
+    @Override
+    public int getParamPlantNumCode() {
+        return 0;
+    }
+
+    @Override
+    public int getParamAreaNumCode() {
+        return 0;
+    }
+
+    @Override
+    public Site getSite() {
+        return DB.getSite(idSite);
+    }
+
+
 
 
 }

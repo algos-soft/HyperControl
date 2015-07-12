@@ -882,7 +882,7 @@ public class DB extends SQLiteOpenHelper {
 
 
 
-    public static Menu[] getMenusFromPage(int idSite,int idPage) {
+    public static Menu[] getMenusBySiteAndPage(int idSite, int idPage) {
         ArrayList<Menu> menus = new ArrayList<Menu>();
         String sql;
         sql = "SELECT " + MenuFields.ID.getName() + " FROM " + Tables.MENUS.getName();
@@ -904,8 +904,24 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
+
+
     public static int getMenusCount() {
         return getCount(Tables.MENUS.getName());
     }
+
+    public static int getMenusCountBySite(int idSite) {
+        String query = "SELECT COUNT(*) FROM " + Tables.MENUS.getName()+" WHERE "+MenuFields.IDSITE.getName()+"="+idSite;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    }
+
+    public static int getMenusCountBySiteAndPage(int idSite, int idPage) {
+        String query = "SELECT COUNT(*) FROM " + Tables.MENUS.getName();
+        query += " WHERE " + MenuFields.IDSITE.getName() + "=" + idSite;
+        query += " AND " + MenuFields.PAGE.getName() + "=" + idPage;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    }
+
+
 
 }

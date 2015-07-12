@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -126,7 +128,7 @@ public abstract class HCActivity extends ActionBarActivity {
      */
     public abstract int getNumItemsInList();
 
-    private void regolaHeader(){
+    public void regolaHeader(){
         TextView view;
 
 //        String line1=getSite().getName();
@@ -387,13 +389,13 @@ public abstract class HCActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuItem item;
-        item=menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, "Settings");
+        item=menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, "Impostazioni");
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        item=menu.add(Menu.NONE, MENU_BOARDS, Menu.NONE, "Boards");
+        item=menu.add(Menu.NONE, MENU_BOARDS, Menu.NONE, "Schede");
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        item=menu.add(Menu.NONE, MENU_MENU, Menu.NONE, "Comandi rapidi");
+        item=menu.add(Menu.NONE, MENU_MENU, Menu.NONE, "Comandi");
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         item=menu.add(Menu.NONE, MENU_EVENTI, Menu.NONE, "Eventi");
@@ -446,8 +448,20 @@ public abstract class HCActivity extends ActionBarActivity {
             }
 
             case MENU_CREDITS: {
+
+                String app_version = "";
+                try {
+                    PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+                    app_version = pInfo.versionName;
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("HyperControl\n©2015 Technocontrol System\ninfo@technocontrolsystem.it");
+                String msg=getString(R.string.app_name)+" "+app_version+"\n";
+                msg+="©2015 Technocontrol System\n";
+                msg+="info@technocontrolsystem.it";
+                builder.setMessage(msg);
                 builder.setPositiveButton("continua", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

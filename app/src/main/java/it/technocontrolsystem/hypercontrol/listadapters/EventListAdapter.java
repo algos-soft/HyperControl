@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -15,7 +14,6 @@ import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
 import it.technocontrolsystem.hypercontrol.display.EventDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Event;
 import it.technocontrolsystem.hypercontrol.model.EventModel;
-import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
 /**
  * Adapter per la lista degli eventi.

@@ -190,18 +190,22 @@ public class SyncSiteTask  extends AsyncTask<Void, Integer, Void> {
         // Riempie il DB con impianti e aree
         Log.d(TAG, "start receive plants and areas");
         fillPlantsAndAreas();
+        Log.d(TAG, "end receive plants and areas");
 
         // Riempie il DB con i sensori e la tabella di incrocio aree-sensori
         Log.d(TAG, "start receive sensors");
         fillSensors();
+        Log.d(TAG, "end receive sensors");
 
         // Riempie il DB con le schede
         Log.d(TAG, "start receive boards");
         fillBoards();
+        Log.d(TAG, "end receive boards");
 
         // Riempie il DB con i menu
         Log.d(TAG, "start receive menus");
         fillMenus();
+        Log.d(TAG, "end receive menus");
 
     }
 
@@ -213,6 +217,9 @@ public class SyncSiteTask  extends AsyncTask<Void, Integer, Void> {
             DB.deletePlant(plant.getId());
             Log.d(TAG, "Plant id "+plant.getId()+" "+plant.getName()+" deleted");
         }
+
+        Log.d(TAG, plants.length+" plants deleted");
+
     }
 
     /**
@@ -237,6 +244,9 @@ public class SyncSiteTask  extends AsyncTask<Void, Integer, Void> {
                     Log.d(TAG, "Area id "+area.getId()+" "+area.getName()+" created");
                 }
             }
+
+            Log.d(TAG, pResp.getPlants().length+" plants created");
+
         } else {
             throw new Exception("List Plants Request timeout");
         }
@@ -274,6 +284,9 @@ public class SyncSiteTask  extends AsyncTask<Void, Integer, Void> {
 
                 }
             }
+
+            Log.d(TAG, sResp.getSensors().length+" sensors created");
+
         }
 
     }
@@ -291,6 +304,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Integer, Void> {
                 DB.saveBoard(board);
                 Log.d(TAG, "Board "+board.getId()+" "+board.getName()+" created");
             }
+            Log.d(TAG, sResp.getBoards().length+" boards created");
         }
     }
 
@@ -307,6 +321,7 @@ public class SyncSiteTask  extends AsyncTask<Void, Integer, Void> {
                 DB.saveMenu(menu);
                 Log.d(TAG, "Menu "+menu.getId()+" "+menu.getName()+" created");
             }
+            Log.d(TAG, sResp.getMenus().length+" menus created");
         }
     }
 
