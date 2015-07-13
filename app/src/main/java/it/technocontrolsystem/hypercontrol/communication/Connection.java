@@ -226,6 +226,7 @@ public class Connection {
                         requestQueue.remove(0);
                         String text = request.getXML();
                         try {
+                            Log.d(TAG, "sending request # " + request.getRequestNumber());
                             dataOutputStream.writeUTF(text);
                             sentQueue.put(request.getRequestNumber(), request);
                         } catch (IOException e) {
@@ -318,6 +319,7 @@ public class Connection {
                                             }
                                         }
                                     } else {//ricevuto EOF
+                                        Log.d(TAG, "response received # " + responseNumber);
                                         processResponse(responseNumber, responseText);
                                         processingResponse = false;
                                     }
@@ -348,13 +350,12 @@ public class Connection {
              * Processa una response
              */
             private void processResponse(int responseNumber, String responseText) {
-                Log.d("HC", "process response " + responseNumber);
 
                 responseText = "<?xml version='1.0' encoding='utf-8'?>\n" + responseText;
                 Request req = sentQueue.get(responseNumber);
                 if (req != null) { // la response ha una corrispondente request
 
-                    // build response of right type by reflection
+                    // build response of the right class by reflection
                     Class responseClass = req.getResponseClass();
                     Response resp = null;
                     Constructor<Response> constructor = null;
@@ -374,9 +375,11 @@ public class Connection {
                     responseQueue.put(responseNumber, resp);
                     sentQueue.remove(responseNumber);
 
-                } else {  // response senza request
+                } else {  // response senza corrispondente request
+
                     Response resp = new Response(responseText);
                     String command = resp.getComando();
+                    Log.e(TAG, "new message received, cmd: " + command);
                     if (command.equalsIgnoreCase("live")) {
                         final LiveMessage message = new LiveMessage(responseText);
                         if (liveListener != null) {

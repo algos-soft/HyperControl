@@ -159,10 +159,11 @@ public class SensorDisplay extends ItemDisplay {
 
         Request req=new SensorCommandRequest(sensorNumber,4,button.isChecked());
         Response resp=SiteActivity.getConnection().sendRequest(req);
-
-        if (!resp.isSuccess()) {
-            button.setChecked(!button.isChecked());
-            Toast.makeText(getContext(),resp.getText(),Toast.LENGTH_LONG).show();
+        if(resp!=null){
+            if (!resp.isSuccess()) {
+                button.setChecked(!button.isChecked());
+                Toast.makeText(getContext(),resp.getText(),Toast.LENGTH_LONG).show();
+            }
         }
     }
 

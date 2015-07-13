@@ -51,7 +51,7 @@ public class PlantActivity extends HCActivity {
             });
 
             // carica i dati
-            new PopulateTask().execute();
+            populateTask = (AbsPopulateTask)new PopulateTask().execute();
 
         } else {
             finish();
@@ -85,7 +85,7 @@ public class PlantActivity extends HCActivity {
     @Override
     public void updateStatus(){
         if(HyperControlApp.getConnection()!=null){
-            new UpdateTask().execute();
+            updateTask=(AbsUpdateTask)new UpdateTask().execute();
         }
     }
 
@@ -108,6 +108,11 @@ public class PlantActivity extends HCActivity {
                 listAdapter.add(model);
                 i++;
                 publishProgress(-3, i);
+
+                if (isCancelled()){
+                    break;
+                }
+
             }
 
         }

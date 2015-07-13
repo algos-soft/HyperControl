@@ -90,7 +90,46 @@ public class EventiActivity extends HCActivity {
         @Override
         public void populateAdapter() {
             try {
-                addToAdapter();
+
+
+                Request request = new ListEventRequest(lastIdEvento, 10);
+                Response resp = SiteActivity.getConnection().sendRequest(request);
+                if(resp!=null){
+
+                    final ListEventResponse vResp = (ListEventResponse) resp;
+
+                    if (vResp != null) {
+
+                        if (vResp.isSuccess()) {
+
+                            // in questo caso l'adapter è già attaccato alla lista
+                            // e il metodo listAdapter.add() deve eseguire nello UI Thread
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Event[] events = vResp.getEvents();
+                                    for(Event e : events){
+                                        EventModel model = new EventModel(e);
+                                        listAdapter.add(model);
+                                        lastIdEvento=e.getId();
+
+                                        if (isCancelled()){
+                                            break;
+                                        }
+
+                                    }
+                                }
+                            });
+
+                        } else {  // list events request failed
+                            throw new Exception(resp.getText());
+                        }
+
+                    } else {  // list events response null
+                        throw new Exception("List Events Request timeout");
+                    }
+                }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -128,7 +167,7 @@ public class EventiActivity extends HCActivity {
      */
     public void loadEventi(){
         if(HyperControlApp.getConnection()!=null){
-            new PopulateTask().execute();
+            populateTask = (AbsPopulateTask)new PopulateTask().execute();
         }
     }
 
@@ -153,43 +192,5 @@ public class EventiActivity extends HCActivity {
         return -1;
     }
 
-
-    /**
-     * Carica gli impianti del sito dalla centrale nell'adapter.
-     * Questo metodo viene invocato nel background task
-     */
-    private void addToAdapter() throws Exception {
-
-
-        Request request = new ListEventRequest(lastIdEvento, 10);
-        Response resp = SiteActivity.getConnection().sendRequest(request);
-        final ListEventResponse vResp = (ListEventResponse) resp;
-
-        if (vResp != null) {
-
-            if (vResp.isSuccess()) {
-
-                // in questo caso l'adapter è già attaccato alla lista
-                // e il metodo listAdapter.add() deve eseguire nello UI Thread
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Event[] events = vResp.getEvents();
-                        for(Event e : events){
-                            EventModel model = new EventModel(e);
-                            listAdapter.add(model);
-                            lastIdEvento=e.getId();
-                        }
-                    }
-                });
-
-            } else {  // list events request failed
-                throw new Exception(resp.getText());
-            }
-
-        } else {  // list events response null
-            throw new Exception("List Events Request timeout");
-        }
-
-    }
 
 }

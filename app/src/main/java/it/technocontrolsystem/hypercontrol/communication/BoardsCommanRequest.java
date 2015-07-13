@@ -5,6 +5,7 @@ package it.technocontrolsystem.hypercontrol.communication;
  */
 public class BoardsCommanRequest extends CommandRequest {
     private boolean test;
+
     public BoardsCommanRequest(int itemId, boolean enable, boolean test) {
         super(itemId, enable);
         this.test = test;

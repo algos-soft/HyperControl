@@ -74,10 +74,11 @@ public class PlantDisplay extends ItemDisplay {
 
         Request req=new PlantCommandRequest(numPlant, button.isChecked(),partial);
         Response resp= SiteActivity.getConnection().sendRequest(req);
-
-        if (!resp.isSuccess()) {
-            button.setChecked(!button.isChecked());
-            Toast.makeText(getContext(), resp.getText(), Toast.LENGTH_LONG).show();
+        if(resp!=null){
+            if (!resp.isSuccess()) {
+                button.setChecked(!button.isChecked());
+                Toast.makeText(getContext(), resp.getText(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 

@@ -84,10 +84,12 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
         model=(PlantModel) getModel(number);
         PlantsStatusRequest request = new PlantsStatusRequest(number);
         resp = (PlantsStatusResponse) conn.sendRequest(request);
-        int status = resp.getStatus();
-        boolean alarm = resp.isAlarm();
-        model.setStatus(status);
-        model.setAlarm(alarm);
+        if(resp!=null){
+            int status = resp.getStatus();
+            boolean alarm = resp.isAlarm();
+            model.setStatus(status);
+            model.setAlarm(alarm);
+        }
 
     }
 

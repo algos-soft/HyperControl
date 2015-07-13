@@ -110,16 +110,19 @@ public class SensorListAdapter extends HCListAdapter<SensorModel>{
         SensorsStatusRequest request = new SensorsStatusRequest(number);
         resp = (SensorsStatusResponse) conn.sendRequest(request);
 
-        // capire se si può semplificare aggiungendo un metodo che mi permette di recuperare il singolo sensore
-        HashMap<Integer,SensorModel> responseMap=resp.getResponseMap();
-        SensorModel responseModel;
+        if(resp!=null){
+            // capire se si può semplificare aggiungendo un metodo che mi permette di recuperare il singolo sensore
+            HashMap<Integer,SensorModel> responseMap=resp.getResponseMap();
+            SensorModel responseModel;
 
-        responseModel=responseMap.get(model.getSensor().getNumber());
-        model.setStatus(responseModel.getStatus());
-        model.setTamper(responseModel.isTamper());
-        model.setValue(responseModel.getValue());
-        model.setAlarm(responseModel.isAlarm());
-        model.setTest(responseModel.isTest());
+            responseModel=responseMap.get(model.getSensor().getNumber());
+            model.setStatus(responseModel.getStatus());
+            model.setTamper(responseModel.isTamper());
+            model.setValue(responseModel.getValue());
+            model.setAlarm(responseModel.isAlarm());
+            model.setTest(responseModel.isTest());
+
+        }
 
     }
 

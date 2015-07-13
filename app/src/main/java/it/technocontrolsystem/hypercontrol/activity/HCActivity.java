@@ -21,6 +21,7 @@ import android.widget.TextView;
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.domain.Site;
@@ -47,7 +48,10 @@ public abstract class HCActivity extends ActionBarActivity {
     protected boolean workingInBg = false;
     protected ProgressDialog progress;
 
-    private View actionBarView;
+    protected AbsPopulateTask populateTask;
+    protected AbsUpdateTask updateTask;
+
+
 
 
     @Override
@@ -92,6 +96,29 @@ public abstract class HCActivity extends ActionBarActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // dismiss dialogs when paused
+        if (progress != null){
+            progress.dismiss();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (populateTask!=null){
+            populateTask.cancel(true);
+        }
+        if (updateTask!=null){
+            updateTask.cancel(true);
+        }
+        // drop references from inner class to main Activity
+        populateTask=null;
+        updateTask=null;
     }
 
     /**
@@ -255,8 +282,20 @@ public abstract class HCActivity extends ActionBarActivity {
             progress.dismiss();
             getListView().setAdapter(listAdapter);
             Lib.unlockOrientation(HCActivity.this);
-            Lib.releaseWakeLock(lock);
+            if (lock!=null){
+                Lib.releaseWakeLock(lock);
+            }
         }
+
+        @Override
+        protected void onCancelled() {
+            progress.dismiss();
+            Lib.unlockOrientation(HCActivity.this);
+            if (lock!=null){
+                Lib.releaseWakeLock(lock);
+            }
+        }
+
 
         /**
          * Popola l'adapter dal database o da altra sorgente
@@ -298,9 +337,14 @@ public abstract class HCActivity extends ActionBarActivity {
                 // aggiorna lo stato
                 if (SiteActivity.getConnection() != null) {
                     for (int i = 0; i < listAdapter.getCount(); i++) {
-                        ModelIF model = (ModelIF) listAdapter.getItem(i);
-                        listAdapter.updateByNumber(model.getNumber());
-                        publishProgress(-3, i + 1);
+
+                        if (!(isCancelled() | Thread.interrupted())){
+                            ModelIF model = (ModelIF) listAdapter.getItem(i);
+                            listAdapter.updateByNumber(model.getNumber());
+                            publishProgress(-3, i + 1);
+                        }else{
+                            break;
+                        }
                     }
                 } else {
                     listAdapter.clearStatus();
@@ -351,11 +395,22 @@ public abstract class HCActivity extends ActionBarActivity {
         }
 
         @Override
+        protected void onCancelled() {
+            progress.dismiss();
+            Lib.unlockOrientation(HCActivity.this);
+            if (lock!=null){
+                Lib.releaseWakeLock(lock);
+            }
+        }
+
+        @Override
         protected void onPostExecute(Void aVoid) {
             progress.dismiss();
             listAdapter.notifyDataSetChanged();
             Lib.unlockOrientation(HCActivity.this);
-            Lib.releaseWakeLock(lock);
+            if (lock!=null){
+                Lib.releaseWakeLock(lock);
+            }
         }
     }
 
@@ -364,15 +419,24 @@ public abstract class HCActivity extends ActionBarActivity {
      * attiva la trasmissione aggiornamenti live
      */
     private void startLive() throws Exception {
-        LiveRequest request = new LiveRequest(getLiveCode(), getParamPlantNumCode(), getParamAreaNumCode());
 
-        Response resp = SiteActivity.getConnection().sendRequest(request);
-        if (resp != null) {
-            if (!resp.isSuccess()) {
-                throw new Exception(resp.getText());
+        if(Lib.isNetworkAvailable()){
+
+            Connection conn=HyperControlApp.getConnection();
+            if(conn!=null){
+
+                LiveRequest request = new LiveRequest(getLiveCode(), getParamPlantNumCode(), getParamAreaNumCode());
+
+                Response resp = conn.sendRequest(request);
+                if (resp != null) {
+                    if (!resp.isSuccess()) {
+                        throw new Exception(resp.getText());
+                    }
+                } else {//comunication failed
+                    throw new Exception("Attivazione live fallita");
+                }
+
             }
-        } else {//comunication failed
-            throw new Exception("Attivazione live fallita");
         }
     }
 

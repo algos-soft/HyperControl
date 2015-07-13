@@ -80,10 +80,11 @@ public class AreaDisplay extends ItemDisplay {
 
         Request req=new AreaCommandRequest(numPlant,areaNumber, button.isChecked(),partial);
         Response resp= SiteActivity.getConnection().sendRequest(req);
-
-        if (!resp.isSuccess()) {
-            button.setChecked(!button.isChecked());
-            Toast.makeText(getContext(), resp.getText(), Toast.LENGTH_LONG).show();
+        if(resp!=null){
+            if (!resp.isSuccess()) {
+                button.setChecked(!button.isChecked());
+                Toast.makeText(getContext(), resp.getText(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -99,10 +100,12 @@ public class AreaDisplay extends ItemDisplay {
 
             Request req=new AreaCommandRequest(numPlant,areaNumber, true, box.isChecked());
             Response resp= SiteActivity.getConnection().sendRequest(req);
+            if (resp!=null){
+                if (!resp.isSuccess()) {
+                    box.setChecked(!box.isChecked());
+                    Toast.makeText(getContext(), resp.getText(), Toast.LENGTH_LONG).show();
+                }
 
-            if (!resp.isSuccess()) {
-                box.setChecked(!box.isChecked());
-                Toast.makeText(getContext(), resp.getText(), Toast.LENGTH_LONG).show();
             }
         }
     }

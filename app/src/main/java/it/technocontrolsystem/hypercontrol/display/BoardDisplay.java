@@ -61,10 +61,11 @@ public class BoardDisplay extends ItemDisplay {
 
         Request req=new BoardsCommanRequest(boardNumber, button.isChecked(), false);
         Response resp= SiteActivity.getConnection().sendRequest(req);
-
-        if (!resp.isSuccess()) {
-            button.setChecked(!button.isChecked());
-            Toast.makeText(getContext(), resp.getText(), Toast.LENGTH_LONG).show();
+        if(resp!=null){
+            if (!resp.isSuccess()) {
+                button.setChecked(!button.isChecked());
+                Toast.makeText(getContext(), resp.getText(), Toast.LENGTH_LONG).show();
+            }
         }
     }
 

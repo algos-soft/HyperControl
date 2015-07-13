@@ -77,8 +77,10 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
         model=(BoardModel) getModel(number);
         BoardStatusRequest request = new BoardStatusRequest(number);
         resp = (BoardStatusResponse) conn.sendRequest(request);
-        int status = resp.getStatus();
-        model.setStatus(status);
+        if(resp!=null){
+            int status = resp.getStatus();
+            model.setStatus(status);
+        }
 
     }
 

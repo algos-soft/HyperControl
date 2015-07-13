@@ -33,7 +33,7 @@ public class MenuActivity extends HCActivity {
             listAdapter = new MenuListAdapter(MenuActivity.this);
 
             // carica i dati
-            new PopulateTask().execute();
+            populateTask = (AbsPopulateTask)new PopulateTask().execute();
 
         } else {
             finish();
@@ -64,6 +64,11 @@ public class MenuActivity extends HCActivity {
                 listAdapter.add(model);
                 i++;
                 publishProgress(-3, i);
+
+                if (isCancelled()){
+                    break;
+                }
+
             }
 
         }

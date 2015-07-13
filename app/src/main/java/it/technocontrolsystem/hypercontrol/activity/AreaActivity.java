@@ -37,7 +37,7 @@ public class AreaActivity extends HCActivity {
             listAdapter = new SensorListAdapter(AreaActivity.this, getArea());
 
             // carica i dati
-            new PopulateTask().execute();
+            populateTask = (AbsPopulateTask)new PopulateTask().execute();
 
         } else {
             finish();
@@ -58,7 +58,7 @@ public class AreaActivity extends HCActivity {
     @Override
     public void updateStatus(){
         if(HyperControlApp.getConnection()!=null){
-            new UpdateTask().execute();
+            updateTask=(AbsUpdateTask)new UpdateTask().execute();
         }
     }
 
@@ -94,6 +94,11 @@ public class AreaActivity extends HCActivity {
                 listAdapter.add(aModel);
                 i++;
                 publishProgress(-3, i);
+
+                if (isCancelled()){
+                    break;
+                }
+
             }
 
         }

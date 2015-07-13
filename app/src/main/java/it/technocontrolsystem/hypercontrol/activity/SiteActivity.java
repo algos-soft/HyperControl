@@ -82,7 +82,7 @@ public class SiteActivity extends HCActivity {
             Log.d(TAG, "create + execute PopulateTask");
 
             // carica i dati
-            new PopulateTask().execute();
+            populateTask = (AbsPopulateTask)new PopulateTask().execute();
 
 
         } else {
@@ -121,7 +121,7 @@ public class SiteActivity extends HCActivity {
     @Override
     public void updateStatus() {
         if (HyperControlApp.getConnection() != null) {
-            new UpdateTask().execute();
+            updateTask=(AbsUpdateTask)new UpdateTask().execute();
         }
     }
 
@@ -161,6 +161,11 @@ public class SiteActivity extends HCActivity {
                 listAdapter.add(model);
                 i++;
                 publishProgress(-3, i);
+
+                if (isCancelled()){
+                    break;
+                }
+
             }
             Log.d(TAG, "End populate adapter");
         }

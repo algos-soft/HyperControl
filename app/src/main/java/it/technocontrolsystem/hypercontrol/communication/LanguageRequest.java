@@ -6,6 +6,8 @@ package it.technocontrolsystem.hypercontrol.communication;
 public class LanguageRequest extends Request {
     String lan;
 
+
+
     @Override
     public Class getResponseClass() {
         return Response.class;
