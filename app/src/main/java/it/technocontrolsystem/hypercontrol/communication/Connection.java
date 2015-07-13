@@ -98,9 +98,11 @@ public class Connection {
     /**
      * accoda la richiesta e attende la risposta corrispondente
      * quando riceve la risposta corrispondente la ritorna
+     * Il flusso richiesta-risposta è strettamente sincrono
+     * Prima di inviare una nuova richiesta si attende la riposta precedente
      *
      * @param req richiesta da accodare
-     * @return risposta corrispondente
+     * @return risposta corrispondente, null se in timeout
      */
     public Response sendRequest(Request req) {
         Response resp = null;
@@ -128,6 +130,7 @@ public class Connection {
                 long secs = (System.currentTimeMillis() - start) / 1000;
                 if (secs > req.getTimeout()) {
                     stop = true;
+                    Log.e(TAG,"request in timeout: # "+req.getRequestNumber()+", timeout "+req.getTimeout()+" sec");
                 }
             }
 
@@ -270,9 +273,9 @@ public class Connection {
 
                 while (true) {
                     try {
-                        timeoutSec = 0;
+
                         //controllo del timeout
-                        //se è stiamo processando una risposta ed è trascorso il timeout
+                        //se stiamo processando una risposta ed è trascorso il timeout
                         //smette di ascoltare la risposta
                         if (timeoutSec > 0) {
                             if (processingResponse) {
