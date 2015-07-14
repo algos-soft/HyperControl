@@ -26,6 +26,9 @@ public abstract class Request {
 
     public abstract String getMessage();
 
+    /**
+     * @return il comando alla centrale
+     * */
     public abstract String getCommandId();
 
 
@@ -41,4 +44,11 @@ public abstract class Request {
         xml+=""+new Character((char)0x1A);
         return xml;
     }
+
+    public String getDebugString(){
+        String str="#"+getRequestNumber()+" cmd: "+getCommandId()+" tmout:"+getTimeout()+" sec\n";
+        str+=getMessage();
+        return str;
+    }
+
 }

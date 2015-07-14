@@ -129,6 +129,7 @@ public class Connection {
             if (req.getTimeout() > 0) {
                 long secs = (System.currentTimeMillis() - start) / 1000;
                 if (secs > req.getTimeout()) {
+                    Log.e(TAG, "Request timeout\n"+req.getDebugString());
                     stop = true;
                     Log.e(TAG,"request in timeout: # "+req.getRequestNumber()+", timeout "+req.getTimeout()+" sec");
                 }
