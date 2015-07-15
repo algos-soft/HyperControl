@@ -10,7 +10,7 @@ import it.technocontrolsystem.hypercontrol.listadapters.MenuListAdapter;
 import it.technocontrolsystem.hypercontrol.model.MenuModel;
 
 
-public class MenuActivity extends HCActivity {
+public class MenuActivity extends HCSiteActivity {
     private int idSite;
     private int idPage;
     private String title;
@@ -30,7 +30,7 @@ public class MenuActivity extends HCActivity {
             getListView().setDivider(null);
 
             // crea l'adapter per la ListView
-            listAdapter = new MenuListAdapter(MenuActivity.this);
+            setListAdapter(new MenuListAdapter(MenuActivity.this));
 
             // carica i dati
             populateTask = (AbsPopulateTask)new PopulateTask().execute();
@@ -57,11 +57,11 @@ public class MenuActivity extends HCActivity {
             publishProgress(-2, menus.length);
 
             MenuModel model;
-            listAdapter.clear();
+            getListAdapter().clear();
             int i = 0;
             for (final Menu menu : menus) {
                 model = new MenuModel(menu);
-                listAdapter.add(model);
+                getListAdapter().add(model);
                 i++;
                 publishProgress(-3, i);
 

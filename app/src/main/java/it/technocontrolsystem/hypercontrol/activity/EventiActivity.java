@@ -23,7 +23,7 @@ import it.technocontrolsystem.hypercontrol.model.EventModel;
  * Si può usare solo se il sito è connesso.
  * Se non connesso visualizza un messaggio ed esce.
  */
-public class EventiActivity extends HCActivity {
+public class EventiActivity extends HCSiteActivity {
 
 
     private int idSite;
@@ -39,11 +39,11 @@ public class EventiActivity extends HCActivity {
             if(SiteActivity.getConnection()!=null){
 
                 // creo un adapter
-                listAdapter = new EventListAdapter(this);
+                setListAdapter(new EventListAdapter(this));
 
                 // assegna l'adapter alla ListView
                 ListView list = (ListView) findViewById(R.id.list);
-                list.setAdapter(listAdapter);
+                list.setAdapter(getListAdapter());
 
                 // carico gli eventi
                 loadEventi();
@@ -109,7 +109,7 @@ public class EventiActivity extends HCActivity {
                                     Event[] events = vResp.getEvents();
                                     for(Event e : events){
                                         EventModel model = new EventModel(e);
-                                        listAdapter.add(model);
+                                        getListAdapter().add(model);
                                         lastIdEvento=e.getId();
 
                                         if (isCancelled()){

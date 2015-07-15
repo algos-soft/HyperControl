@@ -20,7 +20,7 @@ import it.technocontrolsystem.hypercontrol.listadapters.SensorListAdapter;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 
-public class AreaActivity extends HCActivity {
+public class AreaActivity extends HCSiteActivity {
     private int idArea;
     private SensorModel sensMod;
 
@@ -34,7 +34,7 @@ public class AreaActivity extends HCActivity {
         if (idArea != 0) {
 
             // crea l'adapter per la ListView
-            listAdapter = new SensorListAdapter(AreaActivity.this, getArea());
+            setListAdapter(new SensorListAdapter(AreaActivity.this, getArea()));
 
             // carica i dati
             populateTask = (AbsPopulateTask)new PopulateTask().execute();
@@ -87,11 +87,11 @@ public class AreaActivity extends HCActivity {
             Sensor[] sensors = DB.getSensorsByArea(idArea);
             publishProgress(-2, sensors.length);
             SensorModel aModel;
-            listAdapter.clear();
+            getListAdapter().clear();
             int i = 0;
             for (final Sensor sensor : sensors) {
                 aModel = new SensorModel(sensor);
-                listAdapter.add(aModel);
+                getListAdapter().add(aModel);
                 i++;
                 publishProgress(-3, i);
 
@@ -217,17 +217,17 @@ public class AreaActivity extends HCActivity {
         return DB.getArea(idArea);
     }
 
-    /**
-     * Carica i sensori dell'area dal DB nell'adapter
-     */
-    private void populateAdapter() {
-        Sensor[] sensors = DB.getSensorsByArea(idArea);
-        SensorModel model;
-        for (final Sensor sensor : sensors) {
-            model = new SensorModel(sensor);
-            listAdapter.add(model);
-        }
-    }
+//    /**
+//     * Carica i sensori dell'area dal DB nell'adapter
+//     */
+//    private void populateAdapter() {
+//        Sensor[] sensors = DB.getSensorsByArea(idArea);
+//        SensorModel model;
+//        for (final Sensor sensor : sensors) {
+//            model = new SensorModel(sensor);
+//            getListAdapter().add(model);
+//        }
+//    }
 
     public int getLiveCode() {
         return 3;

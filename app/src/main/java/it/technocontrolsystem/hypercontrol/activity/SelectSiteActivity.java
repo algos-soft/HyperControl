@@ -14,7 +14,7 @@ import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.SiteDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Site;
-import it.technocontrolsystem.hypercontrol.listadapters.SiteListAdapter;
+import it.technocontrolsystem.hypercontrol.listadapters.SiteListAdapterOld;
 import it.technocontrolsystem.hypercontrol.model.SiteModel;
 
 
@@ -34,7 +34,7 @@ public class SelectSiteActivity extends SimpleActivity {
         type = Typeface.createFromAsset(am, "FFF_Tusj.ttf");
         title.setTypeface(type);
 
-        listAdapter = new SiteListAdapter(SelectSiteActivity.this);
+        listAdapter = new SiteListAdapterOld(SelectSiteActivity.this);
         populateAdapter();
         // assegna l'adapter alla ListView
         ListView list = (ListView) findViewById(R.id.list);

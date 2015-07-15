@@ -13,7 +13,7 @@ import it.technocontrolsystem.hypercontrol.model.BoardModel;
 /**
  * List of boards
  */
-public class BoardActivity extends HCActivity {
+public class BoardActivity extends HCSiteActivity {
 
     private int idSite = 0;
 
@@ -27,7 +27,7 @@ public class BoardActivity extends HCActivity {
 
 
             // crea l'adapter per la ListView
-            listAdapter = new BoardListAdapter(BoardActivity.this);
+            setListAdapter(new BoardListAdapter(BoardActivity.this));
 
             // carica i dati
             populateTask = (AbsPopulateTask)new PopulateTask().execute();
@@ -85,11 +85,11 @@ public class BoardActivity extends HCActivity {
             publishProgress(-2, boards.length);
 
             BoardModel model;
-            listAdapter.clear();
+            getListAdapter().clear();
             int i = 0;
             for (final Board board : boards) {
                 model = new BoardModel(board);
-                listAdapter.add(model);
+                getListAdapter().add(model);
                 i++;
                 publishProgress(-3, i);
 

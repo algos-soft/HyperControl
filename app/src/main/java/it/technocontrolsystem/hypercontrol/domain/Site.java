@@ -22,9 +22,6 @@ public class Site {
         this.password = password;
         this.port=port;
         this.version=version;//federico
-
-
-
     }
 
     public int getId() {
@@ -66,4 +63,5 @@ public class Site {
     public Plant[] getPlants(){
         return DB.getPlants(getId());
     }
+
 }

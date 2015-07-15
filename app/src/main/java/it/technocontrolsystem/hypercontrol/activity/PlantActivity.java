@@ -17,7 +17,7 @@ import it.technocontrolsystem.hypercontrol.listadapters.AreaListAdapter;
 import it.technocontrolsystem.hypercontrol.model.AreaModel;
 
 
-public class PlantActivity extends HCActivity {
+public class PlantActivity extends HCSiteActivity {
     private int idPlant;
 
 
@@ -36,7 +36,7 @@ public class PlantActivity extends HCActivity {
             progress.setIndeterminate(true);
 
             // crea l'adapter per la ListView
-            listAdapter = new AreaListAdapter(PlantActivity.this);
+            setListAdapter(new AreaListAdapter(PlantActivity.this));
 
             // attacca un click listener alla ListView
             getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -101,11 +101,11 @@ public class PlantActivity extends HCActivity {
             publishProgress(-2, areas.length);
 
             AreaModel model;
-            listAdapter.clear();
+            getListAdapter().clear();
             int i = 0;
             for (final Area area : areas) {
                 model = new AreaModel(area);
-                listAdapter.add(model);
+                getListAdapter().add(model);
                 i++;
                 publishProgress(-3, i);
 

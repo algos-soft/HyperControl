@@ -54,6 +54,7 @@
             android:textColor="#ff4ae02e"
             android:background="@drawable/custom_editfield" />
     </LinearLayout>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -136,5 +137,6 @@
         android:id="@+id/btn_save"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/custom_button" />
+
 
 </LinearLayout>

@@ -1,6 +1,8 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,13 +25,18 @@ public class EditSiteActivity extends Activity {
     private TextView mUsernameView;
     private TextView mPasswordView;
     private int idSite = 0;
-    private int version=0;//federico
+    private int version = 0;//federico
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_site);
+        setContentView(R.layout.activity_edit_site2);
+
+        boolean visible;
+
+        Button bsave = (Button) findViewById(R.id.btn_save);
+        Button bdelete = (Button) findViewById(R.id.btn_delete);
 
         mNameView = (TextView) findViewById(R.id.name);
         mAddressView = (TextView) findViewById(R.id.address);
@@ -37,26 +44,44 @@ public class EditSiteActivity extends Activity {
         mUsernameView = (TextView) findViewById(R.id.username);
         mPasswordView = (TextView) findViewById(R.id.password);
 
+        visible = getIntent().getBooleanExtra("usedelete", true);
+        if (visible) {
+            bdelete.setVisibility(View.VISIBLE);
+            bdelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    delete();
+                }
+            });
+        } else {
+            bdelete.setVisibility(View.GONE);
+        }
 
-        //if we have a site id
-        //load data
-        this.idSite=getIntent().getIntExtra("siteid",0);
-        if(idSite!=0){
+        visible = getIntent().getBooleanExtra("usesave", true);
+        if (visible) {
+            bsave.setVisibility(View.VISIBLE);
+            bsave.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    save();
+                }
+            });
+        } else {
+            bsave.setVisibility(View.GONE);
+        }
+
+
+        //if we have a site id, load data
+        this.idSite = getIntent().getIntExtra("siteid", 0);
+
+
+        if (idSite != 0) {
             loadSiteData();
-        }else{
+        } else {
             mPortView.setText("9212");
+        }
 
-            }
 
-        Button bsave = (Button) findViewById(R.id.btn_save);
-        bsave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                save();
-
-            }
-        });
 
 
     }
@@ -70,11 +95,12 @@ public class EditSiteActivity extends Activity {
     }
 
     private int getPort() {
-        int port=0;
-        String text=mPortView.getText().toString();
-        try{
-            port=Integer.parseInt(text);
-        }catch(Exception e){}
+        int port = 0;
+        String text = mPortView.getText().toString();
+        try {
+            port = Integer.parseInt(text);
+        } catch (Exception e) {
+        }
         return port;
     }
 
@@ -103,7 +129,7 @@ public class EditSiteActivity extends Activity {
     }
 
     private boolean checkValid() {
-        String error = ""+getString(R.string.error_field_required);
+        String error = "" + getString(R.string.error_field_required);
         boolean valid = true;
         View focusView = null;
 
@@ -127,7 +153,7 @@ public class EditSiteActivity extends Activity {
         }
         //check port field is valid number//DA FAREEEEE!!!!!!!!!!
         if (valid) {
-            if (TextUtils.isEmpty(getPort()+"")) {
+            if (TextUtils.isEmpty(getPort() + "")) {
                 mPortView.setError(error);
                 focusView = mPortView;
                 valid = false;
@@ -166,12 +192,17 @@ public class EditSiteActivity extends Activity {
         return valid;
     }
 
+
+    /**
+     * Registra o crea il sito
+     */
     private void saveSite() {
+
         Site site = createSite();
         try {
 
             // save the new site in the database
-            int id= DB.saveSite(site);
+            int id = DB.saveSite(site);
 
             //if a destination activity was specified, start the activity
             Serializable ser = getIntent().getSerializableExtra("destinationactivity");
@@ -179,29 +210,43 @@ public class EditSiteActivity extends Activity {
                 if (ser instanceof Class) {
                     Intent intent = new Intent();
                     intent.setClass(this, (Class) ser);
-                    intent.putExtra("siteid",id);
+                    intent.putExtra("siteid", id);
                     startActivity(intent);
                 }
             }
-//            SiteActivity.getInstance().finish();
-//            ConfigActivity.getInstance().finish();
-//            Intent i = new Intent(EditSiteActivity.this, SiteActivity.class);
-//            i.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-//            i.putExtra("restarta",1);
-//            startActivity(i);
 
-
-//            Intent intent=new Intent();
-//            intent.putExtra("siteid",id);
-//            intent.setClass(EditSiteActivity.this,SiteActivity.class);
-//            startActivity(intent);
-
+            Intent data = new Intent();
+            data.putExtra("siteid",id);
+            setResult(RESULT_OK, data);
+            finish();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        finish();
+    }
+
+
+    /**
+     * Chiede conferma ed elimina il sito
+     */
+    private void delete() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Attenzione!");
+        builder.setMessage("Confermi l'eliminazione di questo sito?");
+        builder.setNegativeButton("Annulla", null);
+        builder.setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DB.deleteSite(getSiteId());
+                Intent data = new Intent();
+                data.putExtra("deleted",true);
+                data.putExtra("siteid",getSiteId());
+                setResult(RESULT_OK, data);
+                finish();
+            }
+        });
+        builder.show();
     }
 
     /**
@@ -211,19 +256,24 @@ public class EditSiteActivity extends Activity {
      */
     private Site createSite() {
 
-        Site site = new Site(getName(), getAddress(),getPort(), getUsername(), getPassword(),version);//federico
+        Site site = new Site(getName(), getAddress(), getPort(), getUsername(), getPassword(), version);//federico
         site.setId(this.idSite);
         return site;
     }
+
+    private int getSiteId() {
+        return idSite;
+    }
+
     //loads data from the site identified by idSite
-    private void loadSiteData(){
-        Site site=DB.getSite(idSite);
+    private void loadSiteData() {
+        Site site = DB.getSite(idSite);
         mNameView.setText(site.getName());
         mAddressView.setText(site.getAddress());
-        mPortView.setText(site.getPort()+"");
+        mPortView.setText(site.getPort() + "");
         mUsernameView.setText(site.getUsername());
         mPasswordView.setText(site.getPassword());
-        version=site.getVersion();//federico
+        version = site.getVersion();//federico
     }
 
 

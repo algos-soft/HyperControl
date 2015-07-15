@@ -30,7 +30,7 @@ public class DB extends SQLiteOpenHelper {
 
     private static DB DATABASE;
 
-    public static final String DBNAME="hpdb";
+    public static final String DBNAME = "hpdb";
     private static final int DATABASE_VERSION = 1;
 
     public DB() {
@@ -72,7 +72,6 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
-
     private String getSitesTableCreateString() {
 
         String s;
@@ -93,6 +92,15 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
+    /**
+     * Crea o aggiunge un record al database
+     *
+     * @param table    la tavola
+     * @param idField  l'id del field
+     * @param values   i valori da scrivere
+     * @param updateId 0 per creare nuovo, o l'id da aggiornare
+     * @return l'id del record creato o modificato
+     */
     private static int save(String table, String idField, ContentValues values, int updateId) {
         int id = 0;
         if (updateId == 0) {
@@ -114,7 +122,6 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
-
     // ================ END PARTE COMUNE ===================
 
 
@@ -128,7 +135,7 @@ public class DB extends SQLiteOpenHelper {
         values.put(SiteFields.PORT.getName(), site.getPort());
         values.put(SiteFields.USER.getName(), site.getUsername());
         values.put(SiteFields.PASSWORD.getName(), site.getPassword());
-        values.put(SiteFields.VERSION.getName(),site.getVersion());//federico
+        values.put(SiteFields.VERSION.getName(), site.getVersion());//federico
         return save(Tables.SITES.getName(), SiteFields.ID.getName(), values, site.getId());
     }
 
@@ -191,36 +198,42 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public static Site getSite(int id) {
+        Site site = null;
         String sql;
         sql = "SELECT * FROM " + Tables.SITES.getName();
         sql += " WHERE " + SiteFields.ID.getName() + "=" + id;
         Cursor cur = getReadableDb().rawQuery(sql, null);
-        cur.moveToFirst();
 
-        int idx;
+        if (cur.getCount() > 0) {
 
-        idx = cur.getColumnIndex(SiteFields.NAME.getName());
-        String name = cur.getString(idx);
+            cur.moveToFirst();
 
-        idx = cur.getColumnIndex(SiteFields.ADDRESS.getName());
-        String address = cur.getString(idx);
+            int idx;
 
-        idx = cur.getColumnIndex(SiteFields.PORT.getName());
-        int port = cur.getInt(idx);
+            idx = cur.getColumnIndex(SiteFields.NAME.getName());
+            String name = cur.getString(idx);
 
-        idx = cur.getColumnIndex(SiteFields.USER.getName());
-        String user = cur.getString(idx);
+            idx = cur.getColumnIndex(SiteFields.ADDRESS.getName());
+            String address = cur.getString(idx);
 
-        idx = cur.getColumnIndex(SiteFields.PASSWORD.getName());
-        String password = cur.getString(idx);
+            idx = cur.getColumnIndex(SiteFields.PORT.getName());
+            int port = cur.getInt(idx);
 
-        idx=cur.getColumnIndex(SiteFields.VERSION.getName());//federico
-        int version=cur.getInt(idx);//federico
+            idx = cur.getColumnIndex(SiteFields.USER.getName());
+            String user = cur.getString(idx);
+
+            idx = cur.getColumnIndex(SiteFields.PASSWORD.getName());
+            String password = cur.getString(idx);
+
+            idx = cur.getColumnIndex(SiteFields.VERSION.getName());//federico
+            int version = cur.getInt(idx);//federico
+
+            site = new Site(name, address, port, user, password, version);//federico
+            site.setId(id);
+
+        }
 
         cur.close();
-
-        Site site = new Site(name, address, port, user, password, version);//federico
-        site.setId(id);
 
         return site;
     }
@@ -237,7 +250,7 @@ public class DB extends SQLiteOpenHelper {
     }
 
     //federico
-    public static void updateSiteVersion(int id,int vers) {
+    public static void updateSiteVersion(int id, int vers) {
         String sql = "UPDATE " + Tables.SITES.getName();
         sql += " SET " + SiteFields.VERSION.getName() + "=" + vers;
         sql += " WHERE " + SiteFields.ID.getName() + "=" + id;
@@ -336,7 +349,7 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public static int getPlantsCountBySite(int idSite) {
-        String query = "SELECT COUNT(*) FROM " + Tables.PLANTS.getName()+" WHERE "+PlantFields.IDSITE.getName()+"="+idSite;
+        String query = "SELECT COUNT(*) FROM " + Tables.PLANTS.getName() + " WHERE " + PlantFields.IDSITE.getName() + "=" + idSite;
         return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
 
@@ -344,26 +357,25 @@ public class DB extends SQLiteOpenHelper {
     /**
      * Ritorna un Plant per id sito e numero di plant nel sito
      */
-    public static Plant getPlantBySiteAndNumber(int idSite,int plantNumber){
-        Plant plant=null;
-        int idPlant=0;
+    public static Plant getPlantBySiteAndNumber(int idSite, int plantNumber) {
+        Plant plant = null;
+        int idPlant = 0;
         String sql;
-        String[] columns={PlantFields.ID.getName()};
-        String selection=PlantFields.IDSITE.getName()+"="+idSite+" AND "+PlantFields.NUMBER.getName()+"="+plantNumber;
-        Cursor cur=getReadableDb().query(Tables.PLANTS.getName(), columns, selection,null,null,null,null);
-        if (cur.getCount()>0){
+        String[] columns = {PlantFields.ID.getName()};
+        String selection = PlantFields.IDSITE.getName() + "=" + idSite + " AND " + PlantFields.NUMBER.getName() + "=" + plantNumber;
+        Cursor cur = getReadableDb().query(Tables.PLANTS.getName(), columns, selection, null, null, null, null);
+        if (cur.getCount() > 0) {
             cur.moveToFirst();
-            idPlant=cur.getInt(cur.getColumnIndex(PlantFields.ID.getName()));
+            idPlant = cur.getInt(cur.getColumnIndex(PlantFields.ID.getName()));
         }
 
         cur.close();
 
-        if (idPlant>0){
-            plant=getPlant(idPlant);
+        if (idPlant > 0) {
+            plant = getPlant(idPlant);
         }
         return plant;
     }
-
 
 
     // ================ START AREAS ===================
@@ -499,21 +511,21 @@ public class DB extends SQLiteOpenHelper {
     /**
      * Ritorna un Area per id plant e numero di area nel plant
      */
-    public static Area getAreaByIdPlantAndAreaNumber(int idPlant, int areaNumber){
-        Area area=null;
-        int idArea=0;
-        String[] columns={AreaFields.ID.getName()};
-        String selection=AreaFields.IDPLANT.getName()+"="+idPlant+" AND "+AreaFields.NUMBER.getName()+"="+areaNumber;
-        Cursor cur=getReadableDb().query(Tables.AREAS.getName(), columns, selection,null,null,null,null);
-        if (cur.getCount()>0){
+    public static Area getAreaByIdPlantAndAreaNumber(int idPlant, int areaNumber) {
+        Area area = null;
+        int idArea = 0;
+        String[] columns = {AreaFields.ID.getName()};
+        String selection = AreaFields.IDPLANT.getName() + "=" + idPlant + " AND " + AreaFields.NUMBER.getName() + "=" + areaNumber;
+        Cursor cur = getReadableDb().query(Tables.AREAS.getName(), columns, selection, null, null, null, null);
+        if (cur.getCount() > 0) {
             cur.moveToFirst();
-            idArea=cur.getInt(cur.getColumnIndex(AreaFields.ID.getName()));
+            idArea = cur.getInt(cur.getColumnIndex(AreaFields.ID.getName()));
         }
 
         cur.close();
 
-        if (idArea>0){
-            area=getArea(idArea);
+        if (idArea > 0) {
+            area = getArea(idArea);
         }
         return area;
     }
@@ -523,11 +535,9 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public static int getAreasCountByPlant(int idPlant) {
-        String query = "SELECT COUNT(*) FROM " + Tables.AREAS.getName()+" WHERE "+AreaFields.IDPLANT.getName()+"="+idPlant;
+        String query = "SELECT COUNT(*) FROM " + Tables.AREAS.getName() + " WHERE " + AreaFields.IDPLANT.getName() + "=" + idPlant;
         return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
-
-
 
 
     // ================ START SENSORS ===================
@@ -646,10 +656,9 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public static int getSensorCountByArea(int idArea) {
-        String query = "SELECT COUNT(*) FROM " + Tables.AREA_SENSOR.getName()+" WHERE "+AreaSensorFields.IDAREA.getName()+"="+idArea;
+        String query = "SELECT COUNT(*) FROM " + Tables.AREA_SENSOR.getName() + " WHERE " + AreaSensorFields.IDAREA.getName() + "=" + idArea;
         return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
-
 
 
 // ================ START AREA-SENSOR ===================
@@ -746,7 +755,7 @@ public class DB extends SQLiteOpenHelper {
             board.setIdSite(idSite);
             board.setNumber(number);
             board.setName(name);
-            }
+        }
         return board;
     }
 
@@ -776,10 +785,9 @@ public class DB extends SQLiteOpenHelper {
     }
 
     public static int getBoardsCountBySite(int idSite) {
-        String query = "SELECT COUNT(*) FROM " + Tables.BOARDS.getName()+" WHERE "+BoardFields.IDSITE.getName()+"="+idSite;
+        String query = "SELECT COUNT(*) FROM " + Tables.BOARDS.getName() + " WHERE " + BoardFields.IDSITE.getName() + "=" + idSite;
         return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
-
 
 
     // ================ START MENUS ===================
@@ -820,7 +828,7 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
-      public static Menu getMenu(int id) {
+    public static Menu getMenu(int id) {
         Menu menu = null;
         if (id > 0) {
             String sql;
@@ -881,7 +889,6 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
-
     public static Menu[] getMenusBySiteAndPage(int idSite, int idPage) {
         ArrayList<Menu> menus = new ArrayList<Menu>();
         String sql;
@@ -904,14 +911,12 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
-
-
     public static int getMenusCount() {
         return getCount(Tables.MENUS.getName());
     }
 
     public static int getMenusCountBySite(int idSite) {
-        String query = "SELECT COUNT(*) FROM " + Tables.MENUS.getName()+" WHERE "+MenuFields.IDSITE.getName()+"="+idSite;
+        String query = "SELECT COUNT(*) FROM " + Tables.MENUS.getName() + " WHERE " + MenuFields.IDSITE.getName() + "=" + idSite;
         return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
 
@@ -921,7 +926,6 @@ public class DB extends SQLiteOpenHelper {
         query += " AND " + MenuFields.PAGE.getName() + "=" + idPage;
         return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
-
 
 
 }

@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
 
     private void manySites() {
         Intent intent = new Intent();
-        intent.setClass(MainActivity.this, SelectSiteActivity.class);
+        intent.setClass(MainActivity.this, SitesListActivity.class);
         startActivity(intent);
 
     }

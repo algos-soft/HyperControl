@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="menu_settings">Impostazioni</string>
+    <string name="menu_credits">Credits</string>
+    <string name="menu_boards">Schede</string>
+    <string name="menu_commands">Comandi</string>
+    <string name="menu_events">Eventi</string>
+    <string name="menu_sites">Siti</string>
+    <string name="menu_new_site">Nuovo sito</string>
+
+</resources>

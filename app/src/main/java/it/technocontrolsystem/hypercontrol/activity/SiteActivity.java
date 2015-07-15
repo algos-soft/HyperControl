@@ -25,7 +25,7 @@ import it.technocontrolsystem.hypercontrol.model.PlantModel;
  * Activity to display a single site
  */
 
-public class SiteActivity extends HCActivity {
+public class SiteActivity extends HCSiteActivity {
     private static final String TAG = "SiteActivity";
     private int idSite = 0;
     private int version = 0;//federico
@@ -63,7 +63,7 @@ public class SiteActivity extends HCActivity {
 
 
             // crea l'adapter
-            listAdapter = new PlantListAdapter(SiteActivity.this);
+            setListAdapter(new PlantListAdapter(SiteActivity.this));
 
             getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -154,11 +154,11 @@ public class SiteActivity extends HCActivity {
             Plant[] plants = DB.getPlants(idSite);
             publishProgress(-2, plants.length);
             PlantModel model;
-            listAdapter.clear();
+            getListAdapter().clear();
             int i = 0;
             for (final Plant plant : plants) {
                 model = new PlantModel(plant);
-                listAdapter.add(model);
+                getListAdapter().add(model);
                 i++;
                 publishProgress(-3, i);
 
@@ -217,19 +217,6 @@ public class SiteActivity extends HCActivity {
         }
     }
 
-
-    /**
-     * Carica gli impianti del sito dal DB nell'adapter
-     */
-    private void populateAdapter() {
-        listAdapter.clear();
-        Plant[] plants = DB.getPlants(idSite);
-        PlantModel model;
-        for (final Plant plant : plants) {
-            model = new PlantModel(plant);
-            listAdapter.add(model);
-        }
-    }
 
 
     public Site getSite() {
