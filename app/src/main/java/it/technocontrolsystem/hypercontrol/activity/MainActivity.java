@@ -9,17 +9,33 @@ import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 
 
+/**
+ * Seleziona la modalità di partenza in base al numero di siti registrati.
+ * Questa activity non ha interfaccia.
+ * Lancia un'altra activity e si chiude automaticamente.
+ */
 public class MainActivity extends Activity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
         // seleziona il tipo di partenza dell'applicazione
         // in base al numero di siti presenti
-        autoselect();
+        Results r = getSelect();
+        switch (r) {
+            case NONE:
+                noSite();
+                break;
+            case ONE:
+                singleSite();
+                break;
+            case MANY:
+                manySites();
+                break;
+        }
+        finish();
 
     }
 
@@ -55,21 +71,6 @@ public class MainActivity extends Activity {
 
     }
 
-    private void autoselect() {
-        Results r = getSelect();
-        switch (r) {
-            case NONE:
-                noSite();
-                break;
-            case ONE:
-                singleSite();
-                break;
-            case MANY:
-                manySites();
-                break;
-        }
-        finish();
-    }
 
     private Results getSelect() {
         Results r = null;
