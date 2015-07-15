@@ -11,11 +11,12 @@ import it.technocontrolsystem.hypercontrol.domain.Site;
 
 /**
  * Seleziona la modalità di partenza in base al numero di siti registrati.
- * Questa activity non ha interfaccia.
- * Lancia un'altra activity e si chiude automaticamente.
+ * Questa activity non ha interfaccia, lancia sempre un'altra
+ * activity e poi si chiude automaticamente.
  */
 public class MainActivity extends Activity {
 
+    private static int ACTION_CREATE_NEW_SITE=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,40 +36,33 @@ public class MainActivity extends Activity {
                 manySites();
                 break;
         }
-        finish();
-
     }
 
 
     private void noSite() {
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, EditSiteActivity.class);
-        intent.putExtra("destinationactivity", StartSiteActivity.class);
-        startActivity(intent);
+        intent.putExtra("title","Nessun sito registrato. " +
+                "Devi accedere a un sito per scaricare la configurazione.");
+        intent.putExtra("usedelete",false);
+        intent.putExtra("usesave",true);
+        startActivityForResult(intent, ACTION_CREATE_NEW_SITE);
     }
 
     private void singleSite() {
-//        Intent intent = new Intent();
-//        intent.setClass(MainActivity.this, SiteActivity.class);
-//        Site site= DB.getSites() [0];
-//        intent.putExtra("siteid",site.getId());
-//        intent.putExtra("siteversion",site.getVersion());//federico
-//        startActivity(intent);
-
-
         Intent intent = new Intent();
         intent.setClass(this, StartSiteActivity.class);
         Site site = DB.getSites()[0];
         intent.putExtra("siteid", site.getId());
         startActivity(intent);
-
+        finish();
     }
 
     private void manySites() {
         Intent intent = new Intent();
         intent.setClass(MainActivity.this, SitesListActivity.class);
         startActivity(intent);
-
+        finish();
     }
 
 
@@ -92,4 +86,22 @@ public class MainActivity extends Activity {
     private enum Results {NONE, ONE, MANY}
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // ha creato un nuovo sito
+        // lancio il nuovo sito e chiudo questa activity
+        if(requestCode==ACTION_CREATE_NEW_SITE){
+            if(resultCode==RESULT_OK){
+                int siteid=data.getIntExtra("siteid",0);
+                Intent intent = new Intent();
+                intent.setClass(this, StartSiteActivity.class);
+                intent.putExtra("siteid", siteid);
+                startActivity(intent);
+                finish();
+            }
+        }
+
+
+    }
 }

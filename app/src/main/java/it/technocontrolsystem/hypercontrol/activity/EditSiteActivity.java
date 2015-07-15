@@ -44,6 +44,7 @@ public class EditSiteActivity extends Activity {
         mUsernameView = (TextView) findViewById(R.id.username);
         mPasswordView = (TextView) findViewById(R.id.password);
 
+        // visibilità del bottone delete in base al parametro
         visible = getIntent().getBooleanExtra("usedelete", true);
         if (visible) {
             bdelete.setVisibility(View.VISIBLE);
@@ -57,6 +58,7 @@ public class EditSiteActivity extends Activity {
             bdelete.setVisibility(View.GONE);
         }
 
+        // visibilità del bottone save in base al parametro
         visible = getIntent().getBooleanExtra("usesave", true);
         if (visible) {
             bsave.setVisibility(View.VISIBLE);
@@ -69,6 +71,11 @@ public class EditSiteActivity extends Activity {
         } else {
             bsave.setVisibility(View.GONE);
         }
+
+        // testo del titolo della schermata in base al parametro
+        TextView vTitle = (TextView) findViewById(R.id.title);
+        String sTitle = getIntent().getStringExtra("title");
+        vTitle.setText(sTitle);
 
 
         //if we have a site id, load data

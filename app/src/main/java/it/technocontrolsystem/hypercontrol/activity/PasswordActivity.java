@@ -13,6 +13,11 @@ import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 
+
+/**
+ * Activity per inserire la password per la prima
+ * volta o per cambiarla
+ */
 public class PasswordActivity extends Activity {
 
     // se true sta registrando la password per la prima volta
@@ -171,7 +176,7 @@ public class PasswordActivity extends Activity {
     }
 
     /**
-     * Termina con resultCODE=OK e ritorna la password
+     * Termina con result RESULT_OK e ritorna la password
      */
     private void finishOK(){
         final String newPass=getPassword(R.id.newPassword);

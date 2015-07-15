@@ -20,10 +20,10 @@
     <string name="text_url_error">Url non valido</string>
     <string name="text_toast_error">Selezionare un sito</string>
 
-    <string name="text_editfields_name">Nome</string>
+    <string name="text_editfields_name">Nome del sito</string>
     <string name="text_editfields_address">Indirizzo</string>
     <string name="text_editfields_port">Porta</string>
-    <string name="text_editfields_user">Utente</string>
+    <string name="text_editfields_user">Nome utente</string>
     <string name="text_editfields_psw">Password</string>
 
 

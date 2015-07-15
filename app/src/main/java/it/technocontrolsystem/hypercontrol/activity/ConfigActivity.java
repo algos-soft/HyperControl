@@ -47,27 +47,27 @@ public class ConfigActivity extends Activity {
             }
         });
 
-        Button bEditSite = (Button) findViewById(R.id.btn_edit);
-        type = Typeface.createFromAsset(am, "smart_watch.ttf");
-        bEditSite.setTypeface(type);
+//        Button bEditSite = (Button) findViewById(R.id.btn_edit);
+//        type = Typeface.createFromAsset(am, "smart_watch.ttf");
+//        bEditSite.setTypeface(type);
+//
+//        bEditSite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                editSite();
+//            }
+//        });
 
-        bEditSite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                editSite();
-            }
-        });
-
-        Button bDeleteSite = (Button) findViewById(R.id.btn_delete);
-        type = Typeface.createFromAsset(am, "AlexBrush-Regular.ttf");
-        bDeleteSite.setTypeface(type);
-
-        bDeleteSite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteSite();
-            }
-        });
+//        Button bDeleteSite = (Button) findViewById(R.id.btn_delete);
+//        type = Typeface.createFromAsset(am, "AlexBrush-Regular.ttf");
+//        bDeleteSite.setTypeface(type);
+//
+//        bDeleteSite.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                deleteSite();
+//            }
+//        });
 
         Button bSetting = (Button) findViewById(R.id.btn_setting);
         type = Typeface.createFromAsset(am, "AlexBrush-Regular.ttf");
@@ -112,22 +112,22 @@ public class ConfigActivity extends Activity {
         startActivity(intent);
     }
 
-    private void editSite() {
-        Intent intent = new Intent();
-        intent.setClass(this, RadioSelectSiteActivity.class);
-        intent.putExtra("destinationactivity", EditSiteActivity.class);
-        intent.putExtra("operation", "edit");
-        startActivity(intent);
-
-    }
-
-    private void deleteSite() {
-        Intent intent = new Intent();
-        intent.setClass(this, RadioSelectSiteActivity.class);
-        //    intent.putExtra("buttonname","Delete Site");
-        intent.putExtra("operation", "delete");
-        startActivityForResult(intent, DELETE_ACTION);
-    }
+//    private void editSite() {
+//        Intent intent = new Intent();
+//        intent.setClass(this, RadioSelectSiteActivity.class);
+//        intent.putExtra("destinationactivity", EditSiteActivity.class);
+//        intent.putExtra("operation", "edit");
+//        startActivity(intent);
+//
+//    }
+//
+//    private void deleteSite() {
+//        Intent intent = new Intent();
+//        intent.setClass(this, RadioSelectSiteActivity.class);
+//        //    intent.putExtra("buttonname","Delete Site");
+//        intent.putExtra("operation", "delete");
+//        startActivityForResult(intent, DELETE_ACTION);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

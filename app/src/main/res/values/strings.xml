@@ -31,10 +31,10 @@
     <string name="text_btn_deleted">Deleted</string>
     <string name="text_url_error">This is not a valid Http Url</string>
     <string name="text_toast_error">Select one site first</string>
-    <string name="text_editfields_name">Name</string>
+    <string name="text_editfields_name">Site name</string>
     <string name="text_editfields_address">Address</string>
     <string name="text_editfields_port">Port</string>
-    <string name="text_editfields_user">User</string>
+    <string name="text_editfields_user">Username</string>
     <string name="text_editfields_psw">Password</string>
     <string name="text_setting_title">Setting</string>
     <string name="text_select_site_title">Sites List</string>

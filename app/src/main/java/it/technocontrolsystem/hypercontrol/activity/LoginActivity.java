@@ -14,6 +14,15 @@ import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 
+/**
+ * Activity per richiedere la password all'utente.
+ * Se manca la password (è la prima volta) chiede di definirla ora.
+ * Se c'è la controlla.
+ * Se viene inserita la password corretta, questa activiti
+ * lancia MainActivity e si chiude.
+ * In tutti gli altri casi si chiude senza fare nulla.
+ *
+ */
 public class LoginActivity extends Activity {
 
     static final int PASS_ACTIVITY_CODE=1;

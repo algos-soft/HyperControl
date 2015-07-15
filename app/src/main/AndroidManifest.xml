@@ -44,74 +44,83 @@
         </activity>
 
         <activity
-            android:name=".activity.SelectSiteActivity"
-            android:label="@string/title_activity_select" >
-        </activity>
-        <activity
             android:name=".activity.SiteActivity"
             android:label="@string/title_activity_plant"
             android:launchMode="singleTask">
         </activity>
+
         <activity
             android:name=".activity.ConfigActivity"
             android:label="@string/title_activity_config" >
         </activity>
+
         <activity
             android:name=".activity.EditSiteActivity"
             android:label="@string/title_activity_edit_plant" >
         </activity>
-        <activity
-            android:name=".activity.RadioSelectSiteActivity"
-            android:label="@string/title_activity_radio_select_site" >
-        </activity>
+
         <activity
             android:name=".activity.PlantActivity"
             android:label="@string/title_activity_plant"
             android:launchMode="singleTask">
         </activity>
+
         <activity
             android:name=".activity.AreaActivity"
             android:label="@string/title_activity_sensor" >
         </activity>
+
         <activity
             android:name=".service.DemoActivity"
             android:label="@string/title_activity_demo" >
         </activity>
-        <!--
-        <activity
-            android:name=".Client3Activity"
-            android:label="@string/title_activity_client3" >
-        </activity>
-        <activity
-            android:name=".AlarmActivity"
-            android:label="@string/title_activity_alarm" >
-        </activity>
-        -->
+
         <activity
             android:name=".activity.BoardActivity"
             android:label="@string/title_activity_board"
             android:launchMode="singleTask">
         </activity>
-        <!--
-        <activity android:name=".BoardsStateActivity" >
-        </activity>
-        <activity android:name=".InputsStatusActivity" >
-        </activity>
-        <activity android:name=".PlantsStatusActivity" >
-        </activity>
-        -->
+
         <activity
             android:name=".activity.DeveloperActivity"
             android:label="@string/title_activity_deveoloper" >
         </activity>
+
         <activity
             android:name=".activity.MenuActivity"
             android:label="@string/title_activity_menu"
             android:launchMode="singleTask">
         </activity>
+
         <activity
             android:name=".activity.SettingActivity"
             android:label="@string/title_activity_setting"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".activity.EventiActivity"
+            android:label="@string/title_activity_eventi"
+            android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".activity.PasswordActivity"
+            android:label="@string/title_activity_password" >
+        </activity>
+
+        <activity
+            android:name=".activity.LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
+
+        <activity
+            android:name=".activity.StartSiteActivity"
+            android:label="@string/title_activity_start_site" >
+        </activity>
+        <activity
+            android:name=".activity.SitesListActivity"
+            android:label="@string/title_activity_sites_list"
             android:launchMode="singleTask">
         </activity>
 
@@ -127,28 +136,6 @@
 
         <service android:name=".service.GcmIntentService" />
 
-        <activity
-            android:name=".activity.EventiActivity"
-            android:label="@string/title_activity_eventi"
-            android:launchMode="singleTask">
-        </activity>
-        <activity
-            android:name=".activity.PasswordActivity"
-            android:label="@string/title_activity_password" >
-        </activity>
-        <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login" >
-        </activity>
-        <activity
-            android:name=".activity.StartSiteActivity"
-            android:label="@string/title_activity_start_site" >
-        </activity>
-        <activity
-            android:name=".activity.SitesListActivity"
-            android:label="@string/title_activity_sites_list"
-            android:launchMode="singleTask">
-        </activity>
     </application>
 
 </manifest>
