@@ -2,13 +2,18 @@ package it.technocontrolsystem.hypercontrol.display;
 
 import android.content.Context;
 import android.content.Intent;
+import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
+import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.activity.EditSiteActivity;
 import it.technocontrolsystem.hypercontrol.activity.PlantActivity;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
@@ -24,7 +29,7 @@ public class SiteDisplay extends ItemDisplay {
 
     private SitesListActivity activity;
 
-    public SiteDisplay(SitesListActivity activity, int itemId) {
+    public SiteDisplay(final SitesListActivity activity, int itemId) {
         super(activity, itemId);
         this.activity=activity;
         testView.setVisibility(View.GONE);
@@ -38,7 +43,6 @@ public class SiteDisplay extends ItemDisplay {
         params.gravity= Gravity.CENTER_VERTICAL;
         bEdit.setLayoutParams(params);
 
-        final SitesListActivity activityFinal=activity;
         bEdit.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,11 +51,13 @@ public class SiteDisplay extends ItemDisplay {
                 intent.putExtra("siteid", getItemId());
                 intent.putExtra("usesave", true);
                 intent.putExtra("usedelete", true);
-                activityFinal.startActivityForResult(intent,SitesListActivity.ACTIVITY_EDIT_SITE);
+                activity.startActivityForResult(intent,SitesListActivity.ACTIVITY_EDIT_SITE);
             }
         });
         bEdit.setText("Edit");
         addView(bEdit);
+
+
     }
 
     public void update(SiteModel siteModel){
@@ -67,5 +73,6 @@ public class SiteDisplay extends ItemDisplay {
     public Site getSite(){
         return DB.getSite(getItemId());
     }
+
 
 }

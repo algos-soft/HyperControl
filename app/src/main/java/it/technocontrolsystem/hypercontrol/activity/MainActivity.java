@@ -93,14 +93,14 @@ public class MainActivity extends Activity {
         // ha creato un nuovo sito
         // lancio il nuovo sito e chiudo questa activity
         if(requestCode==ACTION_CREATE_NEW_SITE){
-            if(resultCode==RESULT_OK){
-                int siteid=data.getIntExtra("siteid",0);
+            if(resultCode==RESULT_OK) {
+                int siteid = data.getIntExtra("siteid", 0);
                 Intent intent = new Intent();
                 intent.setClass(this, StartSiteActivity.class);
                 intent.putExtra("siteid", siteid);
                 startActivity(intent);
-                finish();
             }
+            finish();
         }
 
 

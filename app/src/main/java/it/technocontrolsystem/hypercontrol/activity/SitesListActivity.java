@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -20,7 +23,6 @@ public class SitesListActivity extends HCActivity {
 
     public static  int ACTIVITY_EDIT_SITE=1;
     public static  int ACTIVITY_NEW_SITE=2;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +44,9 @@ public class SitesListActivity extends HCActivity {
             }
         });
 
-        // attacca un long click listener alla ListView
-        getListView().setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return false;
-            }
-        });
+
+        // registra la listview per il clic contestuale
+        registerForContextMenu(getListView());
 
         Button bNewSite=(Button)findViewById(R.id.bNewSite);
         bNewSite.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +59,60 @@ public class SitesListActivity extends HCActivity {
         //carica i dati
         populateTask = (AbsPopulateTask) new PopulateTask().execute();
 
+    }
+
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        AdapterView.AdapterContextMenuInfo info =(AdapterView.AdapterContextMenuInfo)menuInfo;
+        SiteDisplay view = (SiteDisplay)info.targetView;
+        Site site = view.getSite();
+        menu.setHeaderTitle(site.getName());
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.sitelist_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        SiteDisplay display = (SiteDisplay)info.targetView;
+        final Site site = display.getSite();
+        Intent intent;
+        switch (item.getItemId()) {
+            case R.id.site_menu_apri:
+                intent = new Intent();
+                intent.setClass(SitesListActivity.this, StartSiteActivity.class);
+                intent.putExtra("siteid", display.getSite().getId());
+                SitesListActivity.this.startActivity(intent);
+                return true;
+            case R.id.site_menu_modifica:
+                intent = new Intent();
+                intent.setClass(this, EditSiteActivity.class);
+                intent.putExtra("siteid", site.getId());
+                intent.putExtra("usesave", true);
+                intent.putExtra("usedelete", true);
+                startActivityForResult(intent, SitesListActivity.ACTIVITY_EDIT_SITE);
+                return true;
+            case R.id.site_menu_elimina:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Attenzione!");
+                builder.setMessage("Confermi l'eliminazione di questo sito?");
+                builder.setNegativeButton("Annulla",null);
+                builder.setPositiveButton("Elimina", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        DB.deleteSite(site.getId());
+                        updateAdapter(site.getId());
+                    }
+                });
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
     }
 
 
@@ -225,4 +277,5 @@ public class SitesListActivity extends HCActivity {
     public String getItemsType() {
         return "siti";
     }
+
 }
