@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.PlantCommandRequest;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.Response;
@@ -74,7 +75,13 @@ public class PlantDisplay extends ItemDisplay {
         int numPlant=plant.getNumber();
 
         Request req=new PlantCommandRequest(numPlant, button.isChecked(),partial);
-        Response resp= HyperControlApp.getConnection().sendRequest(req);
+
+        Response resp=null;
+        Connection conn=HyperControlApp.getConnection();
+        if((conn!=null)&&(conn.isOpen())){
+            resp= conn.sendRequest(req);
+        }
+
         if(resp!=null){
             if (!resp.isSuccess()) {
                 button.setChecked(!button.isChecked());

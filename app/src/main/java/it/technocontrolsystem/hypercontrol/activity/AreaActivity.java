@@ -180,11 +180,17 @@ public class AreaActivity extends HCSiteActivity {
                 if (stato == 0) {
                     req = new SensorCommandRequest(num, 4, true);
                     Toast.makeText(this, "Abilitato", Toast.LENGTH_LONG).show();
-                    HyperControlApp.getConnection().sendRequest(req);
+                    Connection conn = HyperControlApp.getConnection();
+                    if((conn!=null) && (conn.isOpen())){
+                        conn.sendRequest(req);
+                    }
                 } else {
                     req = new SensorCommandRequest(num, 4, false);
                     Toast.makeText(this, "Disabilitato", Toast.LENGTH_LONG).show();
-                    HyperControlApp.getConnection().sendRequest(req);
+                    Connection conn = HyperControlApp.getConnection();
+                    if((conn!=null) && (conn.isOpen())){
+                        conn.sendRequest(req);
+                    }
                 }
                 // add stuff here
                 return true;
@@ -193,11 +199,17 @@ public class AreaActivity extends HCSiteActivity {
                 if (!test) {
                     req = new SensorCommandRequest(num, 5, true);
                     Toast.makeText(this, "Test attivato", Toast.LENGTH_LONG).show();
-                    HyperControlApp.getConnection().sendRequest(req);
+                    Connection conn = HyperControlApp.getConnection();
+                    if((conn!=null) && (conn.isOpen())){
+                        conn.sendRequest(req);
+                    }
                 } else {
                     req = new SensorCommandRequest(num, 5, false);
                     Toast.makeText(this, "Test disattivato", Toast.LENGTH_LONG).show();
-                    HyperControlApp.getConnection().sendRequest(req);
+                    Connection conn = HyperControlApp.getConnection();
+                    if((conn!=null) && (conn.isOpen())){
+                        conn.sendRequest(req);
+                    }
                 }
                 // edit stuff here
                 return true;

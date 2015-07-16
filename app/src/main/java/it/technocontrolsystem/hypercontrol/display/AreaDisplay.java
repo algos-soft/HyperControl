@@ -9,6 +9,7 @@ import android.widget.Toast;
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.AreaCommandRequest;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.database.DB;
@@ -80,7 +81,13 @@ public class AreaDisplay extends ItemDisplay {
         int areaNumber=area.getNumber();
 
         Request req=new AreaCommandRequest(numPlant,areaNumber, button.isChecked(),partial);
-        Response resp= HyperControlApp.getConnection().sendRequest(req);
+
+        Response resp=null;
+        Connection conn=HyperControlApp.getConnection();
+        if((conn!=null)&&(conn.isOpen())){
+            resp= conn.sendRequest(req);
+        }
+
         if(resp!=null){
             if (!resp.isSuccess()) {
                 button.setChecked(!button.isChecked());
@@ -100,7 +107,13 @@ public class AreaDisplay extends ItemDisplay {
             int areaNumber=area.getNumber();
 
             Request req=new AreaCommandRequest(numPlant,areaNumber, true, box.isChecked());
-            Response resp= HyperControlApp.getConnection().sendRequest(req);
+
+            Response resp=null;
+            Connection conn=HyperControlApp.getConnection();
+            if((conn!=null)&&(conn.isOpen())){
+                resp= conn.sendRequest(req);
+            }
+
             if (resp!=null){
                 if (!resp.isSuccess()) {
                     box.setChecked(!box.isChecked());

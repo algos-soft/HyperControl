@@ -73,7 +73,10 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
-                    HyperControlApp.getConnection().close();
+                    Connection conn=HyperControlApp.getConnection();
+                    if((conn!=null) && (conn.isOpen())){
+                        conn.close();
+                    }
                     HyperControlApp.setConnection(null);
 
                     activity.getListAdapter().clearStatus();

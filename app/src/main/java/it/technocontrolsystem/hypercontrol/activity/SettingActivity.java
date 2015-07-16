@@ -11,6 +11,7 @@ import android.widget.Spinner;
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LanguageRequest;
 
 public class SettingActivity extends Activity {
@@ -43,18 +44,26 @@ public class SettingActivity extends Activity {
                 }
                 loc = pos;
                 LanguageRequest request;
+                Connection conn;
                 switch (loc) {
                     case 1:
                         request = new LanguageRequest();
                         request.setLan("IT");
-                        HyperControlApp.getConnection().sendRequest(request);
+                        conn = HyperControlApp.getConnection();
+                        if((conn!=null) && (conn.isOpen())){
+                            conn.sendRequest(request);
+                        }
+
                         editor.putString("language", "IT");
                         break;
 
                     case 2:
                         request = new LanguageRequest();
                         request.setLan("EN");
-                        HyperControlApp.getConnection().sendRequest(request);
+                        conn = HyperControlApp.getConnection();
+                        if((conn!=null) && (conn.isOpen())){
+                            conn.sendRequest(request);
+                        }
                         editor.putString("language", "EN");
                         break;
 

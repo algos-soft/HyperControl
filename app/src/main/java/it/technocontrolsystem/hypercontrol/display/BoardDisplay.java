@@ -9,6 +9,7 @@ import android.widget.Toast;
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.BoardsCommanRequest;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.database.DB;
@@ -61,7 +62,13 @@ public class BoardDisplay extends ItemDisplay {
         int boardNumber= DB.getBoard(itemId).getNumber();
 
         Request req=new BoardsCommanRequest(boardNumber, button.isChecked(), false);
-        Response resp= HyperControlApp.getConnection().sendRequest(req);
+
+        Response resp=null;
+        Connection conn=HyperControlApp.getConnection();
+        if((conn!=null)&&(conn.isOpen())){
+            resp= conn.sendRequest(req);
+        }
+
         if(resp!=null){
             if (!resp.isSuccess()) {
                 button.setChecked(!button.isChecked());

@@ -355,7 +355,12 @@ public abstract class HCSiteActivity extends HCActivity {
             }
 
             case MENU_SITES: {
-                HyperControlApp.getConnection().close();
+
+                Connection conn = HyperControlApp.getConnection();
+                if (conn!=null){
+                    conn.close();
+                }
+
                 Intent intent = new Intent();
                 intent.setClass(this, SitesListActivity.class);
                 startActivity(intent);

@@ -33,19 +33,22 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
     // assegno un LiveListener alla connessione
     public void attachLiveListener(){
         Connection conn = HyperControlApp.getConnection();
-        conn.setLiveListener(new Connection.LiveListener() {
-            @Override
-            public void liveReceived(LiveMessage message) {
+        if(conn!=null){
+            conn.setLiveListener(new Connection.LiveListener() {
+                @Override
+                public void liveReceived(LiveMessage message) {
 
-                try {
-                    live(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (XmlPullParserException e) {
-                    e.printStackTrace();
+                    try {
+                        live(message);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (XmlPullParserException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
+
     }
 
     @Override
@@ -120,11 +123,13 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
         @Override
         protected Integer[] doInBackground(Integer[]... params) {
             Connection conn = HyperControlApp.getConnection();
-            while(conn.isProcessingResponse()){
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if(conn!=null){
+                while(conn.isProcessingResponse()){
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return params[0];
