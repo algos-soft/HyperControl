@@ -108,6 +108,7 @@ public class SitesListActivity extends HCActivity {
                         updateAdapter(site.getId());
                     }
                 });
+                builder.show();
                 return true;
 
             default:
