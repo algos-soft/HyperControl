@@ -112,7 +112,10 @@ public class HyperControlApp extends Application {
             instance.hasConnectivity = newStatus;
 
             if (!instance.hasConnectivity) {
-                instance.conn = null;
+                if(instance.conn!=null){
+                    instance.conn.close();
+                    instance.conn = null;
+                }
             }
 
             for (OnConnectivityChangedListener l : instance.connectivityChangedListeners) {

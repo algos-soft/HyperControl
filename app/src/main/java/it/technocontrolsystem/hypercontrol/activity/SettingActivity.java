@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.LanguageRequest;
@@ -46,14 +47,14 @@ public class SettingActivity extends Activity {
                     case 1:
                         request = new LanguageRequest();
                         request.setLan("IT");
-                        SiteActivity.getConnection().sendRequest(request);
+                        HyperControlApp.getConnection().sendRequest(request);
                         editor.putString("language", "IT");
                         break;
 
                     case 2:
                         request = new LanguageRequest();
                         request.setLan("EN");
-                        SiteActivity.getConnection().sendRequest(request);
+                        HyperControlApp.getConnection().sendRequest(request);
                         editor.putString("language", "EN");
                         break;
 

@@ -64,7 +64,8 @@ public abstract class HCSiteActivity extends HCActivity {
     protected void onResume() {
         super.onResume();
         try {
-            if (Lib.isNetworkAvailable() && (HyperControlApp.getConnection() != null)) {
+            Connection conn= HyperControlApp.getConnection();
+            if (Lib.isNetworkAvailable() && (conn != null) && (conn.isOpen())) {
                 getListAdapter().attachLiveListener();
                 startLive();
             } else {
@@ -87,11 +88,14 @@ public abstract class HCSiteActivity extends HCActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // cancel update task if running
         if (updateTask != null) {
             updateTask.cancel(true);
         }
         // drop references from inner class to main Activity
         updateTask = null;
+
+
     }
 
     /**
@@ -142,7 +146,9 @@ public abstract class HCSiteActivity extends HCActivity {
                 publishProgress(-2, getListAdapter().getCount());
 
                 // aggiorna lo stato
-                if (SiteActivity.getConnection() != null) {
+                Connection conn = HyperControlApp.getConnection();
+                boolean open=((conn!=null)&&(conn.isOpen()));
+                if (open) {
                     for (int i = 0; i < getListAdapter().getCount(); i++) {
 
                         if (!(isCancelled() | Thread.interrupted())) {
@@ -230,7 +236,7 @@ public abstract class HCSiteActivity extends HCActivity {
         if (Lib.isNetworkAvailable()) {
 
             Connection conn = HyperControlApp.getConnection();
-            if (conn != null) {
+            if ((conn != null) && (conn.isOpen())) {
 
                 LiveRequest request = new LiveRequest(getLiveCode(), getParamPlantNumCode(), getParamAreaNumCode());
 
@@ -282,22 +288,6 @@ public abstract class HCSiteActivity extends HCActivity {
         return true;
     }
 
-
-    /**
-     * Aggiunge il menu item Siti.
-     * Se c'è un solo sito, crea la voce "Nuovo sito" che crea un sito e va alla activity listaSiti
-     * Se ci sono più siti, crea la voce "Siti" che va alla activity listaSiti
-     */
-    protected void addSitesItem(Menu menu){
-        MenuItem item;
-        if(DB.getSitesCount()>1){
-            item = menu.add(Menu.NONE, MENU_SITES, Menu.NONE, getString(R.string.menu_sites));
-            item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        }else{
-            item = menu.add(Menu.NONE, MENU_SITES, Menu.NONE, getString(R.string.menu_new_site));
-        }
-        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-    }
 
 
     @Override
@@ -365,15 +355,13 @@ public abstract class HCSiteActivity extends HCActivity {
             }
 
             case MENU_SITES: {
+                HyperControlApp.getConnection().close();
                 Intent intent = new Intent();
                 intent.setClass(this, SitesListActivity.class);
                 startActivity(intent);
                 finish();
                 break;
             }
-
-
-
 
 
         }

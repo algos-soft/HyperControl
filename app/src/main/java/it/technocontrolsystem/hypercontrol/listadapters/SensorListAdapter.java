@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.HashMap;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
@@ -25,22 +26,22 @@ import it.technocontrolsystem.hypercontrol.model.SensorModel;
 /**
  * Adapter per le liste di Sensor
  */
-public class SensorListAdapter extends HCListAdapter<SensorModel>{
+public class SensorListAdapter extends HCListAdapter<SensorModel> {
     Area area;
 
-     public SensorListAdapter(Context context,Area area) {
+    public SensorListAdapter(Context context, Area area) {
         super(context);
-        this.area=area;
+        this.area = area;
     }
 
     @Override
-     public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         SensorModel model = getItem(position);
         SensorDisplay display;
 
-         // Non usare la convertView perché c'è attaccato il listener con l'itemId
-         // Creare sempre nuove view
-        switch (model.getSensor().getSensorType()){
+        // Non usare la convertView perché c'è attaccato il listener con l'itemId
+        // Creare sempre nuove view
+        switch (model.getSensor().getSensorType()) {
             case ANALOGIC:
                 display = new AnalogSensorDisplay(getContext(), model.getSensor().getId());
                 break;
@@ -63,30 +64,32 @@ public class SensorListAdapter extends HCListAdapter<SensorModel>{
 
     @Override
     public void updateAll() {
-        Connection conn = SiteActivity.getConnection();
-        SensorModel model;
-        SensorsStatusResponse resp;
-        int numPlant=area.getPlant().getNumber();
-        int numArea=area.getNumber();
-        SensorsStatusRequest request = new SensorsStatusRequest(numPlant,numArea);
-        resp = (SensorsStatusResponse) conn.sendRequest(request);
-        HashMap<Integer,SensorModel> responseMap=resp.getResponseMap();
-        SensorModel responseModel;
+        Connection conn = HyperControlApp.getConnection();
+        if ((conn != null) && (conn.isOpen())) {
+            SensorModel model;
+            SensorsStatusResponse resp;
+            int numPlant = area.getPlant().getNumber();
+            int numArea = area.getNumber();
+            SensorsStatusRequest request = new SensorsStatusRequest(numPlant, numArea);
+            resp = (SensorsStatusResponse) conn.sendRequest(request);
+            HashMap<Integer, SensorModel> responseMap = resp.getResponseMap();
+            SensorModel responseModel;
 
-        for (int i = 0; i < getCount(); i++) {
-            model = getItem(i);
-            responseModel=responseMap.get(model.getSensor().getNumber());
-            model.setStatus(responseModel.getStatus());
-            model.setTamper(responseModel.isTamper());
-            model.setValue(responseModel.getValue());
-            model.setAlarm(responseModel.isAlarm());
-            model.setTest(responseModel.isTest());
+            for (int i = 0; i < getCount(); i++) {
+                model = getItem(i);
+                responseModel = responseMap.get(model.getSensor().getNumber());
+                model.setStatus(responseModel.getStatus());
+                model.setTamper(responseModel.isTamper());
+                model.setValue(responseModel.getValue());
+                model.setAlarm(responseModel.isAlarm());
+                model.setTest(responseModel.isTest());
+            }
         }
     }
 
     @Override
     public void update(Integer[] numbers) {
-        for (int number:numbers){
+        for (int number : numbers) {
             updateByNumber(number);
         }
 
@@ -104,25 +107,28 @@ public class SensorListAdapter extends HCListAdapter<SensorModel>{
     public void updateByNumber(int number) {
         SensorModel model;
         SensorsStatusResponse resp;
-        Connection conn = SiteActivity.getConnection();
+        Connection conn = HyperControlApp.getConnection();
+        if ((conn != null) && (conn.isOpen())) {
+            model = (SensorModel) getModel(number);
+            SensorsStatusRequest request = new SensorsStatusRequest(number);
+            resp = (SensorsStatusResponse) conn.sendRequest(request);
 
-        model=(SensorModel) getModel(number);
-        SensorsStatusRequest request = new SensorsStatusRequest(number);
-        resp = (SensorsStatusResponse) conn.sendRequest(request);
+            if (resp != null) {
+                // capire se si può semplificare aggiungendo un metodo che mi permette di recuperare il singolo sensore
+                HashMap<Integer, SensorModel> responseMap = resp.getResponseMap();
+                SensorModel responseModel;
 
-        if(resp!=null){
-            // capire se si può semplificare aggiungendo un metodo che mi permette di recuperare il singolo sensore
-            HashMap<Integer,SensorModel> responseMap=resp.getResponseMap();
-            SensorModel responseModel;
+                responseModel = responseMap.get(model.getSensor().getNumber());
+                model.setStatus(responseModel.getStatus());
+                model.setTamper(responseModel.isTamper());
+                model.setValue(responseModel.getValue());
+                model.setAlarm(responseModel.isAlarm());
+                model.setTest(responseModel.isTest());
 
-            responseModel=responseMap.get(model.getSensor().getNumber());
-            model.setStatus(responseModel.getStatus());
-            model.setTamper(responseModel.isTamper());
-            model.setValue(responseModel.getValue());
-            model.setAlarm(responseModel.isAlarm());
-            model.setTest(responseModel.isTest());
+            }
 
         }
+
 
     }
 

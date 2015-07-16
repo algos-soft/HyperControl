@@ -50,16 +50,6 @@
         </activity>
 
         <activity
-            android:name=".activity.ConfigActivity"
-            android:label="@string/title_activity_config" >
-        </activity>
-
-        <activity
-            android:name=".activity.EditSiteActivity"
-            android:label="@string/title_activity_edit_plant" >
-        </activity>
-
-        <activity
             android:name=".activity.PlantActivity"
             android:label="@string/title_activity_plant"
             android:launchMode="singleTask">
@@ -67,23 +57,24 @@
 
         <activity
             android:name=".activity.AreaActivity"
-            android:label="@string/title_activity_sensor" >
+            android:label="@string/title_activity_sensor"
+            android:launchMode="singleTask">
         </activity>
 
         <activity
-            android:name=".service.DemoActivity"
-            android:label="@string/title_activity_demo" >
+            android:name=".activity.ConfigActivity"
+            android:label="@string/title_activity_config">
+        </activity>
+
+        <activity
+            android:name=".activity.EditSiteActivity"
+            android:label="@string/title_activity_edit_plant">
         </activity>
 
         <activity
             android:name=".activity.BoardActivity"
             android:label="@string/title_activity_board"
             android:launchMode="singleTask">
-        </activity>
-
-        <activity
-            android:name=".activity.DeveloperActivity"
-            android:label="@string/title_activity_deveoloper" >
         </activity>
 
         <activity
@@ -94,8 +85,7 @@
 
         <activity
             android:name=".activity.SettingActivity"
-            android:label="@string/title_activity_setting"
-            android:launchMode="singleTask">
+            android:label="@string/title_activity_setting">
         </activity>
 
         <activity
@@ -106,22 +96,34 @@
 
         <activity
             android:name=".activity.PasswordActivity"
-            android:label="@string/title_activity_password" >
+            android:label="@string/title_activity_password">
         </activity>
 
         <activity
             android:name=".activity.LoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login">
         </activity>
 
         <activity
             android:name=".activity.StartSiteActivity"
             android:label="@string/title_activity_start_site" >
         </activity>
+
         <activity
             android:name=".activity.SitesListActivity"
             android:label="@string/title_activity_sites_list"
             android:launchMode="singleTask">
+        </activity>
+
+
+        <activity
+            android:name=".activity.DeveloperActivity"
+            android:label="@string/title_activity_deveoloper" >
+        </activity>
+
+        <activity
+            android:name=".service.DemoActivity"
+            android:label="@string/title_activity_demo" >
         </activity>
 
         <receiver

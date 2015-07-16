@@ -88,18 +88,16 @@ public class StartSiteActivity extends Activity {
     }
 
 
-
-
     /**
-     * Lancia la SiteActivity e termina questa activity
+     * termina questa activity e Lancia la SiteActivity
      */
     public void startSite() {
+        finish();
         Lib.unlockOrientation(this);
         Intent intent = new Intent();
         intent.setClass(this, SiteActivity.class);
         intent.putExtra("siteid", idSite);
         startActivity(intent);
-        finish();
     }
 
     public Site getSite() {

@@ -5,7 +5,6 @@
     <string name="text_btn_delete">Cancella</string>
     <string name="text_btn_save">Salva</string>
     <string name="text_btn_login">Login</string>
-    <string name="text_btn_newsite">Nuovo Sito</string>
     <string name="text_btn_config">Impostazioni</string>
     <string name="text_btn_confirm">Conferma</string>
     <string name="text_btn_cancel">Annulla</string>
@@ -14,8 +13,6 @@
     <string name="text_tog_btn_enabled">Abilitato</string>
     <string name="text_tog_btn_disabled">Disabilitato</string>
 
-    <string name="text_editesite">Modifica Sito</string>
-    <string name="text_deletesite">Cancella Sito</string>
     <string name="text_question">Vuoi veramente cancellare:</string>
     <string name="text_url_error">Url non valido</string>
     <string name="text_toast_error">Selezionare un sito</string>

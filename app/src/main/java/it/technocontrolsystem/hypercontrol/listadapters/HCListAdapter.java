@@ -10,6 +10,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.HashMap;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
@@ -31,7 +32,7 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
 
     // assegno un LiveListener alla connessione
     public void attachLiveListener(){
-        Connection conn = SiteActivity.getConnection();
+        Connection conn = HyperControlApp.getConnection();
         conn.setLiveListener(new Connection.LiveListener() {
             @Override
             public void liveReceived(LiveMessage message) {
@@ -118,7 +119,7 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
     class UpdateTask extends AsyncTask<Integer[], Void, Integer[]> {
         @Override
         protected Integer[] doInBackground(Integer[]... params) {
-            Connection conn = SiteActivity.getConnection();
+            Connection conn = HyperControlApp.getConnection();
             while(conn.isProcessingResponse()){
                 try {
                     Thread.sleep(10);

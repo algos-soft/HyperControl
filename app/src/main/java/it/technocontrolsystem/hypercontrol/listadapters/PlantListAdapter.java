@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
@@ -79,16 +80,18 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
     public void updateByNumber(int number){
         PlantModel model;
         PlantsStatusResponse resp;
-        Connection conn = SiteActivity.getConnection();
+        Connection conn = HyperControlApp.getConnection();
 
-        model=(PlantModel) getModel(number);
-        PlantsStatusRequest request = new PlantsStatusRequest(number);
-        resp = (PlantsStatusResponse) conn.sendRequest(request);
-        if(resp!=null){
-            int status = resp.getStatus();
-            boolean alarm = resp.isAlarm();
-            model.setStatus(status);
-            model.setAlarm(alarm);
+        if((conn!=null) && (conn.isOpen())){
+            model=(PlantModel) getModel(number);
+            PlantsStatusRequest request = new PlantsStatusRequest(number);
+            resp = (PlantsStatusResponse) conn.sendRequest(request);
+            if(resp!=null){
+                int status = resp.getStatus();
+                boolean alarm = resp.isAlarm();
+                model.setStatus(status);
+                model.setAlarm(alarm);
+            }
         }
 
     }

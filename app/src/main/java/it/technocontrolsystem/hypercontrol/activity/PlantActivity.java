@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.AreaDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Area;
@@ -84,7 +85,8 @@ public class PlantActivity extends HCSiteActivity {
 
     @Override
     public void updateStatus(){
-        if(HyperControlApp.getConnection()!=null){
+        Connection conn = HyperControlApp.getConnection();
+        if ((conn != null) && (conn.isOpen())) {
             updateTask=(AbsUpdateTask)new UpdateTask().execute();
         }
     }

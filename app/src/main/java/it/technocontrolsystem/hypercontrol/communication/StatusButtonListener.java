@@ -72,7 +72,10 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
             builder.setPositiveButton("Chiudi\nconnessione",new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+
+                    HyperControlApp.getConnection().close();
                     HyperControlApp.setConnection(null);
+
                     activity.getListAdapter().clearStatus();
                     activity.runOnUiThread(new Runnable() {
                         @Override

@@ -31,6 +31,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
     Exception exception;
     boolean success = false;
     private PowerManager.WakeLock lock;
+    private String logRow;
 
     private static final String TAG = "SyncDB";
 
@@ -40,14 +41,19 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
         this.site = site;
         this.successRunnable = successRunnable;
         this.failRunnable = failRunnable;
+
+        progress = new ProgressDialog(context);
+        progress.setCanceledOnTouchOutside(false);
+
     }
 
     @Override
     protected void onPreExecute() {
         Log.d(TAG, "Start sync database");
-
         lock = Lib.acquireWakeLock();
-        progress = ProgressDialog.show(context, "Controllo configurazione", "Verifica configurazione centrale...", true);
+        progress.setTitle("Controllo configurazione");
+        progress.setMessage("Verifica configurazione centrale...");
+        progress.show();
     }
 
     @Override
@@ -80,8 +86,13 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
         int updateCode = values[0];
         switch (updateCode) {
             case -1:
-                progress.setMessage("Scaricamento configurazione in corso...");
+                progress.setTitle("Scaricamento configurazione in corso...");
                 break;
+
+            case -2:
+                progress.setMessage(logRow);
+                break;
+
         }
         super.onProgressUpdate(values);
     }
@@ -89,7 +100,10 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        progress.dismiss();
+
+        if (progress!=null){
+            progress.dismiss();
+        }
 
         if (success) {
             if (successRunnable != null) {
@@ -190,22 +204,30 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
         deleteAllRecords();
 
         // Riempie il DB con impianti e aree
-        Log.d(TAG, "start receive plants and areas");
+        logRow="ricezione impianti ed aree...";
+        Log.d(TAG, logRow);
+        publishProgress(-2);
         fillPlantsAndAreas();
         Log.d(TAG, "end receive plants and areas");
 
         // Riempie il DB con i sensori e la tabella di incrocio aree-sensori
-        Log.d(TAG, "start receive sensors");
+        logRow="ricezione sensori...";
+        Log.d(TAG, logRow);
+        publishProgress(-2);
         fillSensors();
         Log.d(TAG, "end receive sensors");
 
         // Riempie il DB con le schede
-        Log.d(TAG, "start receive boards");
+        logRow="ricezione schede...";
+        Log.d(TAG, logRow);
+        publishProgress(-2);
         fillBoards();
         Log.d(TAG, "end receive boards");
 
         // Riempie il DB con i menu
-        Log.d(TAG, "start receive menus");
+        logRow="ricezione menu...";
+        Log.d(TAG, logRow);
+        publishProgress(-2);
         fillMenus();
         Log.d(TAG, "end receive menus");
 
@@ -237,13 +259,20 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
                 p.setIdSite(getSite().getId());
                 int idPlant = DB.savePlant(p);
                 p.setId(idPlant);
-                Log.d(TAG, "Plant id " + p.getId() + " " + p.getName() + " created");
+
+                logRow="Impianto id " + p.getId() + " " + p.getName() + " creato";
+                Log.d(TAG, logRow);
+                publishProgress(-2);
 
                 for (Area area : p.getAreas()) {
                     area.setIdPlant(idPlant);
                     int idArea = DB.saveArea(area);
                     area.setId(idArea);
-                    Log.d(TAG, "Area id " + area.getId() + " " + area.getName() + " created");
+
+                    logRow="Area id " + area.getId() + " " + area.getName() + " creata";
+                    Log.d(TAG, logRow);
+                    publishProgress(-2);
+
                 }
             }
 
@@ -259,6 +288,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
      * Riempie la tabella sensori e la tabella di incrocio area-sensori
      */
     private void fillSensors() throws Exception {
+
         Request req = new ListSensorsRequest();
         Response resp = getConnection().sendRequest(req);
         if (resp != null) {
@@ -275,7 +305,10 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
                     sensor.setIdPlant(plant.getId());
                     int id = DB.saveSensor(sensor);
                     sensor.setId(id);
-                    Log.d(TAG, "Sensor " + sensor.getId() + " " + sensor.getName() + " created");
+
+                    logRow="Sensore " + sensor.getId() + " " + sensor.getName() + " creato";
+                    Log.d(TAG, logRow);
+                    publishProgress(-2);
 
                     // crea i record nella tabella di incrocio
                     Integer[] areaNums = sensor.getAreaNums();
@@ -304,7 +337,10 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
             for (Board board : sResp.getBoards()) {
                 board.setIdSite(getSite().getId());
                 DB.saveBoard(board);
-                Log.d(TAG, "Board " + board.getId() + " " + board.getName() + " created");
+                logRow="Scheda " + board.getId() + " " + board.getName() + " creata";
+                Log.d(TAG, logRow);
+                publishProgress(-2);
+
             }
             Log.d(TAG, sResp.getBoards().length + " boards created");
         }
@@ -321,7 +357,11 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
             for (Menu menu : sResp.getMenus()) {
                 menu.setIdSite(getSite().getId());
                 DB.saveMenu(menu);
-                Log.d(TAG, "Menu " + menu.getId() + " " + menu.getName() + " created");
+
+                logRow="Menu " + menu.getId() + " " + menu.getName() + " creato";
+                Log.d(TAG, logRow);
+                publishProgress(-2);
+
             }
             Log.d(TAG, sResp.getMenus().length + " menus created");
         }

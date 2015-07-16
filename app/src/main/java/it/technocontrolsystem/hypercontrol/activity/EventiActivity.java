@@ -8,6 +8,7 @@ import android.widget.ListView;
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.ListEventRequest;
 import it.technocontrolsystem.hypercontrol.communication.ListEventResponse;
 import it.technocontrolsystem.hypercontrol.communication.Request;
@@ -36,7 +37,8 @@ public class EventiActivity extends HCSiteActivity {
 
         this.idSite = getIntent().getIntExtra("siteid", 0);
         if (idSite != 0) {
-            if(SiteActivity.getConnection()!=null){
+            Connection conn = HyperControlApp.getConnection();
+            if((conn!=null) && (conn.isOpen())){
 
                 // creo un adapter
                 setListAdapter(new EventListAdapter(this));
@@ -93,7 +95,7 @@ public class EventiActivity extends HCSiteActivity {
 
 
                 Request request = new ListEventRequest(lastIdEvento, 10);
-                Response resp = SiteActivity.getConnection().sendRequest(request);
+                Response resp = HyperControlApp.getConnection().sendRequest(request);
                 if(resp!=null){
 
                     final ListEventResponse vResp = (ListEventResponse) resp;
@@ -166,7 +168,8 @@ public class EventiActivity extends HCSiteActivity {
      * Carica un blocco di eventi e li aggiunge all'adapter
      */
     public void loadEventi(){
-        if(HyperControlApp.getConnection()!=null){
+        Connection conn= HyperControlApp.getConnection();
+        if(conn!=null && conn.isOpen()){
             populateTask = (AbsPopulateTask)new PopulateTask().execute();
         }
     }

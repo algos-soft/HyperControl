@@ -20,35 +20,6 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/text_btn_newsite"
-        android:textSize="40sp"
-        android:id="@+id/btn_new"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#ff4ae02e"
-        android:background="@drawable/custom_button" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/text_editesite"
-        android:textSize="40sp"
-        android:id="@+id/btn_edit"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#ff4ae02e"
-        android:background="@drawable/custom_button"/>
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/text_deletesite"
-        android:textSize="40sp"
-        android:id="@+id/btn_delete"
-        android:layout_gravity="center_horizontal"
-        android:textColor="#ff4ae02e"
-        android:background="@drawable/custom_button"/>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:text="Setting"
         android:textSize="40sp"
         android:id="@+id/btn_setting"

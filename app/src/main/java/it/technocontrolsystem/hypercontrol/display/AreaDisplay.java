@@ -6,6 +6,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.AreaCommandRequest;
 import it.technocontrolsystem.hypercontrol.communication.Request;
@@ -79,7 +80,7 @@ public class AreaDisplay extends ItemDisplay {
         int areaNumber=area.getNumber();
 
         Request req=new AreaCommandRequest(numPlant,areaNumber, button.isChecked(),partial);
-        Response resp= SiteActivity.getConnection().sendRequest(req);
+        Response resp= HyperControlApp.getConnection().sendRequest(req);
         if(resp!=null){
             if (!resp.isSuccess()) {
                 button.setChecked(!button.isChecked());
@@ -99,7 +100,7 @@ public class AreaDisplay extends ItemDisplay {
             int areaNumber=area.getNumber();
 
             Request req=new AreaCommandRequest(numPlant,areaNumber, true, box.isChecked());
-            Response resp= SiteActivity.getConnection().sendRequest(req);
+            Response resp= HyperControlApp.getConnection().sendRequest(req);
             if (resp!=null){
                 if (!resp.isSuccess()) {
                     box.setChecked(!box.isChecked());

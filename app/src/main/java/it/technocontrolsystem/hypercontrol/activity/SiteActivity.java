@@ -52,15 +52,21 @@ public class SiteActivity extends HCSiteActivity {
             syncConnectButton();
 
 
-            // attacca un listener e poi rende invisibile l'icona di errore connessione
+            // attacca un listener al bottone di errore connessione
             getErrorButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     errorButtonClicked();
                 }
             });
-            getErrorButton().setVisibility(View.GONE);
 
+            // regola la visibilità del bottone di errore connessione
+            // se c'è un errore di connessione lo visualizza se no lo rende invisibile
+            if (HyperControlApp.getLastConnectionError()!=null) {
+                getErrorButton().setVisibility(View.VISIBLE);
+            }else {
+                getErrorButton().setVisibility(View.GONE);
+            }
 
             // crea l'adapter
             setListAdapter(new PlantListAdapter(SiteActivity.this));
@@ -103,6 +109,21 @@ public class SiteActivity extends HCSiteActivity {
         updateStatus();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // if not due to config change, close connection if present
+        if (!isChangingConfigurations()){
+            Connection conn=HyperControlApp.getConnection();
+            if (conn!=null){
+                conn.close();
+            }
+        }
+
+    }
+
     public String getHeadline2(){
         return "Lista impianti";
     }
@@ -120,7 +141,8 @@ public class SiteActivity extends HCSiteActivity {
 
     @Override
     public void updateStatus() {
-        if (HyperControlApp.getConnection() != null) {
+        Connection conn = HyperControlApp.getConnection();
+        if ((conn != null) && (conn.isOpen())) {
             updateTask=(AbsUpdateTask)new UpdateTask().execute();
         }
     }
@@ -190,7 +212,9 @@ public class SiteActivity extends HCSiteActivity {
      * Sincronizza lo stato del bottone CONNECT in base allo stato della connessione
      */
     private void syncConnectButton(){
-        getConnectButton().setChecked(getConnection() != null);
+        Connection conn=HyperControlApp.getConnection();
+        boolean open = (conn!=null) && (conn.isOpen());
+        getConnectButton().setChecked(open);
     }
 
 
@@ -231,10 +255,6 @@ public class SiteActivity extends HCSiteActivity {
     public ImageButton getErrorButton() {
         return (ImageButton) findViewById(R.id.statusAlertButton);
 
-    }
-
-    public static Connection getConnection() {
-        return HyperControlApp.getConnection();
     }
 
     public int getLiveCode() {

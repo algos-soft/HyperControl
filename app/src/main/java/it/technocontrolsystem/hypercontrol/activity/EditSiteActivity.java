@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import java.io.Serializable;
 
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Site;
@@ -89,9 +90,15 @@ public class EditSiteActivity extends Activity {
         }
 
 
-
-
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Lib.hideKeyboard(this);
+    }
+
 
     private String getName() {
         return mNameView.getText().toString();
@@ -210,17 +217,6 @@ public class EditSiteActivity extends Activity {
 
             // save the new site in the database
             int id = DB.saveSite(site);
-
-            //if a destination activity was specified, start the activity
-            Serializable ser = getIntent().getSerializableExtra("destinationactivity");
-            if (ser != null) {
-                if (ser instanceof Class) {
-                    Intent intent = new Intent();
-                    intent.setClass(this, (Class) ser);
-                    intent.putExtra("siteid", id);
-                    startActivity(intent);
-                }
-            }
 
             Intent data = new Intent();
             data.putExtra("siteid",id);

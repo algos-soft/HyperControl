@@ -18,13 +18,10 @@
     <string name="text_btn_save">Save</string>
     <string name="text_btn_config">Setting</string>
     <string name="text_btn_login">Login</string>
-    <string name="text_btn_newsite">New Site</string>
     <string name="text_btn_confirm">Confirm</string>
     <string name="text_btn_cancel">Cancel</string>
     <string name="text_tog_btn_enabled">Enabled</string>
     <string name="text_tog_btn_disabled">Disabled</string>
-    <string name="text_editesite">Edit Site</string>
-    <string name="text_deletesite">Delete Site</string>
     <string name="text_username">Username</string>
     <string name="text_password">Password</string>
     <string name="text_question">Do you really want to delete:</string>

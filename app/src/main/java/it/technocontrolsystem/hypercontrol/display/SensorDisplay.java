@@ -7,6 +7,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.Response;
@@ -158,7 +159,7 @@ public class SensorDisplay extends ItemDisplay {
         int sensorNumber=DB.getSensor(itemId).getNumber();
 
         Request req=new SensorCommandRequest(sensorNumber,4,button.isChecked());
-        Response resp=SiteActivity.getConnection().sendRequest(req);
+        Response resp= HyperControlApp.getConnection().sendRequest(req);
         if(resp!=null){
             if (!resp.isSuccess()) {
                 button.setChecked(!button.isChecked());

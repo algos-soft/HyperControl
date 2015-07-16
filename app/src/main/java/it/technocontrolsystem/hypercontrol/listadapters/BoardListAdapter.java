@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.BoardStatusRequest;
 import it.technocontrolsystem.hypercontrol.communication.BoardStatusResponse;
@@ -72,16 +73,16 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
     public void updateByNumber(int number){
         BoardModel model;
         BoardStatusResponse resp;
-        Connection conn = SiteActivity.getConnection();
-
-        model=(BoardModel) getModel(number);
-        BoardStatusRequest request = new BoardStatusRequest(number);
-        resp = (BoardStatusResponse) conn.sendRequest(request);
-        if(resp!=null){
-            int status = resp.getStatus();
-            model.setStatus(status);
+        Connection conn = HyperControlApp.getConnection();
+        if((conn!=null)&&(conn.isOpen())){
+            model=(BoardModel) getModel(number);
+            BoardStatusRequest request = new BoardStatusRequest(number);
+            resp = (BoardStatusResponse) conn.sendRequest(request);
+            if(resp!=null){
+                int status = resp.getStatus();
+                model.setStatus(status);
+            }
         }
-
     }
 
 

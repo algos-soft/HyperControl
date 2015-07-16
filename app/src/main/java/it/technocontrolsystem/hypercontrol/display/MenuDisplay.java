@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.MenuActivity;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.MenuCommandRequest;
@@ -48,7 +49,7 @@ public class MenuDisplay extends Button {
                 @Override
                 public void onClick(View v) {
                     MenuCommandRequest request = new MenuCommandRequest(menu.getNumber());
-                    SiteActivity.getConnection().sendRequest(request);
+                    HyperControlApp.getConnection().sendRequest(request);
                 }
             });
 

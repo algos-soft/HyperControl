@@ -10,7 +10,8 @@ import it.technocontrolsystem.hypercontrol.domain.Site;
 
 
 /**
- * Seleziona la modalità di partenza in base al numero di siti registrati.
+ * Seleziona la modalità di partenza in base al numero di siti
+ * registrati e lancia l'activity adeguata.
  * Questa activity non ha interfaccia, lancia sempre un'altra
  * activity e poi si chiude automaticamente.
  */

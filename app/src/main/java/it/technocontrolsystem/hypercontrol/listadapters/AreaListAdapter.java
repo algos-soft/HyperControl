@@ -9,6 +9,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.AreaStatusRequest;
 import it.technocontrolsystem.hypercontrol.communication.AreaStatusResponse;
@@ -81,19 +82,19 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
     public void updateByNumber(int number){
         AreaModel model;
         AreaStatusResponse resp;
-        Connection conn = SiteActivity.getConnection();
-
-        model=(AreaModel) getModel(number);
-        int plantNum= model.getArea().getPlant().getNumber();
-        AreaStatusRequest request = new AreaStatusRequest(plantNum,number);
-        resp = (AreaStatusResponse) conn.sendRequest(request);
-        if(resp!=null){
-            int status = resp.getStatus();
-            boolean alarm = resp.isAlarm();
-            model.setStatus(status);
-            model.setAlarm(alarm);
+        Connection conn = HyperControlApp.getConnection();
+        if((conn!=null) && (conn.isOpen())){
+            model=(AreaModel) getModel(number);
+            int plantNum= model.getArea().getPlant().getNumber();
+            AreaStatusRequest request = new AreaStatusRequest(plantNum,number);
+            resp = (AreaStatusResponse) conn.sendRequest(request);
+            if(resp!=null){
+                int status = resp.getStatus();
+                boolean alarm = resp.isAlarm();
+                model.setStatus(status);
+                model.setAlarm(alarm);
+            }
         }
-
     }
 
 

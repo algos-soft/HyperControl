@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.SensorCommandRequest;
 import it.technocontrolsystem.hypercontrol.database.DB;
@@ -57,7 +58,8 @@ public class AreaActivity extends HCSiteActivity {
 
     @Override
     public void updateStatus(){
-        if(HyperControlApp.getConnection()!=null){
+        Connection conn= HyperControlApp.getConnection();
+        if(conn!=null && conn.isOpen()){
             updateTask=(AbsUpdateTask)new UpdateTask().execute();
         }
     }
@@ -178,11 +180,11 @@ public class AreaActivity extends HCSiteActivity {
                 if (stato == 0) {
                     req = new SensorCommandRequest(num, 4, true);
                     Toast.makeText(this, "Abilitato", Toast.LENGTH_LONG).show();
-                    SiteActivity.getConnection().sendRequest(req);
+                    HyperControlApp.getConnection().sendRequest(req);
                 } else {
                     req = new SensorCommandRequest(num, 4, false);
                     Toast.makeText(this, "Disabilitato", Toast.LENGTH_LONG).show();
-                    SiteActivity.getConnection().sendRequest(req);
+                    HyperControlApp.getConnection().sendRequest(req);
                 }
                 // add stuff here
                 return true;
@@ -191,11 +193,11 @@ public class AreaActivity extends HCSiteActivity {
                 if (!test) {
                     req = new SensorCommandRequest(num, 5, true);
                     Toast.makeText(this, "Test attivato", Toast.LENGTH_LONG).show();
-                    SiteActivity.getConnection().sendRequest(req);
+                    HyperControlApp.getConnection().sendRequest(req);
                 } else {
                     req = new SensorCommandRequest(num, 5, false);
                     Toast.makeText(this, "Test disattivato", Toast.LENGTH_LONG).show();
-                    SiteActivity.getConnection().sendRequest(req);
+                    HyperControlApp.getConnection().sendRequest(req);
                 }
                 // edit stuff here
                 return true;
