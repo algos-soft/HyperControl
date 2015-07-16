@@ -6,6 +6,8 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import it.technocontrolsystem.hypercontrol.communication.Connection;
+import it.technocontrolsystem.hypercontrol.communication.Request;
+import it.technocontrolsystem.hypercontrol.communication.Response;
 
 /**
  *
@@ -124,7 +126,26 @@ public class HyperControlApp extends Application {
         }
     }
 
-    public static void addOnConnectionStatusChangedListener(OnConnectionStatusChangedListener l) {
+
+    /**
+     * Accoda una richiesta e attende la risposta corrispondente.
+     * @param req richiesta da accodare
+     * @return risposta corrispondente, null se in timeout o se
+     * la connessione è chiusa
+     */
+    public static Response sendRequest(Request req) {
+        Response resp=null;
+        Connection conn = getConnection();
+        if(conn!=null){
+            if(conn.isOpen()){
+                resp=conn.sendRequest(req);
+            }
+        }
+        return resp;
+    }
+
+
+        public static void addOnConnectionStatusChangedListener(OnConnectionStatusChangedListener l) {
         getInstance().connectionStatusChangedListeners.add(l);
     }
 

@@ -129,10 +129,6 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
     private void languageCheck() {
         String lan;
         LanguageRequest request;
-
-
-        Connection conn = getConnection();
-
         request = new LanguageRequest();
         lan = Locale.getDefault().getLanguage();
         if (lan.equals("IT") || lan.equals("it")) {
@@ -140,7 +136,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
         } else {
             request.setLan("EN");
         }
-        conn.sendRequest(request);
+        HyperControlApp.sendRequest(request);
     }
 
     /**
@@ -149,11 +145,10 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
      */
     private void syncDB() throws Exception {
         Request request;
-        Response resp;
 
         Log.d(TAG, "Sending version request");
         request = new VersionRequest();
-        resp = getConnection().sendRequest(request);
+        Response resp = HyperControlApp.sendRequest(request);
         if (resp != null) {
             VersionResponse vResp = (VersionResponse) resp;
 
@@ -252,7 +247,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
      */
     private void fillPlantsAndAreas() throws Exception {
         Request req = new ListPlantsRequest();
-        Response resp = getConnection().sendRequest(req);
+        Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
             ListPlantsResponse pResp = (ListPlantsResponse) resp;
             for (Plant p : pResp.getPlants()) {
@@ -290,7 +285,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
     private void fillSensors() throws Exception {
 
         Request req = new ListSensorsRequest();
-        Response resp = getConnection().sendRequest(req);
+        Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
             ListSensorsResponse sResp = (ListSensorsResponse) resp;
             for (Sensor sensor : sResp.getSensors()) {
@@ -331,7 +326,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
      */
     private void fillBoards() {
         Request req = new ListBoardsRequest();
-        Response resp = getConnection().sendRequest(req);
+        Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
             ListBoardsResponse sResp = (ListBoardsResponse) resp;
             for (Board board : sResp.getBoards()) {
@@ -351,7 +346,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
      */
     private void fillMenus() {
         Request req = new ListMenuRequest();
-        Response resp = getConnection().sendRequest(req);
+        Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
             ListMenuResponse sResp = (ListMenuResponse) resp;
             for (Menu menu : sResp.getMenus()) {
@@ -365,11 +360,6 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
             }
             Log.d(TAG, sResp.getMenus().length + " menus created");
         }
-    }
-
-
-    private Connection getConnection() {
-        return HyperControlApp.getConnection();
     }
 
     private Site getSite() {

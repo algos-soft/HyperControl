@@ -15,6 +15,7 @@ import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
 import it.technocontrolsystem.hypercontrol.communication.PlantsStatusRequest;
 import it.technocontrolsystem.hypercontrol.communication.PlantsStatusResponse;
+import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.display.PlantDisplay;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
 import it.technocontrolsystem.hypercontrol.model.PlantModel;
@@ -80,6 +81,7 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
     public void updateByNumber(int number){
         PlantModel model;
         PlantsStatusResponse resp;
+
         Connection conn = HyperControlApp.getConnection();
 
         if((conn!=null) && (conn.isOpen())){

@@ -95,7 +95,7 @@ public class EventiActivity extends HCSiteActivity {
 
 
                 Request request = new ListEventRequest(lastIdEvento, 10);
-                Response resp = HyperControlApp.getConnection().sendRequest(request);
+                Response resp = HyperControlApp.sendRequest(request);
                 if(resp!=null){
 
                     final ListEventResponse vResp = (ListEventResponse) resp;

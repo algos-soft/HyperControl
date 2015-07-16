@@ -234,21 +234,14 @@ public abstract class HCSiteActivity extends HCActivity {
     private void startLive() throws Exception {
 
         if (Lib.isNetworkAvailable()) {
-
-            Connection conn = HyperControlApp.getConnection();
-            if ((conn != null) && (conn.isOpen())) {
-
-                LiveRequest request = new LiveRequest(getLiveCode(), getParamPlantNumCode(), getParamAreaNumCode());
-
-                Response resp = conn.sendRequest(request);
-                if (resp != null) {
-                    if (!resp.isSuccess()) {
-                        throw new Exception(resp.getText());
-                    }
-                } else {//comunication failed
-                    throw new Exception("Attivazione live fallita");
+            LiveRequest request = new LiveRequest(getLiveCode(), getParamPlantNumCode(), getParamAreaNumCode());
+            Response resp = HyperControlApp.sendRequest(request);
+            if (resp != null) {
+                if (!resp.isSuccess()) {
+                    throw new Exception(resp.getText());
                 }
-
+            } else {//comunication failed
+                throw new Exception("Attivazione live fallita");
             }
         }
     }

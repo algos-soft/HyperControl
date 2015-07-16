@@ -44,26 +44,18 @@ public class SettingActivity extends Activity {
                 }
                 loc = pos;
                 LanguageRequest request;
-                Connection conn;
                 switch (loc) {
                     case 1:
                         request = new LanguageRequest();
                         request.setLan("IT");
-                        conn = HyperControlApp.getConnection();
-                        if((conn!=null) && (conn.isOpen())){
-                            conn.sendRequest(request);
-                        }
-
+                        HyperControlApp.sendRequest(request);
                         editor.putString("language", "IT");
                         break;
 
                     case 2:
                         request = new LanguageRequest();
                         request.setLan("EN");
-                        conn = HyperControlApp.getConnection();
-                        if((conn!=null) && (conn.isOpen())){
-                            conn.sendRequest(request);
-                        }
+                        HyperControlApp.sendRequest(request);
                         editor.putString("language", "EN");
                         break;
 

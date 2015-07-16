@@ -75,12 +75,7 @@ public class PlantDisplay extends ItemDisplay {
         int numPlant=plant.getNumber();
 
         Request req=new PlantCommandRequest(numPlant, button.isChecked(),partial);
-
-        Response resp=null;
-        Connection conn=HyperControlApp.getConnection();
-        if((conn!=null)&&(conn.isOpen())){
-            resp= conn.sendRequest(req);
-        }
+        Response resp=HyperControlApp.sendRequest(req);
 
         if(resp!=null){
             if (!resp.isSuccess()) {

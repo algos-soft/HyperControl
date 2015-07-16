@@ -82,11 +82,7 @@ public class AreaDisplay extends ItemDisplay {
 
         Request req=new AreaCommandRequest(numPlant,areaNumber, button.isChecked(),partial);
 
-        Response resp=null;
-        Connection conn=HyperControlApp.getConnection();
-        if((conn!=null)&&(conn.isOpen())){
-            resp= conn.sendRequest(req);
-        }
+        Response resp=HyperControlApp.sendRequest(req);
 
         if(resp!=null){
             if (!resp.isSuccess()) {
@@ -107,12 +103,7 @@ public class AreaDisplay extends ItemDisplay {
             int areaNumber=area.getNumber();
 
             Request req=new AreaCommandRequest(numPlant,areaNumber, true, box.isChecked());
-
-            Response resp=null;
-            Connection conn=HyperControlApp.getConnection();
-            if((conn!=null)&&(conn.isOpen())){
-                resp= conn.sendRequest(req);
-            }
+            Response resp=HyperControlApp.sendRequest(req);
 
             if (resp!=null){
                 if (!resp.isSuccess()) {

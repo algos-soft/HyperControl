@@ -84,7 +84,7 @@ public class Connection {
             createReceiveThread();
             doLogin();
             Log.d(TAG, "connection created successfully");
-            open=true;
+            open = true;
         } else {
             Log.d(TAG, "create connection failed");
             throw new NetworkUnavailableException();
@@ -98,15 +98,15 @@ public class Connection {
      */
     public void close() {
 
-        if (requestThread!=null ){
+        if (requestThread != null) {
             requestThread.interrupt(); // nel Thread il metodo Thread.sleep() genera una InterruptedException
         }
 
-        if (receiveThread!=null ){
+        if (receiveThread != null) {
             receiveThread.interrupt(); // nel Thread il metodo Thread.sleep() genera una InterruptedException
         }
 
-        if (socket!=null){
+        if (socket != null) {
             try {
                 socket.close();
             } catch (IOException e) {
@@ -114,7 +114,7 @@ public class Connection {
             }
         }
 
-        open=false;
+        open = false;
 
 
     }
@@ -138,45 +138,53 @@ public class Connection {
 
 
     /**
-     * accoda la richiesta e attende la risposta corrispondente
-     * quando riceve la risposta corrispondente la ritorna
-     * Il flusso richiesta-risposta è strettamente sincrono
-     * Prima di inviare una nuova richiesta si attende la riposta precedente
+     * Accoda una richiesta e attende la risposta corrispondente.
+     * Quando riceve la risposta corrispondente la ritorna.
+     * Il flusso richiesta-risposta è strettamente sincrono.
+     * Prima di inviare una nuova richiesta si attende la riposta precedente.
+     * La richiesta viene accodata solo se la connessione è aperta.
      *
      * @param req richiesta da accodare
-     * @return risposta corrispondente, null se in timeout
+     * @return risposta corrispondente, null se in timeout o se
+     * la connessione è chiusa
      */
     public Response sendRequest(Request req) {
+
         Response resp = null;
-        requestQueue.add(req);
 
-        // attende che nella coda delle risposte appaia la risposta corrispondente
-        boolean stop = false;
-        int num = req.getRequestNumber();
-        long start = System.currentTimeMillis();
-        while (!stop) {
+        if (isOpen()) {
 
-            resp = responseQueue.get(num);
-            if (resp != null) {
-                responseQueue.remove(num);
-                stop = true;
-            }
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            requestQueue.add(req);
 
-            // check timeout if present
-            if (req.getTimeout() > 0) {
-                long secs = (System.currentTimeMillis() - start) / 1000;
-                if (secs > req.getTimeout()) {
-                    Log.e(TAG, "Request timeout " + req.getDebugString());
+            // attende che nella coda delle risposte appaia la risposta corrispondente
+            boolean stop = false;
+            int num = req.getRequestNumber();
+            long start = System.currentTimeMillis();
+            while (!stop) {
+
+                resp = responseQueue.get(num);
+                if (resp != null) {
+                    responseQueue.remove(num);
                     stop = true;
                 }
-            }
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
+                // check timeout if present
+                if (req.getTimeout() > 0) {
+                    long secs = (System.currentTimeMillis() - start) / 1000;
+                    if (secs > req.getTimeout()) {
+                        Log.e(TAG, "Request timeout " + req.getDebugString());
+                        stop = true;
+                    }
+                }
+
+            }
         }
+
         return resp;
     }
 
@@ -414,7 +422,6 @@ public class Connection {
                 }
 
             }
-
 
 
             /**

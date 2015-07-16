@@ -63,11 +63,7 @@ public class BoardDisplay extends ItemDisplay {
 
         Request req=new BoardsCommanRequest(boardNumber, button.isChecked(), false);
 
-        Response resp=null;
-        Connection conn=HyperControlApp.getConnection();
-        if((conn!=null)&&(conn.isOpen())){
-            resp= conn.sendRequest(req);
-        }
+        Response resp=HyperControlApp.sendRequest(req);
 
         if(resp!=null){
             if (!resp.isSuccess()) {

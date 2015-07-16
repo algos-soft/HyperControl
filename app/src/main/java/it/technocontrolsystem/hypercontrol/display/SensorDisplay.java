@@ -160,12 +160,7 @@ public class SensorDisplay extends ItemDisplay {
         int sensorNumber=DB.getSensor(itemId).getNumber();
 
         Request req=new SensorCommandRequest(sensorNumber,4,button.isChecked());
-
-        Response resp=null;
-        Connection conn=HyperControlApp.getConnection();
-        if((conn!=null)&&(conn.isOpen())){
-            resp= conn.sendRequest(req);
-        }
+        Response resp=HyperControlApp.sendRequest(req);
 
         if(resp!=null){
             if (!resp.isSuccess()) {

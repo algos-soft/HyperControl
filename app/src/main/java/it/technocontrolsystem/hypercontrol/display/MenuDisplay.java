@@ -51,12 +51,7 @@ public class MenuDisplay extends Button {
                 @Override
                 public void onClick(View v) {
                     MenuCommandRequest request = new MenuCommandRequest(menu.getNumber());
-
-                    Connection conn=HyperControlApp.getConnection();
-                    if((conn!=null)&&(conn.isOpen())){
-                        conn.sendRequest(request);
-                    }
-
+                    HyperControlApp.sendRequest(request);
                 }
             });
 
