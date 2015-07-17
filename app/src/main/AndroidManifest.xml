@@ -84,11 +84,6 @@
         </activity>
 
         <activity
-            android:name=".activity.SettingActivity"
-            android:label="@string/title_activity_setting">
-        </activity>
-
-        <activity
             android:name=".activity.EventiActivity"
             android:label="@string/title_activity_eventi"
             android:launchMode="singleTask">

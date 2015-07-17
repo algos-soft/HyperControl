@@ -26,6 +26,8 @@ public class HyperControlApp extends Application {
     private ArrayList<OnConnectionStatusChangedListener> connectionStatusChangedListeners;
     private ArrayList<OnConnectivityChangedListener> connectivityChangedListeners;
     private boolean hasConnectivity;// se il device è connesso alla rete
+    private boolean developer;  // se l'utente è un developer
+    public static final String DEV_PASS="tcshc9213";
 
     public HyperControlApp() {
         instance = this;
@@ -161,6 +163,13 @@ public class HyperControlApp extends Application {
         public void connectivityChanged(boolean newStatus);
     }
 
+    public static boolean isDeveloper() {
+        return instance.developer;
+    }
+
+    public static void setDeveloper(boolean developer) {
+        instance.developer = developer;
+    }
 
     public static HyperControlApp getInstance() {
         return instance;

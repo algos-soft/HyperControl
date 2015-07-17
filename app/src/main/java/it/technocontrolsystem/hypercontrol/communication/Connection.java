@@ -82,9 +82,9 @@ public class Connection {
             createSocket();
             createRequestThread();
             createReceiveThread();
-            doLogin();
-            Log.d(TAG, "connection created successfully");
             open = true;
+            Log.d(TAG, "connection created successfully");
+            doLogin();
         } else {
             Log.d(TAG, "create connection failed");
             throw new NetworkUnavailableException();

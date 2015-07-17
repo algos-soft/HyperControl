@@ -10,6 +10,8 @@ import java.util.Locale;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
+import it.technocontrolsystem.hypercontrol.Prefs;
+import it.technocontrolsystem.hypercontrol.activity.ConfigActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Board;
@@ -101,7 +103,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
 
-        if (progress!=null){
+        if (progress != null) {
             progress.dismiss();
         }
 
@@ -130,12 +132,14 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
         String lan;
         LanguageRequest request;
         request = new LanguageRequest();
-        lan = Locale.getDefault().getLanguage();
-        if (lan.equals("IT") || lan.equals("it")) {
-            request.setLan("IT");
-        } else {
-            request.setLan("EN");
-        }
+        String langCode= Prefs.getPrefs().getString("language", ConfigActivity.Languages.IT.getLangCode());
+        request.setLan(langCode);
+//        lan = Locale.getDefault().getLanguage();
+//        if (langCode.equals("IT") || lan.equals("it")) {
+//            request.setLan("IT");
+//        } else {
+//            request.setLan("EN");
+//        }
         HyperControlApp.sendRequest(request);
     }
 
@@ -166,14 +170,26 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
 
                     if (localConfig != remoteConfig) {
 
-                        Log.d(TAG, "Starting configuration download");
-                        publishProgress(-1);    // scaricamento configurazione in corso
-                        fillDB();
+                        // tutta la creazione del sito e scaricamento dati è sotto transazione
+                        // così la scrittura è molto più veloce e non rischiamo di lasciare
+                        // il database scritto a metà.
+                        DB.getWritableDb().beginTransaction();
+                        Log.d(TAG, "Transaction started" + remoteConfig);
+                        try{
+                            Log.d(TAG, "Starting configuration download");
+                            publishProgress(-1);    // scaricamento configurazione in corso
+                            fillDB();
+                            Log.d(TAG, "Set local site version number to: " + remoteConfig);
+                            Site site = getSite();
+                            site.setVersion(remoteConfig);
+                            DB.saveSite(site);
+                            DB.getWritableDb().setTransactionSuccessful();
+                            Log.d(TAG, "Transaction completed successfully" + remoteConfig);
+                        }finally {
+                            DB.getWritableDb().endTransaction();
+                        }
 
-                        Log.d(TAG, "Set local site version number to: " + remoteConfig);
-                        Site site = getSite();
-                        site.setVersion(remoteConfig);
-                        DB.saveSite(site);
+
                     }
 
 
@@ -199,29 +215,29 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
         deleteAllRecords();
 
         // Riempie il DB con impianti e aree
-        logRow="ricezione impianti ed aree...";
-        Log.d(TAG, logRow);
+        Log.d(TAG, "start receive plants and areas");
+        logRow = "trasferimento impianti ed aree...";
         publishProgress(-2);
         fillPlantsAndAreas();
         Log.d(TAG, "end receive plants and areas");
 
         // Riempie il DB con i sensori e la tabella di incrocio aree-sensori
-        logRow="ricezione sensori...";
-        Log.d(TAG, logRow);
+        Log.d(TAG, "start receive sensors");
+        logRow = "trasferimento sensori...";
         publishProgress(-2);
         fillSensors();
         Log.d(TAG, "end receive sensors");
 
         // Riempie il DB con le schede
-        logRow="ricezione schede...";
-        Log.d(TAG, logRow);
+        Log.d(TAG, "start receive boards");
+        logRow = "trasferimento schede...";
         publishProgress(-2);
         fillBoards();
         Log.d(TAG, "end receive boards");
 
         // Riempie il DB con i menu
-        logRow="ricezione menu...";
-        Log.d(TAG, logRow);
+        Log.d(TAG, "start receive menus");
+        logRow = "trasferimento menu...";
         publishProgress(-2);
         fillMenus();
         Log.d(TAG, "end receive menus");
@@ -246,6 +262,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
      * e riempie le corrispondenti tabelle
      */
     private void fillPlantsAndAreas() throws Exception {
+        String s;
         Request req = new ListPlantsRequest();
         Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
@@ -255,8 +272,9 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
                 int idPlant = DB.savePlant(p);
                 p.setId(idPlant);
 
-                logRow="Impianto id " + p.getId() + " " + p.getName() + " creato";
-                Log.d(TAG, logRow);
+                s = p.getId() + " " + p.getName();
+                Log.d(TAG, "Plant " + s + " created");
+                logRow = "Impianto id " + s + " creato";
                 publishProgress(-2);
 
                 for (Area area : p.getAreas()) {
@@ -264,8 +282,9 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
                     int idArea = DB.saveArea(area);
                     area.setId(idArea);
 
-                    logRow="Area id " + area.getId() + " " + area.getName() + " creata";
-                    Log.d(TAG, logRow);
+                    s = area.getId() + " " + area.getName();
+                    Log.d(TAG, "Area " + s + " created");
+                    logRow = "Area id " + s + " creata";
                     publishProgress(-2);
 
                 }
@@ -287,7 +306,11 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
         Request req = new ListSensorsRequest();
         Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
+
             ListSensorsResponse sResp = (ListSensorsResponse) resp;
+
+            int createdCount=0;
+
             for (Sensor sensor : sResp.getSensors()) {
 
                 int idSite = getSite().getId();
@@ -301,9 +324,11 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
                     int id = DB.saveSensor(sensor);
                     sensor.setId(id);
 
-                    logRow="Sensore " + sensor.getId() + " " + sensor.getName() + " creato";
-                    Log.d(TAG, logRow);
+                    String s = sensor.getId() + " " + sensor.getName();
+                    Log.d(TAG, "Sensor " + s + " created");
+                    logRow = "Sensore " + s + " creato";
                     publishProgress(-2);
+                    createdCount++;
 
                     // crea i record nella tabella di incrocio
                     Integer[] areaNums = sensor.getAreaNums();
@@ -315,7 +340,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
                 }
             }
 
-            Log.d(TAG, sResp.getSensors().length + " sensors created");
+            Log.d(TAG, createdCount + " sensors created");
 
         }
 
@@ -332,8 +357,10 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
             for (Board board : sResp.getBoards()) {
                 board.setIdSite(getSite().getId());
                 DB.saveBoard(board);
-                logRow="Scheda " + board.getId() + " " + board.getName() + " creata";
-                Log.d(TAG, logRow);
+
+                String s=board.getId() + " " + board.getName();
+                Log.d(TAG, "Board "+s+" created");
+                logRow = "Scheda " + s + " creata";
                 publishProgress(-2);
 
             }
@@ -353,8 +380,9 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
                 menu.setIdSite(getSite().getId());
                 DB.saveMenu(menu);
 
-                logRow="Menu " + menu.getId() + " " + menu.getName() + " creato";
-                Log.d(TAG, logRow);
+                String s= menu.getId() + " " + menu.getName();
+                Log.d(TAG, "Menu "+s+" created");
+                logRow = "Menu " +s+ " creato";
                 publishProgress(-2);
 
             }

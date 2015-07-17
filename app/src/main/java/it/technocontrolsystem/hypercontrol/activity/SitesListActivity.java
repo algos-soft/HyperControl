@@ -106,6 +106,7 @@ public class SitesListActivity extends HCActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         DB.deleteSite(site.getId());
                         updateAdapter(site.getId());
+                        regolaHeader(); // aggiorno il numero di siti visualizzato
                     }
                 });
                 builder.show();
@@ -127,6 +128,7 @@ public class SitesListActivity extends HCActivity {
                 if(deleted){
                     int idDeleted=data.getIntExtra("siteid",0);
                     updateAdapter(idDeleted);
+                    regolaHeader(); // aggiorno il numero di siti visualizzato
                 }else{
                     refreshAdapter();
                 }
@@ -141,6 +143,7 @@ public class SitesListActivity extends HCActivity {
                 SiteModel model = new SiteModel(site);
                 getListAdapter().add(model);
                 getListAdapter().notifyDataSetChanged();
+                regolaHeader(); // aggiorno il numero di siti visualizzato
 
                 // scroll listview to bottom
                 getListView().post(new Runnable() {
@@ -150,6 +153,7 @@ public class SitesListActivity extends HCActivity {
                         getListView().setSelection(getListAdapter().getCount() - 1);
                     }
                 });
+
 
                 // dopo aver creato il nuovo sito propone di connettersi
                 if (Lib.isNetworkAvailable()){

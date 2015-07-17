@@ -32,7 +32,7 @@ import it.technocontrolsystem.hypercontrol.listadapters.SimpleListAdapter;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
 /**
- * Activity di base per tutte le liste di oggetti.
+ * Activity di base con ActionBar che gestisce un header e una lista interna.
  * Usiamo ActionBarActivity per avere la garanzia che l'option menu sia sempre accessibile.
  * Senza la ActionBar dovremmo gestire l'option menu in modo custom
  * perché il pulsante menu non è più garantito sui dispositivi.
@@ -280,29 +280,41 @@ public abstract class HCActivity extends ActionBarActivity {
         String line3 = getHeadline3();
 
         view = (TextView) findViewById(R.id.hdr_line2);
-        if (line2 != null && !line2.equals("")) {
-            view.setText(line2);
-        } else {
-            view.setVisibility(View.GONE);
+        if(view!=null){
+            if (line2 != null && !line2.equals("")) {
+                view.setText(line2);
+            } else {
+                view.setVisibility(View.GONE);
+            }
         }
 
         view = (TextView) findViewById(R.id.hdr_line3);
-        if (line3 != null && !line3.equals("")) {
-            view.setText(line3);
-        } else {
-            view.setVisibility(View.GONE);
+        if(view!=null){
+            if (line3 != null && !line3.equals("")) {
+                view.setText(line3);
+            } else {
+                view.setVisibility(View.GONE);
+            }
         }
 
         int number = getNumItemsInList();
-        String type = getItemsType();
         TextView numView = (TextView) findViewById(R.id.hdr_item_num);
         TextView typeView = (TextView) findViewById(R.id.hdr_item_type);
-        if (number > -1) {
-            numView.setText("" + number);
-            typeView.setText(type);
-        } else {
-            numView.setVisibility(View.GONE);
-            typeView.setVisibility(View.GONE);
+        if(number>-1){
+            String type = getItemsType();
+            if(numView!=null){
+                numView.setText("" + number);
+            }
+            if(typeView!=null){
+                typeView.setText(type);
+            }
+        }else{
+            if(numView!=null){
+                numView.setVisibility(View.GONE);
+            }
+            if(typeView!=null){
+                typeView.setVisibility(View.GONE);
+            }
         }
 
     }
