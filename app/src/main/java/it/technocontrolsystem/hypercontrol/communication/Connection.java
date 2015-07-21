@@ -297,6 +297,11 @@ public class Connection {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
+                        try {
+                            dataOutputStream.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                         break;
                     }
                 }
@@ -357,7 +362,6 @@ public class Connection {
                             }
 
                             //lettura dell'inputStream
-
                             if (dataInputStream.available() > 0) {
 
                                 int i = dataInputStream.read();
@@ -416,6 +420,11 @@ public class Connection {
                             e.printStackTrace();
                         }
                     } catch (InterruptedException e) {
+                        try {
+                            dataInputStream.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                         break;
                     }
 
@@ -457,9 +466,9 @@ public class Connection {
 
                     Response resp = new Response(responseText);
                     String command = resp.getComando();
-                    Log.e(TAG, "new message received, cmd: " + command);
                     if (command.equalsIgnoreCase("live")) {
                         final LiveMessage message = new LiveMessage(responseText);
+                        Log.d(TAG, "live message received, cmd: " + command);
                         if (liveListener != null) {
                             liveListener.liveReceived(message);
                         }

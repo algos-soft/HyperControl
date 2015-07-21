@@ -291,12 +291,6 @@ public abstract class HCSiteActivity extends HCActivity {
         int id = item.getItemId();
 
         switch (id) {
-            case MENU_SETTINGS: {
-                Intent intent = new Intent();
-                intent.setClass(this, ConfigActivity.class);
-                startActivity(intent);
-                break;
-            }
 
             case MENU_BOARDS: {
                 Intent intent = new Intent();
@@ -322,30 +316,6 @@ public abstract class HCSiteActivity extends HCActivity {
                 break;
             }
 
-            case MENU_CREDITS: {
-
-                String app_version = "";
-                try {
-                    PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-                    app_version = pInfo.versionName;
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                String msg = getString(R.string.app_name) + " " + app_version + "\n";
-                msg += "©2015 Technocontrol System\n";
-                msg += "info@technocontrolsystem.it";
-                builder.setMessage(msg);
-                builder.setPositiveButton("continua", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.show();
-                break;
-            }
 
             case MENU_SITES: {
 
