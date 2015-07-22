@@ -55,11 +55,22 @@ public class DeveloperActivity extends ActionBarActivity {
         bResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Prefs.remove("password");
+                Prefs.remove(Prefs.PASSWORD);
                 Toast.makeText(DeveloperActivity.this, "Password resettata.",Toast.LENGTH_LONG).show();
             }
 
         });
+
+        Button bDelGCMToken = (Button) findViewById(R.id.delGCMtoken);
+        bDelGCMToken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Prefs.remove(Prefs.GCM_REGISTRATION_TOKEN);
+                Toast.makeText(DeveloperActivity.this, "GCM Token eliminato.",Toast.LENGTH_LONG).show();
+            }
+
+        });
+
 
 
     }

@@ -24,7 +24,7 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // inizializza le variabili del Singleton Application
+        // inizializza le variabili del Singleton (Application)
         HyperControlApp.init();
 
         // registra lo stato iniziale di connettività
@@ -79,7 +79,7 @@ public class SplashActivity extends Activity {
 
                 Intent intent = new Intent();
 
-                intent.setClass(SplashActivity.this, DemoActivity.class);
+                intent.setClass(SplashActivity.this, LoginActivity.class);
                 //intent.setClass(SplashActivity.this, AuthActivityOld.class);
 
                 SplashActivity.this.startActivity(intent);

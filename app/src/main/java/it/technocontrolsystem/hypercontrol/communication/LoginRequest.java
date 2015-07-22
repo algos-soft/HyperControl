@@ -1,7 +1,7 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
 import it.technocontrolsystem.hypercontrol.Lib;
-import it.technocontrolsystem.hypercontrol.service.DemoActivity;
+import it.technocontrolsystem.hypercontrol.Prefs;
 
 /**
  *
@@ -16,10 +16,19 @@ public class LoginRequest extends Request {
     }
 
     public String getMessage() {
+        String token = Prefs.getPrefs().getString(Prefs.GCM_REGISTRATION_TOKEN, null);
+        if (token!=null) {
+            token = token.replace("-", "\\-");
+        }else{
+            token="";
+        }
+
         String msg="<User>"+siteuser+"</User>";
         msg+="<Pwd>"+sitepsw+"</Pwd>";
         msg+="<MAC>"+ Lib.getDeviceID()+"</MAC>";
-        msg+="<RegId>"+ DemoActivity.regid.replace("-","\\-")+"</RegId>";
+        msg+="<RegId>"+ token +"</RegId>";
+
+
        return msg;
     }
 

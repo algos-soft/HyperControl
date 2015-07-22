@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 
@@ -67,6 +68,20 @@ public class ConfigActivity extends HCActivity {
                 startActivity(intent);
             }
         });
+
+        final ToggleButton bReceiveNotif = (ToggleButton)findViewById(R.id.btn_receive_notif);
+        bReceiveNotif.setChecked(Prefs.getPrefs().getBoolean(Prefs.RECEIVE_NOTIFICATIONS, true));
+        bReceiveNotif.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(bReceiveNotif.isChecked()){  // going ON
+                    Prefs.getEditor().putBoolean(Prefs.RECEIVE_NOTIFICATIONS, true).apply();
+                }else{
+                    Prefs.getEditor().putBoolean(Prefs.RECEIVE_NOTIFICATIONS, false).apply();
+                }
+            }
+        });
+
 
         Button bDeveloper = (Button) findViewById(R.id.btn_developer);
         if(HyperControlApp.isDeveloper()){
