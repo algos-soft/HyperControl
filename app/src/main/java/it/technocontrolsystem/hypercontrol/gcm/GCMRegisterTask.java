@@ -11,7 +11,24 @@ import android.widget.Toast;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
@@ -36,17 +53,10 @@ public class GCMRegisterTask extends AsyncTask<Void, Void, String> {
             InstanceID instanceID = InstanceID.getInstance(context);
             String regToken = instanceID.getToken(senderId,  GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
-            // You should send the registration ID to your server over HTTP, so it
-            // can use GCM/HTTP or CCS to send messages to your app.
-            String err=sendRegistrationIdToBackend(regToken);
-            if (err==null) {
+            // Persist the regID - no need to register again.
+            Prefs.getEditor().putString(Prefs.GCM_REGISTRATION_TOKEN, regToken).apply();
 
-                // Persist the regID - no need to register again.
-                Prefs.getEditor().putString(Prefs.GCM_REGISTRATION_TOKEN, regToken).apply();
-
-            } else {
-                msg = "Error : " + err;
-            }
+            // No need to send the ID to our server here - it is sent along with each Login request
 
         } catch (IOException ex) {
             msg = "Error : " + ex.getMessage();
@@ -84,15 +94,14 @@ public class GCMRegisterTask extends AsyncTask<Void, Void, String> {
         }
     }
 
-    /**
-     * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
-     * messages to your app.
-     * @return null if the backend acknowledged the registration, or the error message
-     */
-    private String sendRegistrationIdToBackend(String regToken) {
-        // Your implementation here.
-        return null;
-    }
+//    /**
+//     * Sends the registration ID to your server over HTTP, so it can use GCM/HTTP or CCS to send
+//     * messages to your app.
+//     * @return null if the backend acknowledged the registration, or the error message
+//     */
+//    private String sendRegistrationIdToBackend(String regToken) {
+//        return null;
+//    }
 
 
 }

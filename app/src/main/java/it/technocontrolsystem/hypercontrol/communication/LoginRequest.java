@@ -16,9 +16,10 @@ public class LoginRequest extends Request {
     }
 
     public String getMessage() {
+
         String token = Prefs.getPrefs().getString(Prefs.GCM_REGISTRATION_TOKEN, null);
         if (token!=null) {
-            token = token.replace("-", "\\-");
+            token = token.replace("-", "\\-");  // perché questo?
         }else{
             token="";
         }
