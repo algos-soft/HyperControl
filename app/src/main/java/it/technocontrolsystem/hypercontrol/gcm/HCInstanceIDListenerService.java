@@ -17,6 +17,7 @@
 package it.technocontrolsystem.hypercontrol.gcm;
 
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
 
@@ -24,19 +25,16 @@ import it.technocontrolsystem.hypercontrol.Prefs;
 
 public class HCInstanceIDListenerService extends InstanceIDListenerService {
 
-    private static final String TAG = "HCInstanceIDLS";
+    private static final String TAG="GCMREG";
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
      * the previous token had been compromised. This call is initiated by the
      * InstanceID provider.
      */
-    // [START refresh_token]
+
     @Override
     public void onTokenRefresh() {
-        // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
-//        Intent intent = new Intent(this, HCRegistrationIntentService.class);
-//        startService(intent);
 
         // remove old token form preferences
         Prefs.getEditor().putString(Prefs.GCM_REGISTRATION_TOKEN, null).apply();
@@ -45,8 +43,9 @@ public class HCInstanceIDListenerService extends InstanceIDListenerService {
         GCMRegisterTask task = new GCMRegisterTask();
         task.execute();
 
+        Log.d(TAG, "GCM Token refresh received");
 
 
     }
-    // [END refresh_token]
+
 }
