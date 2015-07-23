@@ -21,22 +21,22 @@ public class SimpleSender {
     public static void main(String[] args) {
         try {
 
-            // prepara i dati
+            // prepara il payload di dati del messaggio
             JSONObject jData = new JSONObject();
             jData.put("messagetype", "alarm");
             jData.put("timestamp", "0000000000");
-            jData.put("sitenum", "2");
-            jData.put("plantnum", "4");
-            jData.put("areanum", "3");
+            jData.put("sitenum", "1");
+            jData.put("plantnum", "3");
+            jData.put("areanum", "2");
             jData.put("sensornum", "99");
-            jData.put("details", "qui i dettagli dell'evento");
+            jData.put("details", "qui altri eventuali dettagli dell'evento");
 
-            // Prepare JSON containing the GCM message content. What to send and where to send.
+            // Prepara un JSON con il contenuto del messaggio GCM - a chi mandare cosa
             JSONObject jGcmData = new JSONObject();
             jGcmData.put("to", DEVICE_ID);
             jGcmData.put("data", jData);
 
-            // Create connection to send GCM Message request.
+            // Crea una connessione per inviare la richiesta del messaggio GCM
             URL url = new URL("https://android.googleapis.com/gcm/send");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestProperty("Authorization", "key=" + API_KEY);
@@ -44,11 +44,11 @@ public class SimpleSender {
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
 
-            // Send GCM message content.
+            // Invia il messaggio GCM
             OutputStream outputStream = conn.getOutputStream();
             outputStream.write(jGcmData.toString().getBytes());
 
-            // Read GCM response.
+            // Legge la risposta GCM
             InputStream inputStream = conn.getInputStream();
             String resp = IOUtils.toString(inputStream);
             System.out.println(resp);
