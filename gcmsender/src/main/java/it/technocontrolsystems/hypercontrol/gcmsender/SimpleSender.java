@@ -38,6 +38,7 @@ public class SimpleSender {
         JFrame frame = new JFrame();
         frame.add(creaPanBottoni());
         frame.setTitle("AlarmSender");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setApiKey(API_KEY);
         setDeviceId(DEVICE_ID);
