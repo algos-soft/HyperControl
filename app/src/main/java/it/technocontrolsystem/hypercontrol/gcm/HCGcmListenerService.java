@@ -16,6 +16,7 @@
 
 package it.technocontrolsystem.hypercontrol.gcm;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -118,10 +119,13 @@ public class HCGcmListenerService extends GcmListenerService {
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent);
 
+                Notification mNotification = notificationBuilder.build();
+                mNotification.flags |= Notification.FLAG_INSISTENT;
+
                 NotificationManager notificationManager =
                         (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-                notificationManager.notify(0, notificationBuilder.build());
+                notificationManager.notify(0, mNotification);
 
                 // sveglia il device
                 PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);

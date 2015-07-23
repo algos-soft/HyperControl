@@ -39,4 +39,12 @@
         android:text="Delete GCM token"
         android:id="@+id/delGCMtoken"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Export GCM token"
+        android:id="@+id/exportGCMtoken"/>
+
+    bytes
+
 </LinearLayout>

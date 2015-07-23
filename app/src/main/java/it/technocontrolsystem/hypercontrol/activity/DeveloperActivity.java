@@ -1,10 +1,14 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
@@ -71,8 +75,40 @@ public class DeveloperActivity extends ActionBarActivity {
 
         });
 
+        Button bExpGCMToken = (Button) findViewById(R.id.exportGCMtoken);
+        bExpGCMToken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveRegistration();
+            }
+
+        });
 
 
     }
+
+
+    private void saveRegistration() {
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/registration");
+        myDir.mkdirs();
+        String fname = "hcreg.txt";
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete ();
+        try {
+            String str = Prefs.getRegistrationToken();
+            byte[] bytes = str.getBytes();
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(bytes);
+            out.flush();
+            out.close();
+            Toast.makeText(DeveloperActivity.this, "GCM Token exported in "+file,Toast.LENGTH_LONG).show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 }

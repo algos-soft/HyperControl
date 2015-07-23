@@ -3,11 +3,24 @@ package it.technocontrolsystems.hypercontrol.gcmsender;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 /**
  * Created by alex on 23-07-2015.
@@ -15,10 +28,101 @@ import java.net.URL;
 public class SimpleSender {
 
     public static final String API_KEY = "AIzaSyCTc1hvMyJUd_F8jBOJzmrbxz9mV9KveWU";
-    public static final String DEVICE_ID = "fkfbaUAxrWE:APA91bFxP74Bu2l8eyeeZAFofjDe_goJsyojrG9q6-v410OEF023hSxECpKl0tIm72lzkIrT_ECs0I7EL4RlwCXOjYGS24lmXUDusTq9vGN6tC8MPY0wW3DYMq283FI0agCDTV2Digcc";
+    public static final String DEVICE_ID = "en-Zw29dunY:APA91bFhuCLwlDNzcF7zK0kYD9m1kXa144QdF3cE4hDZwtX9bKZo4CuEtJcuLh2jJM9m6tV3NE-9xY_a-qYxftL9_qmtoZ9l-NrCyvnH03QP_1ISa8IMsncxkf9Y4OSGLlgHBd9Cq5HQ";
+
+    private JTextArea apiField;
+    private JTextArea idField;
+    private JTextArea responseField;
+
+    public SimpleSender() {
+        JFrame frame = new JFrame();
+        frame.add(creaPanBottoni());
+        frame.setTitle("AlarmSender");
+
+        setApiKey(API_KEY);
+        setDeviceId(DEVICE_ID);
+
+        frame.pack();
+        frame.setVisible(true);
+
+    }
 
 
-    public static void main(String[] args) {
+    private JPanel creaPanBottoni() {
+        JPanel pan = new JPanel();
+        pan.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+        apiField = new JTextArea();
+        apiField.setPreferredSize(new Dimension(300,80));
+        apiField.setLineWrap(true);
+
+        idField = new JTextArea();
+        idField.setPreferredSize(new Dimension(300,80));
+        idField.setLineWrap(true);
+
+        responseField = new JTextArea();
+        responseField.setPreferredSize(new Dimension(300,80));
+        responseField.setLineWrap(true);
+
+        JButton bSend = new JButton();
+        bSend.setText("Send message");
+        bSend.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setResponse("");
+                String resp=send();
+                setResponse(resp);
+            }
+        });
+
+        BoxLayout layout = new BoxLayout(pan, BoxLayout.Y_AXIS);
+        pan.setLayout(layout);
+
+        pan.add(new JLabel("API Key"));
+        pan.add(apiField);
+        apiField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        pan.add(new JLabel(" "));
+        pan.add(new JLabel("Device ID"));
+        pan.add(idField);
+        idField.setAlignmentX(Component.LEFT_ALIGNMENT);
+        pan.add(new JLabel(" "));
+        pan.add(bSend);
+        bSend.setAlignmentX(Component.LEFT_ALIGNMENT);
+        pan.add(new JLabel(" "));
+        pan.add(new JLabel("Response"));
+        pan.add(responseField);
+        responseField.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+
+        return pan;
+    }
+
+    private String getApiKey(){
+        return apiField.getText();
+    }
+
+    private String getDeviceId(){
+        return idField.getText();
+    }
+
+    private void setApiKey(String key){
+        apiField.setText(key);
+    }
+
+    private void setDeviceId(String sid){
+        idField.setText(sid);
+    }
+
+    private void setResponse(String sid){
+        responseField.setText(sid);
+    }
+
+
+
+
+    private String send() {
+
+        String resp="";
+
         try {
 
             // prepara il payload di dati del messaggio
@@ -29,17 +133,18 @@ public class SimpleSender {
             jData.put("plantnum", "3");
             jData.put("areanum", "2");
             jData.put("sensornum", "99");
+            jData.put("sensornum", "99");
             jData.put("details", "qui altri eventuali dettagli dell'evento");
 
             // Prepara un JSON con il contenuto del messaggio GCM - a chi mandare cosa
             JSONObject jGcmData = new JSONObject();
-            jGcmData.put("to", DEVICE_ID);
+            jGcmData.put("to", getDeviceId());
             jGcmData.put("data", jData);
 
             // Crea una connessione per inviare la richiesta del messaggio GCM
             URL url = new URL("https://android.googleapis.com/gcm/send");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestProperty("Authorization", "key=" + API_KEY);
+            conn.setRequestProperty("Authorization", "key=" + getApiKey());
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -50,13 +155,21 @@ public class SimpleSender {
 
             // Legge la risposta GCM
             InputStream inputStream = conn.getInputStream();
-            String resp = IOUtils.toString(inputStream);
+            resp = IOUtils.toString(inputStream);
             System.out.println(resp);
 
         } catch (IOException e) {
             System.out.println("Unable to send GCM message.");
+            resp=e.getMessage();
             e.printStackTrace();
         }
+
+        return resp;
+    }
+
+
+    public static void main(String[] args) {
+        new SimpleSender();
     }
 
 
