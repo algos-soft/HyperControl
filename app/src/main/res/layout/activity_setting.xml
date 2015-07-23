@@ -66,6 +66,14 @@
             android:textOff="OFF"
             android:textOn="ON" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/registration_status"
+            android:text="Qui mostra lo stato della registrazione"
+            android:textSize="20sp"/>
+
+
     </LinearLayout>
 
 

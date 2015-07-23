@@ -269,10 +269,10 @@ public abstract class HCSiteActivity extends HCActivity {
         item = menu.add(Menu.NONE, MENU_EVENTI, Menu.NONE, getString(R.string.menu_events));
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        item = menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, getString(R.string.menu_settings));
+        item = menu.add(Menu.NONE, MENU_SITES, Menu.NONE, getString(R.string.menu_sites));
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        item = menu.add(Menu.NONE, MENU_SITES, Menu.NONE, getString(R.string.menu_sites));
+        item = menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, getString(R.string.menu_settings));
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         item = menu.add(Menu.NONE, MENU_CREDITS, Menu.NONE, getString(R.string.menu_credits));

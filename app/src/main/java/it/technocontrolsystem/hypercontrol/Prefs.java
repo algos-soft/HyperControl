@@ -12,9 +12,9 @@ public class Prefs {
 
     public static final String PASSWORD = "password";
     public static final String RECEIVE_NOTIFICATIONS = "receiveNotifications";
-    public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
+//    public static final String SENT_TOKEN_TO_SERVER = "sentTokenToServer";
     public static final String GCM_REGISTRATION_TOKEN = "gmcRegistrationToken";
-    public static final String REGISTRATION_COMPLETE = "registrationComplete";
+//    public static final String REGISTRATION_COMPLETE = "registrationComplete";
 
 
     /**
@@ -55,6 +55,10 @@ public class Prefs {
         SharedPreferences.Editor editor=getEditor();
         editor.putBoolean(RECEIVE_NOTIFICATIONS,flag);
         editor.commit();
+    }
+
+    public static String getRegistrationToken() {
+        return getPrefs().getString(GCM_REGISTRATION_TOKEN,null);
     }
 
 }

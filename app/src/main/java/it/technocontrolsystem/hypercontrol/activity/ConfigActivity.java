@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -82,6 +83,12 @@ public class ConfigActivity extends HCActivity {
             }
         });
 
+        TextView vRegStatus = (TextView)findViewById(R.id.registration_status);
+        if(Prefs.getRegistrationToken()!=null){
+            vRegStatus.setText("Registrazione effettuata");
+        }else{
+            vRegStatus.setText("Dispositivo non registrato");
+        }
 
         Button bDeveloper = (Button) findViewById(R.id.btn_developer);
         if(HyperControlApp.isDeveloper()){

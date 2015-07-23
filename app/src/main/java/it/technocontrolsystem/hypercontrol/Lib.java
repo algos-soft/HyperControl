@@ -17,6 +17,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+
 /**
  * Created by Federico on 27/03/2015.
  */
@@ -25,11 +28,11 @@ public class Lib {
     /**
      * Convert from px to sp
      */
-    public static int px2sp(int px){
+    public static int px2sp(int px) {
         Context ctx = HyperControlApp.getContext();
-        Resources res=ctx.getResources();
+        Resources res = ctx.getResources();
         float w = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, res.getDisplayMetrics());
-        return (int)w;
+        return (int) w;
     }
 
     public static boolean isNetworkAvailable() {
@@ -39,7 +42,6 @@ public class Lib {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
-
 
 
     /**
@@ -53,16 +55,15 @@ public class Lib {
         // un valore qualsiasi di default perché non accetta zero.
         int orientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
-        switch(tempOrientation)
-        {
+        switch (tempOrientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
-                if(rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_90)
+                if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_90)
                     orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
                 else
                     orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
                 break;
             case Configuration.ORIENTATION_PORTRAIT:
-                if(rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_270)
+                if (rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_270)
                     orientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
                 else
                     orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
@@ -73,18 +74,18 @@ public class Lib {
     /**
      * Sblocca l'orientamento
      */
-    public static void unlockOrientation(Activity activity){
+    public static void unlockOrientation(Activity activity) {
         activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
-    public static PowerManager.WakeLock acquireWakeLock(){
-        PowerManager pm = (PowerManager)HyperControlApp.getContext().getSystemService(Context.POWER_SERVICE);
+    public static PowerManager.WakeLock acquireWakeLock() {
+        PowerManager pm = (PowerManager) HyperControlApp.getContext().getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock lock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "HCTag");
         lock.acquire();
         return lock;
     }
 
-    public static void releaseWakeLock(PowerManager.WakeLock lock){
+    public static void releaseWakeLock(PowerManager.WakeLock lock) {
         lock.release();
     }
 
@@ -119,7 +120,7 @@ public class Lib {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
-    public static String getDeviceID(){
+    public static String getDeviceID() {
         return Settings.Secure.getString(HyperControlApp.getContext().getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
@@ -127,11 +128,11 @@ public class Lib {
      * Controlla se una password è valida
      */
     public static boolean checkPassword(String testPassword) {
-        boolean valida=false;
-        String currPassword=Prefs.getPassword();
-        if(currPassword!=null && testPassword!=null){
-            if(testPassword.equals(currPassword)){
-                valida=true;
+        boolean valida = false;
+        String currPassword = Prefs.getPassword();
+        if (currPassword != null && testPassword != null) {
+            if (testPassword.equals(currPassword)) {
+                valida = true;
             }
         }
         return valida;
@@ -148,5 +149,34 @@ public class Lib {
         }
     }
 
+    /**
+     * Ritorna l'activity in primo piano
+     */
+    public static Activity getForegroundActivity() {
+        Activity activity = null;
+
+        try {
+            Class activityThreadClass = Class.forName("android.app.ActivityThread");
+            Object activityThread = activityThreadClass.getMethod("currentActivityThread").invoke(null);
+            Field activitiesField = activityThreadClass.getDeclaredField("mActivities");
+            activitiesField.setAccessible(true);
+            HashMap activities = (HashMap) activitiesField.get(activityThread);
+            for (Object activityRecord : activities.values()) {
+                Class activityRecordClass = activityRecord.getClass();
+                Field pausedField = activityRecordClass.getDeclaredField("paused");
+                pausedField.setAccessible(true);
+                if (!pausedField.getBoolean(activityRecord)) {
+                    Field activityField = activityRecordClass.getDeclaredField("activity");
+                    activityField.setAccessible(true);
+                    activity = (Activity) activityField.get(activityRecord);
+                }
+            }
+
+
+        } catch (Exception e) {
+        }
+
+        return activity;
+    }
 
 }

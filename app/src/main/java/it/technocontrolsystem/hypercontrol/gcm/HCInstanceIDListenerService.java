@@ -20,6 +20,8 @@ import android.content.Intent;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
 
+import it.technocontrolsystem.hypercontrol.Prefs;
+
 public class HCInstanceIDListenerService extends InstanceIDListenerService {
 
     private static final String TAG = "HCInstanceIDLS";
@@ -33,8 +35,18 @@ public class HCInstanceIDListenerService extends InstanceIDListenerService {
     @Override
     public void onTokenRefresh() {
         // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
-        Intent intent = new Intent(this, HCRegistrationIntentService.class);
-        startService(intent);
+//        Intent intent = new Intent(this, HCRegistrationIntentService.class);
+//        startService(intent);
+
+        // remove old token form preferences
+        Prefs.getEditor().putString(Prefs.GCM_REGISTRATION_TOKEN, null).apply();
+
+        // obtain a new token and send it to the server
+        GCMRegisterTask task = new GCMRegisterTask();
+        task.execute();
+
+
+
     }
     // [END refresh_token]
 }
