@@ -6,10 +6,7 @@ import android.widget.Button;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.activity.MenuActivity;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
-import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.MenuCommandRequest;
-import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Menu;
 

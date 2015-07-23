@@ -16,20 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
-import it.technocontrolsystem.hypercontrol.communication.Connection;
-import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
-import it.technocontrolsystem.hypercontrol.communication.Response;
-import it.technocontrolsystem.hypercontrol.domain.Site;
-import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
-import it.technocontrolsystem.hypercontrol.listadapters.SimpleListAdapter;
-import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
 /**
  * Activity di base con ActionBar che gestisce un header e una lista interna.

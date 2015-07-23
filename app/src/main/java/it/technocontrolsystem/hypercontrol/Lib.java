@@ -1,12 +1,14 @@
 package it.technocontrolsystem.hypercontrol;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -178,5 +180,15 @@ public class Lib {
 
         return activity;
     }
+
+
+    public static Uri resourceToUri (int resID) {
+        Context context = HyperControlApp.getContext();
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" +
+                context.getResources().getResourcePackageName(resID) + '/' +
+                context.getResources().getResourceTypeName(resID) + '/' +
+                context.getResources().getResourceEntryName(resID));
+    }
+
 
 }

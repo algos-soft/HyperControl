@@ -10,12 +10,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
 import it.technocontrolsystem.hypercontrol.communication.PlantsStatusRequest;
 import it.technocontrolsystem.hypercontrol.communication.PlantsStatusResponse;
-import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.display.PlantDisplay;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
 import it.technocontrolsystem.hypercontrol.model.PlantModel;

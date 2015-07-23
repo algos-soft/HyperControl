@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.BoardStatusRequest;
 import it.technocontrolsystem.hypercontrol.communication.BoardStatusResponse;
 import it.technocontrolsystem.hypercontrol.communication.Connection;

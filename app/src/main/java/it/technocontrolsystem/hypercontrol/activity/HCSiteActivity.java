@@ -1,20 +1,14 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListAdapter;
-import android.widget.TextView;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
@@ -22,7 +16,6 @@ import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
 import it.technocontrolsystem.hypercontrol.communication.Response;
-import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;

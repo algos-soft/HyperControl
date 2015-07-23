@@ -28,10 +28,13 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
-import it.technocontrolsystem.hypercontrol.activity.MainActivity;
 import it.technocontrolsystem.hypercontrol.activity.StartSiteActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
+import it.technocontrolsystem.hypercontrol.domain.Area;
+import it.technocontrolsystem.hypercontrol.domain.Plant;
+import it.technocontrolsystem.hypercontrol.domain.Site;
 
 public class HCGcmListenerService extends GcmListenerService {
 
@@ -76,28 +79,54 @@ public class HCGcmListenerService extends GcmListenerService {
      * Create and show a simple notification containing the received GCM message.
      */
     private void sendNotification(Bundle data) {
-        int siteid=1;
-        String message = data.getString("messagetype");
+        String messagetype = data.getString("messagetype");
 
-        Intent intent = new Intent();
-        intent.setClass(this, StartSiteActivity.class);
-        intent.putExtra("siteid", siteid);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        switch (messagetype){
 
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("GCM Message")
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+            // crea una notifica che quando cliccata apre il site in allarme
+            case "alarm":
+                int siteid=1;   // provvisorio!!!
+                Intent intent = new Intent();
+                intent.setClass(this, StartSiteActivity.class);
+                intent.putExtra("siteid", siteid);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                String title="Allarme";
+                Site site = DB.getSite(siteid);
+                if(site!=null){
+                    title+=" "+site.getName();
+                }
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+                String msg="";
+                try{
+                    int plantnum=Integer.parseInt(data.getString("plantnum"));
+                    Plant plant=DB.getPlantBySiteAndNumber(siteid, plantnum);
+                    msg+="Impianto "+plant.getName();
+
+                    int areanum=Integer.parseInt(data.getString("areanum"));
+                    Area area=DB.getAreaByIdPlantAndAreaNumber(plant.getId(), areanum);
+                    msg+=", area "+area.getName();
+
+                }catch (Exception e){}
+
+                Uri defaultSoundUri=Lib.resourceToUri(R.raw.siren);
+                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(title)
+                        .setContentText(msg)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
+
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                notificationManager.notify(0, notificationBuilder.build());
+
+                break;
+        }
+
+
     }
 }

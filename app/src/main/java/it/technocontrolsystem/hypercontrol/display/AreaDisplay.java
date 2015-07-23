@@ -7,9 +7,7 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.AreaCommandRequest;
-import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.database.DB;

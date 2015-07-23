@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;

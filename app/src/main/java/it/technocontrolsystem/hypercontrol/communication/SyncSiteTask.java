@@ -6,8 +6,6 @@ import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.util.Log;
 
-import java.util.Locale;
-
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;

@@ -1,22 +1,14 @@
 package it.technocontrolsystem.hypercontrol.display;
 
-import android.content.Context;
 import android.content.Intent;
-import android.view.ActionMode;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
-import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.activity.EditSiteActivity;
-import it.technocontrolsystem.hypercontrol.activity.PlantActivity;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.activity.SitesListActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Site;

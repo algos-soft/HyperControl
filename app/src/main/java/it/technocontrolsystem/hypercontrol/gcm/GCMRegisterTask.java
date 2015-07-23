@@ -17,7 +17,6 @@ import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
-import it.technocontrolsystem.hypercontrol.activity.MainActivity;
 
 /**
  * Registers the application with GCM servers asynchronously.

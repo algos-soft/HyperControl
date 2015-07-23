@@ -12,7 +12,6 @@ import android.os.Handler;
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
-import it.technocontrolsystem.hypercontrol.service.DemoActivity;
 
 
 public class SplashActivity extends Activity {

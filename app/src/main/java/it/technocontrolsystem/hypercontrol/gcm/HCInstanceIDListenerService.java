@@ -16,7 +16,6 @@
 
 package it.technocontrolsystem.hypercontrol.gcm;
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
