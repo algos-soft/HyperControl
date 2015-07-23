@@ -28,9 +28,14 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.activity.MainActivity;
+import it.technocontrolsystem.hypercontrol.activity.StartSiteActivity;
+import it.technocontrolsystem.hypercontrol.database.DB;
+
 public class HCGcmListenerService extends GcmListenerService {
 
-    private static final String TAG = "MyGcmListenerService";
+    private static final String TAG = "HCGcmListenerService";
 
     /**
      * Called when message is received.
@@ -39,12 +44,17 @@ public class HCGcmListenerService extends GcmListenerService {
      * @param data Data bundle containing message data as key/value pairs.
      *             For Set of keys use data.keySet().
      */
-    // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("message");
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
+        String messagetype = data.getString("messagetype");
+        String timestamp = data.getString("timestamp");
+        String sitenum = data.getString("sitenum");
+        String plantnum = data.getString("plantnum");
+        String areanum = data.getString("areanum");
+        String sensornum = data.getString("sensornum");
+        String details = data.getString("details");
+        Log.d(TAG, "Message received from: "+from+", type: "+messagetype);
+
 
         /**
          * Production applications would usually process the message here.
@@ -57,33 +67,37 @@ public class HCGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        //sendNotification(message);
-    }
-    // [END receive_message]
+        //String message=messagetype+" site:"+sitenum;
+        sendNotification(data);
 
-//    /**
-//     * Create and show a simple notification containing the received GCM message.
-//     *
-//     * @param message GCM message received.
-//     */
-//    private void sendNotification(String message) {
-//        Intent intent = new Intent(this, MainActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-//                PendingIntent.FLAG_ONE_SHOT);
-//
-//        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-//                .setSmallIcon(R.drawable.ic_stat_ic_notification)
-//                .setContentTitle("GCM Message")
-//                .setContentText(message)
-//                .setAutoCancel(true)
-//                .setSound(defaultSoundUri)
-//                .setContentIntent(pendingIntent);
-//
-//        NotificationManager notificationManager =
-//                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//
-//        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
-//    }
+    }
+
+    /**
+     * Create and show a simple notification containing the received GCM message.
+     */
+    private void sendNotification(Bundle data) {
+        int siteid=1;
+        String message = data.getString("messagetype");
+
+        Intent intent = new Intent();
+        intent.setClass(this, StartSiteActivity.class);
+        intent.putExtra("siteid", siteid);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle("GCM Message")
+                .setContentText(message)
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
 }

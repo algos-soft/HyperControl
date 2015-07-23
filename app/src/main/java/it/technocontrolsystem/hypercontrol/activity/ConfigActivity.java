@@ -84,7 +84,8 @@ public class ConfigActivity extends HCActivity {
         });
 
         TextView vRegStatus = (TextView)findViewById(R.id.registration_status);
-        if(Prefs.getRegistrationToken()!=null){
+        String token=Prefs.getRegistrationToken();
+        if(token!=null){
             vRegStatus.setText("Registrazione effettuata");
         }else{
             vRegStatus.setText("Dispositivo non registrato");

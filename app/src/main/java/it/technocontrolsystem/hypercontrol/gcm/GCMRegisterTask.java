@@ -33,9 +33,9 @@ public class GCMRegisterTask extends AsyncTask<Void, Void, String> {
         String msg = "";
         try {
             Context context = HyperControlApp.getContext();
-            GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
             String senderId= context.getString(R.string.gcm_defaultSenderId);
-            String regToken = gcm.register(senderId);
+            InstanceID instanceID = InstanceID.getInstance(context);
+            String regToken = instanceID.getToken(senderId,  GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
             // You should send the registration ID to your server over HTTP, so it
             // can use GCM/HTTP or CCS to send messages to your app.
