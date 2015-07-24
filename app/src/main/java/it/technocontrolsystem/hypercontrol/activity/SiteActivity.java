@@ -2,6 +2,7 @@ package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -91,20 +92,24 @@ public class SiteActivity extends HCSiteActivity {
 
             Log.d(TAG, "create + execute PopulateTask");
 
+//            // aggiunge un listener alla connessione
+//            Connection conn = HyperControlApp.getConnection();
+//            if (conn!=null){
+//                conn.addOnConnectionStatusChangedListener(new Connection.OnConnectionStatusChangedListener() {
+//                    @Override
+//                    public void connectionOpened(Connection conn) {
+//                        connectivityHasChanged(true);
+//                    }
+//
+//                    @Override
+//                    public void connectionClosed(Connection conn) {
+//                        connectivityHasChanged(false);
+//                    }
+//                });
+//            }
+
             // carica i dati
             populateTask = (AbsPopulateTask)new PopulateTask().execute();
-
-
-            Button bTestReq=(Button)findViewById(R.id.bTestReq);
-            bTestReq.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Request req = new ListSensorsRequest();
-                    Response resp = HyperControlApp.sendRequest(req);
-                    int a=87;
-                }
-            });
-
 
 
         } else {
@@ -164,8 +169,6 @@ public class SiteActivity extends HCSiteActivity {
     }
 
 
-
-
     /**
      * Invocato quando cambia lo stato della connettività del device
      */
@@ -184,7 +187,6 @@ public class SiteActivity extends HCSiteActivity {
      * AsyncTask per caricare i dati nell'adapter
      */
     class PopulateTask extends AbsPopulateTask {
-
 
         @Override
         public void populateAdapter() {
@@ -213,7 +215,6 @@ public class SiteActivity extends HCSiteActivity {
             return "impianti";
         }
 
-
     }
 
 
@@ -221,6 +222,24 @@ public class SiteActivity extends HCSiteActivity {
      * Task per aggiornare lo stato dalla centrale.
      */
     class UpdateTask extends AbsUpdateTask {
+    }
+
+    /**
+     * Esegue populate e quando ha finito esegue update
+     */
+    class PopulateAndUpdateTask extends PopulateTask{
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            UpdateTask uTask = new UpdateTask();
+            uTask.execute();
+        }
+    }
+
+
+    public void populateAndUpdate(){
+        PopulateAndUpdateTask task = new PopulateAndUpdateTask();
+        task.execute();
     }
 
 

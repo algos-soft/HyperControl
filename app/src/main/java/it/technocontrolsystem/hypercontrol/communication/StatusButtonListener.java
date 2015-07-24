@@ -9,6 +9,7 @@ import android.widget.ToggleButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.activity.HCActivity;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 
 /**
@@ -35,6 +36,7 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
             Runnable successRunnable = new Runnable() {
                 @Override
                 public void run() {
+//                    postConnection();
                     activity.updateStatus();
                     button.setTextOff(activity.getString(R.string.btn_conn_offline));  // rimette a posto in ogni caso
                     button.setChecked(true);
@@ -44,7 +46,10 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
             Runnable failRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    HyperControlApp.setConnection(null);
+                    Connection conn=HyperControlApp.getConnection();
+                    if(conn!=null){
+                        conn.close();
+                    }
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setTitle("Errore di connessione");
                     builder.setMessage(Html.fromHtml(HyperControlApp.getLastConnectionError()));
@@ -77,7 +82,6 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
                     if((conn!=null) && (conn.isOpen())){
                         conn.close();
                     }
-                    HyperControlApp.setConnection(null);
 
                     activity.getListAdapter().clearStatus();
                     activity.runOnUiThread(new Runnable() {
@@ -102,4 +106,38 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
         }
 
     }
+
+//    /**
+//     * Eseguito dopo l'attivazione della connessione.
+//     * Controlla che il database sia sincronizzato.
+//     */
+//    private void postConnection(){
+//
+//        Runnable successRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                activity.populateAndUpdate();
+//            }
+//        };
+//
+//        Runnable failRunnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+//                builder.setMessage("Impossibile sincronizzare il database");
+//                builder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        dialog.dismiss();
+//                    }
+//                });
+//                builder.show();
+//            }
+//        };
+//
+//        SyncSiteTask task = new SyncSiteTask(activity, activity.getSite(), successRunnable, failRunnable);
+//        task.execute();
+//
+//    }
+
 }

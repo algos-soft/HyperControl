@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/statusPanel"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:gravity="right"
+android:orientation="horizontal" >
+
+<ToggleButton
+    android:id="@+id/connection_status_button"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="1"
+    android:textOff="@string/btn_conn_offline"
+    android:textOn="@string/btn_conn_connected"
+    android:clickable="false"
+    />
+
+</LinearLayout>

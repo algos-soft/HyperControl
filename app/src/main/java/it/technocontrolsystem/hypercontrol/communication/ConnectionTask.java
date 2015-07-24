@@ -99,7 +99,7 @@ public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
                 successRunnable.run();
             }
         }else{
-            HyperControlApp.setConnection(null);
+            conn.close();
             if(failRunnable!=null){
                 failRunnable.run();
             }

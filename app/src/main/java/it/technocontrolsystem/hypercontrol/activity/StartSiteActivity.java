@@ -7,6 +7,7 @@ import android.util.Log;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.ConnectionTask;
 import it.technocontrolsystem.hypercontrol.communication.SyncSiteTask;
 import it.technocontrolsystem.hypercontrol.database.DB;
@@ -48,7 +49,10 @@ public class StartSiteActivity extends Activity {
             Runnable failRunnable = new Runnable() {
                 @Override
                 public void run() {
-                    HyperControlApp.setConnection(null);
+                    Connection conn=HyperControlApp.getConnection();
+                    if (conn!=null){
+                        conn.close();
+                    }
                     startSite();
                 }
             };

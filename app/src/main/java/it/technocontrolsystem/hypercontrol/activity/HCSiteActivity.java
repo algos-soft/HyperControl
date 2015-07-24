@@ -8,7 +8,9 @@ import android.os.PowerManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListAdapter;
+import android.widget.ToggleButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
@@ -35,7 +37,6 @@ public abstract class HCSiteActivity extends HCActivity {
 
     protected AbsUpdateTask updateTask;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +49,30 @@ public abstract class HCSiteActivity extends HCActivity {
             }
         });
 
+
+
     }
 
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
+        /**
+         * Regola il visualizzatore di presenza connessione
+         */
+        View view = findViewById(R.id.connection_status_button);
+        if((view!=null) && (view instanceof ToggleButton)){
+            ToggleButton btn = (ToggleButton)view;
+            Connection conn = HyperControlApp.getConnection();
+            if((conn!=null) && (conn.isOpen())){
+                btn.setChecked(true);
+            }else{
+                btn.setChecked(false);
+            }
+        }
+
+    }
 
     @Override
     protected void onResume() {
@@ -102,6 +123,7 @@ public abstract class HCSiteActivity extends HCActivity {
     public void clearStatus() {
         getListAdapter().clearStatus();
     }
+
 
     /**
      * Invocato quando cambia lo stato della connettività del device

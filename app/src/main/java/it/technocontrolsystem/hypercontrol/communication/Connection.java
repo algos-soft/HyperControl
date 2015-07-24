@@ -40,6 +40,10 @@ public class Connection {
     //listener da notificare quando si riceve un messaggio Live
     private LiveListener liveListener;
 
+    //listeners interessati al cambio di stato della connessione
+    private ArrayList<OnConnectionStatusChangedListener> connectionStatusChangedListeners;
+
+
     //flag che viene acceso quando riceviamo il primo carattere
     //di una risposta ed iniziamo a processarla, e viene spento
     // dopo che la risposta è stata processata
@@ -56,6 +60,8 @@ public class Connection {
         requestQueue = new ArrayList();
         responseQueue = new HashMap();
         sentQueue = new HashMap();
+
+        connectionStatusChangedListeners = new ArrayList<>();
 
         // apre la connessione
         open();
@@ -79,12 +85,16 @@ public class Connection {
      */
     public void open() throws Exception {
         if (Lib.isNetworkAvailable()) {
+            boolean oldStatus=open;
             createSocket();
             createRequestThread();
             createReceiveThread();
             open = true;
             Log.d(TAG, "connection created successfully");
+            fireStatusChanged(oldStatus, true);
+
             doLogin();
+
         } else {
             Log.d(TAG, "create connection failed");
             throw new NetworkUnavailableException();
@@ -97,6 +107,7 @@ public class Connection {
      * Chiude il socket e ferma tutti i background threads.
      */
     public void close() {
+        boolean oldStatus=open;
 
         if (requestThread != null) {
             requestThread.interrupt(); // nel Thread il metodo Thread.sleep() genera una InterruptedException
@@ -116,6 +127,7 @@ public class Connection {
 
         open = false;
 
+        fireStatusChanged(oldStatus, false);
 
     }
 
@@ -304,177 +316,6 @@ public class Connection {
 
     }
 
-//    /**
-//     * crea il thread per ricevere le risposte dalla centrale
-//     */
-//    private void createReceiveThreadOld() {
-//
-//        // close socket in separate thread (not in the UI thread)
-//        receiveThread = new Thread(new Runnable() {
-//
-//            private final String EOF = "" + new Character((char) 0x1A);
-//            private final String OPEN_TAG = "<Numero>";
-//            private final String CLOSE_TAG = "</Numero>";
-//
-//
-//            @Override
-//            public void run() {
-//
-//                int responseNumber = 0;
-//                int timeoutSec = 0;
-//                long startTime = 0;
-//                String s = "";
-//                String responseText = "";
-//
-//
-//                // ascolta l'inputStream e processa le risposte
-//                while (true) {
-//
-//                    try {
-//
-//                        // Thread.sleep ci vuole se no quando chiamo
-//                        // interrupt() non viene generata l'eccezione
-//                        // e il ciclo non termina
-//                        Thread.sleep(0);
-//
-//                        try {
-//
-//                            //controllo del timeout
-//                            //se stiamo processando una risposta ed è trascorso il timeout
-//                            //smette di ascoltare la risposta
-//                            if (timeoutSec > 0) {
-//                                if (processingResponse) {
-//                                    long currTime = System.currentTimeMillis();
-//                                    int elapsed = (int) (currTime - startTime) / 1000;
-//                                    if (elapsed > timeoutSec) {
-//                                        processingResponse = false;
-//                                    }
-//                                }
-//                            }
-//
-//                            //lettura dell'inputStream
-//                            if (dataInputStream.available() > 0) {
-//
-//                                int i = dataInputStream.read();
-//
-//                                if (i != -1) {
-//                                    // if (true) {
-//                                    s = "" + (char) i;
-//                                    //s = dataInputStream.readUTF();
-//                                    //s="";
-//                                    //while(dataInputStream.available()>0)
-//                                    //s += "" + (char)dataInputStream.read();
-//                                    if (processingResponse) {
-//                                        if (!s.equals(EOF)) {
-//
-//                                            //accumula il carattere ricevuto
-//                                            responseText += s;
-//
-//                                            // Se il responseNumber è = 0 lo cerca nella
-//                                            // stringa ricevuta finora.
-//                                            // Appena lo trova,lo registra e smette di cercarlo
-//                                            // Appena trova il response number lo associa alla request in coda
-//                                            // e recupera il timeout
-//                                            if (responseNumber == 0) {
-//                                                int startCloseTag = responseText.indexOf(CLOSE_TAG);
-//                                                if (startCloseTag != -1) {
-//                                                    int startOpenTag = responseText.indexOf(OPEN_TAG);
-//                                                    int endOpenTag = startOpenTag + OPEN_TAG.length();
-//                                                    String sNum = responseText.substring(endOpenTag, startCloseTag);
-//                                                    responseNumber = Integer.parseInt(sNum);
-//                                                    Request req = sentQueue.get(responseNumber);
-//                                                    if (req != null) {
-//                                                        timeoutSec = req.getTimeout();
-//                                                    }
-//                                                }
-//                                            }
-//                                        } else {//ricevuto EOF, risposta completa
-//                                            Log.d(TAG, "response received # " + responseNumber);
-//                                            processResponse(responseNumber, responseText);
-//                                            processingResponse = false;
-//                                        }
-//
-//
-//                                    } else {    //non stiamo processando una risposta
-//                                        //se riceviamo un carattere di inizio risposta
-//                                        //iniziamo a processarla
-//                                        if (s.equals("@")) {
-//                                            responseText = "";
-//                                            responseNumber = 0;
-//                                            startTime = System.currentTimeMillis();
-//                                            processingResponse = true;
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    } catch (InterruptedException e) {
-//                        try {
-//                            dataInputStream.close();
-//                        } catch (IOException e1) {
-//                            e1.printStackTrace();
-//                        }
-//                        break;
-//                    }
-//
-//                }
-//
-//            }
-//
-//
-//            /**
-//             * Processa una response
-//             */
-//            private void processResponse(int responseNumber, String responseText) {
-//
-//                responseText = "<?xml version='1.0' encoding='utf-8'?>\n" + responseText;
-//                Request req = sentQueue.get(responseNumber);
-//                if (req != null) { // la response ha una corrispondente request
-//
-//                    // build response of the right class by reflection
-//                    Class responseClass = req.getResponseClass();
-//                    Response resp = null;
-//                    Constructor<Response> constructor = null;
-//                    try {
-//                        constructor = responseClass.getConstructor(String.class);
-//                        resp = constructor.newInstance(responseText);
-//                    } catch (NoSuchMethodException e) {
-//                        e.printStackTrace();
-//                    } catch (InvocationTargetException e) {
-//                        e.printStackTrace();
-//                    } catch (InstantiationException e) {
-//                        e.printStackTrace();
-//                    } catch (IllegalAccessException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                    responseQueue.put(responseNumber, resp);
-//                    sentQueue.remove(responseNumber);
-//
-//                } else {  // response senza corrispondente request
-//
-//                    Response resp = new Response(responseText);
-//                    String command = resp.getComando();
-//                    if (command.equalsIgnoreCase("live")) {
-//                        final LiveMessage message = new LiveMessage(responseText);
-//                        Log.d(TAG, "live message received, cmd: " + command);
-//                        if (liveListener != null) {
-//                            liveListener.liveReceived(message);
-//                        }
-//                    }
-//
-//                }
-//
-//            }
-//
-//        });
-//
-//        receiveThread.setName("responses processing thread");
-//        receiveThread.start();
-//    }
-
 
     /**
      * crea il thread per ricevere le risposte dalla centrale
@@ -519,6 +360,12 @@ public class Connection {
                                     int elapsed = (int) (currTime - startTime) / 1000;
                                     if (elapsed > timeoutSec) {
                                         processingResponse = false;
+
+                                        // simo in timeout.
+                                        // la centrale potrebbe essere caduta?
+                                        // per sicurezza chiudiamo la connessione.
+                                        close();
+
                                     }
                                 }
                             }
@@ -527,11 +374,11 @@ public class Connection {
 
                                 byte[] bytes = new byte[4096];
                                 int read = dataInputStream.read(bytes);
-                                if(read>-1){
-                                    for(int i=0;i<read;i++){
+                                if (read > -1) {
+                                    for (int i = 0; i < read; i++) {
                                         byte b = bytes[i];
                                         s = "" + (char) b;
-                                        if(processingResponse){
+                                        if (processingResponse) {
 
                                             if (!s.equals(EOF)) {
 
@@ -567,7 +414,7 @@ public class Connection {
                                             //se riceviamo un carattere di inizio risposta
                                             //iniziamo a processarla
                                             if (s.equals("@")) {
-                                                responseText=new StringBuilder();
+                                                responseText = new StringBuilder();
                                                 responseNumber = 0;
                                                 startTime = System.currentTimeMillis();
                                                 processingResponse = true;
@@ -646,6 +493,27 @@ public class Connection {
 
         receiveThread.setName("responses processing thread");
         receiveThread.start();
+    }
+
+
+    public void addOnConnectionStatusChangedListener(OnConnectionStatusChangedListener l) {
+        connectionStatusChangedListeners.add(l);
+    }
+
+    private void fireStatusChanged(boolean oldStatus, boolean newStatus) {
+        for (OnConnectionStatusChangedListener l : connectionStatusChangedListeners) {
+            if((oldStatus==false) && (newStatus==true)){
+                l.connectionOpened(this);
+            }
+            if((oldStatus==true) && (newStatus==false)){
+                l.connectionClosed(this);
+            }
+        }
+    }
+
+    public interface OnConnectionStatusChangedListener {
+        public void connectionOpened(Connection conn);
+        public void connectionClosed(Connection conn);
     }
 
 

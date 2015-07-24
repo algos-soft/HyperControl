@@ -8,4 +8,6 @@
 
     <include layout="@layout/list_view"/>
 
+    <include layout="@layout/conn_status_view"/>
+
 </LinearLayout>

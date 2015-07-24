@@ -19,7 +19,7 @@ public class MenuActivity extends HCSiteActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_menu2);
+        setContentView(R.layout.activity_menu);
 
         idSite = getIntent().getIntExtra("siteid", 0);
         idPage = getIntent().getIntExtra("pageid", -1);
