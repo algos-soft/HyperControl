@@ -23,6 +23,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 /**
+ * prova gcm
  * Created by alex on 23-07-2015.
  */
 public class SimpleSender {
