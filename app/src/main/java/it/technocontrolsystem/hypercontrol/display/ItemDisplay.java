@@ -387,14 +387,46 @@ public abstract class ItemDisplay extends LinearLayout {
 //        statusView.setImageResource(resId);
 //    }
 
+
+
     protected void setAlarm(boolean alarm){
         if(alarm){
+            descriptionView.setTextColor(Color.BLACK);
+            detailView.setTextColor(Color.BLACK);
+            numberView.setTextColor(Color.BLACK);
+            statusView.setTextColor(Color.BLACK);
             setBackgroundColor(Color.RED);
         }else{
+            descriptionView.setTextColor(Color.WHITE);
+            detailView.setTextColor(Color.WHITE);
+            numberView.setTextColor(Color.WHITE);
+            statusView.setTextColor(Color.WHITE);
             setBackgroundColor(Color.TRANSPARENT);
         }
     }
 
+    protected void setAlarmAndTamper(boolean tamper, boolean alarm){
+
+        if(alarm && tamper){
+            descriptionView.setTextColor(Color.BLACK);
+            detailView.setTextColor(Color.BLACK);
+            numberView.setTextColor(Color.BLACK);
+            statusView.setTextColor(Color.BLACK);
+            setBackgroundColor(Color.YELLOW);
+        }else if(alarm){
+            setBackgroundColor(Color.RED);
+            descriptionView.setTextColor(Color.BLACK);
+            detailView.setTextColor(Color.BLACK);
+            numberView.setTextColor(Color.BLACK);
+            statusView.setTextColor(Color.BLACK);
+        }else{
+            descriptionView.setTextColor(Color.WHITE);
+            detailView.setTextColor(Color.WHITE);
+            numberView.setTextColor(Color.WHITE);
+            statusView.setTextColor(Color.WHITE);
+            setBackgroundColor(Color.TRANSPARENT);
+        }
+    }
     public CompoundButton getBswitch( ){
         return bswitch;
     }

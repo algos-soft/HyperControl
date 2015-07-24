@@ -22,7 +22,8 @@ public class BoardDisplay extends ItemDisplay {
         super(context, boardId);
 
         testView.setVisibility(View.GONE);
-        statusView.setVisibility(View.GONE);
+        //statusView.setVisibility(View.GONE);
+        cyanText.setVisibility(View.INVISIBLE);
         checkBox.setVisibility(View.GONE);
         //  setNumberWidth(100);
     }
@@ -31,19 +32,26 @@ public class BoardDisplay extends ItemDisplay {
         setNumber(model.getBoard().getNumber());
         setDescription(model.getBoard().getName());
 
+
         int statusCode = model.getStatus();
 
         int iconId;
         switch (statusCode){
             case 0:
+                redText.getBackground().setAlpha(100);
                 getBswitch().setChecked(false);
+                statusView.setText("Disabilitata");
                 break;
             case 1:
+                greenText.getBackground().setAlpha(100);
                 getBswitch().setChecked(true);
+                statusView.setText("Online");
                 break;
             case 2:
+                yellowText.getBackground().setAlpha(100);
                 getBswitch().setChecked(true);
-                statusView.setVisibility(VISIBLE);
+              //  statusView.setVisibility(VISIBLE);
+                statusView.setText("TIMEOUT");
                 break;
             default:
                 getBswitch().setChecked(false);

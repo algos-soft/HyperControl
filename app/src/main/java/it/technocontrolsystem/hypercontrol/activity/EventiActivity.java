@@ -182,7 +182,7 @@ public class EventiActivity extends HCSiteActivity {
 
     @Override
     public int getLiveCode() {
-        return -1;
+        return 0;
     }
 
     @Override
