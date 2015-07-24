@@ -82,7 +82,7 @@ public class SensorDisplay extends ItemDisplay {
                 //iconId = R.drawable.total;
                 break;
 
-            default:
+             default:
              //   getBswitch().setChecked(false);
              //   getBswitch().setEnabled(false);
                 iconId ="Unknown";
@@ -91,7 +91,9 @@ public class SensorDisplay extends ItemDisplay {
         }
         setStatusIcon(iconId);
 
-        setAlarm(model.isAlarm());
+        //setAlarm(model.isAlarm());
+        setAlarmAndTamper(model.isTamper(), model.isAlarm());
+
 
         boolean test = model.isTest();
         if (test) {
