@@ -30,6 +30,7 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmListenerService;
 
 import it.technocontrolsystem.hypercontrol.Lib;
+import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.activity.StartSiteActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
@@ -50,30 +51,35 @@ public class HCGcmListenerService extends GcmListenerService {
      */
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String messagetype = data.getString("messagetype");
-        String timestamp = data.getString("timestamp");
-        String sitenum = data.getString("sitenum");
-        String plantnum = data.getString("plantnum");
-        String areanum = data.getString("areanum");
-        String sensornum = data.getString("sensornum");
-        String details = data.getString("details");
-        Log.d(TAG, "Message received from: "+from+", type: "+messagetype);
+
+        if(Prefs.isRiceviNotifiche()){
+
+            String messagetype = data.getString("messagetype");
+            String timestamp = data.getString("timestamp");
+            String sitenum = data.getString("sitenum");
+            String plantnum = data.getString("plantnum");
+            String areanum = data.getString("areanum");
+            String sensornum = data.getString("sensornum");
+            String details = data.getString("details");
+            Log.d(TAG, "Message received from: "+from+", type: "+messagetype);
 
 
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
+            /**
+             * Production applications would usually process the message here.
+             * Eg: - Syncing with server.
+             *     - Store message in local database.
+             *     - Update UI.
+             */
 
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        //String message=messagetype+" site:"+sitenum;
-        sendNotification(data);
+            /**
+             * In some cases it may be useful to show a notification indicating to the user
+             * that a message was received.
+             */
+            //String message=messagetype+" site:"+sitenum;
+            sendNotification(data);
 
+
+        }
     }
 
     /**

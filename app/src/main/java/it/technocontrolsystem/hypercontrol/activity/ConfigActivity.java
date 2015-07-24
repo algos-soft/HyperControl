@@ -86,9 +86,9 @@ public class ConfigActivity extends HCActivity {
         TextView vRegStatus = (TextView)findViewById(R.id.registration_status);
         String token=Prefs.getRegistrationToken();
         if(token!=null){
-            vRegStatus.setText("Registrazione effettuata");
+            vRegStatus.setText("Registrazione GCM effettuata");
         }else{
-            vRegStatus.setText("Dispositivo non registrato");
+            vRegStatus.setText("Dispositivo non registrato su GCM");
         }
 
         Button bDeveloper = (Button) findViewById(R.id.btn_developer);
