@@ -28,7 +28,7 @@ import javax.swing.JTextField;
 public class SimpleSender {
 
     public static final String API_KEY = "AIzaSyCTc1hvMyJUd_F8jBOJzmrbxz9mV9KveWU";
-    public static final String DEVICE_ID = "en-Zw29dunY:APA91bFhuCLwlDNzcF7zK0kYD9m1kXa144QdF3cE4hDZwtX9bKZo4CuEtJcuLh2jJM9m6tV3NE-9xY_a-qYxftL9_qmtoZ9l-NrCyvnH03QP_1ISa8IMsncxkf9Y4OSGLlgHBd9Cq5HQ";
+    public static final String DEVICE_ID = "c6wXmfH-fpw:APA91bGUCVKrpU0317xSBLRMFtaFFG5-dtq5_IEjyf1IMsZgzxVsxzIRo88BDR2cIqO7iyrg-ag_HA4INdBuQWCo8EGrAsmn2S-rSdnBFz8sDFKhOkymeeNb_HkwirsOvP6Q50XxVlsO";
 
     private JTextArea apiField;
     private JTextArea idField;
