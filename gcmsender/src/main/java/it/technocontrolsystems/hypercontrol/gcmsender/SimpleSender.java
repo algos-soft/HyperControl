@@ -138,7 +138,6 @@ public class SimpleSender {
             jData.put("plantnum", "3");
             jData.put("areanum", "2");
             jData.put("sensornum", "99");
-            jData.put("sensornum", "99");
             jData.put("details", "qui altri eventuali dettagli dell'evento");
 
             // Prepara un JSON con il contenuto del messaggio GCM - a chi mandare cosa
