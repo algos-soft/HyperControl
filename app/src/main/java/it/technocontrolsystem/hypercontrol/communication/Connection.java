@@ -318,7 +318,7 @@ public class Connection {
     /**
      * crea il thread per ricevere le risposte dalla centrale
      */
-    private void createReceiveThreadOld() {
+    private void createReceiveThread() {
 
         // close socket in separate thread (not in the UI thread)
         receiveThread = new Thread(new Runnable() {
@@ -490,7 +490,7 @@ public class Connection {
     /**
      * crea il thread per ricevere le risposte dalla centrale
      */
-    private void createReceiveThread() {
+    private void createReceiveThreadNew() {
 
         // close socket in separate thread (not in the UI thread)
         receiveThread = new Thread(new Runnable() {
