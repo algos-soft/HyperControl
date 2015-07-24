@@ -2,11 +2,9 @@ package it.technocontrolsystem.hypercontrol.communication;
 
 import android.util.Log;
 
-import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
@@ -315,6 +313,178 @@ public class Connection {
 
     }
 
+//    /**
+//     * crea il thread per ricevere le risposte dalla centrale
+//     */
+//    private void createReceiveThreadOld() {
+//
+//        // close socket in separate thread (not in the UI thread)
+//        receiveThread = new Thread(new Runnable() {
+//
+//            private final String EOF = "" + new Character((char) 0x1A);
+//            private final String OPEN_TAG = "<Numero>";
+//            private final String CLOSE_TAG = "</Numero>";
+//
+//
+//            @Override
+//            public void run() {
+//
+//                int responseNumber = 0;
+//                int timeoutSec = 0;
+//                long startTime = 0;
+//                String s = "";
+//                String responseText = "";
+//
+//
+//                // ascolta l'inputStream e processa le risposte
+//                while (true) {
+//
+//                    try {
+//
+//                        // Thread.sleep ci vuole se no quando chiamo
+//                        // interrupt() non viene generata l'eccezione
+//                        // e il ciclo non termina
+//                        Thread.sleep(0);
+//
+//                        try {
+//
+//                            //controllo del timeout
+//                            //se stiamo processando una risposta ed è trascorso il timeout
+//                            //smette di ascoltare la risposta
+//                            if (timeoutSec > 0) {
+//                                if (processingResponse) {
+//                                    long currTime = System.currentTimeMillis();
+//                                    int elapsed = (int) (currTime - startTime) / 1000;
+//                                    if (elapsed > timeoutSec) {
+//                                        processingResponse = false;
+//                                    }
+//                                }
+//                            }
+//
+//                            //lettura dell'inputStream
+//                            if (dataInputStream.available() > 0) {
+//
+//                                int i = dataInputStream.read();
+//
+//                                if (i != -1) {
+//                                    // if (true) {
+//                                    s = "" + (char) i;
+//                                    //s = dataInputStream.readUTF();
+//                                    //s="";
+//                                    //while(dataInputStream.available()>0)
+//                                    //s += "" + (char)dataInputStream.read();
+//                                    if (processingResponse) {
+//                                        if (!s.equals(EOF)) {
+//
+//                                            //accumula il carattere ricevuto
+//                                            responseText += s;
+//
+//                                            // Se il responseNumber è = 0 lo cerca nella
+//                                            // stringa ricevuta finora.
+//                                            // Appena lo trova,lo registra e smette di cercarlo
+//                                            // Appena trova il response number lo associa alla request in coda
+//                                            // e recupera il timeout
+//                                            if (responseNumber == 0) {
+//                                                int startCloseTag = responseText.indexOf(CLOSE_TAG);
+//                                                if (startCloseTag != -1) {
+//                                                    int startOpenTag = responseText.indexOf(OPEN_TAG);
+//                                                    int endOpenTag = startOpenTag + OPEN_TAG.length();
+//                                                    String sNum = responseText.substring(endOpenTag, startCloseTag);
+//                                                    responseNumber = Integer.parseInt(sNum);
+//                                                    Request req = sentQueue.get(responseNumber);
+//                                                    if (req != null) {
+//                                                        timeoutSec = req.getTimeout();
+//                                                    }
+//                                                }
+//                                            }
+//                                        } else {//ricevuto EOF, risposta completa
+//                                            Log.d(TAG, "response received # " + responseNumber);
+//                                            processResponse(responseNumber, responseText);
+//                                            processingResponse = false;
+//                                        }
+//
+//
+//                                    } else {    //non stiamo processando una risposta
+//                                        //se riceviamo un carattere di inizio risposta
+//                                        //iniziamo a processarla
+//                                        if (s.equals("@")) {
+//                                            responseText = "";
+//                                            responseNumber = 0;
+//                                            startTime = System.currentTimeMillis();
+//                                            processingResponse = true;
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    } catch (InterruptedException e) {
+//                        try {
+//                            dataInputStream.close();
+//                        } catch (IOException e1) {
+//                            e1.printStackTrace();
+//                        }
+//                        break;
+//                    }
+//
+//                }
+//
+//            }
+//
+//
+//            /**
+//             * Processa una response
+//             */
+//            private void processResponse(int responseNumber, String responseText) {
+//
+//                responseText = "<?xml version='1.0' encoding='utf-8'?>\n" + responseText;
+//                Request req = sentQueue.get(responseNumber);
+//                if (req != null) { // la response ha una corrispondente request
+//
+//                    // build response of the right class by reflection
+//                    Class responseClass = req.getResponseClass();
+//                    Response resp = null;
+//                    Constructor<Response> constructor = null;
+//                    try {
+//                        constructor = responseClass.getConstructor(String.class);
+//                        resp = constructor.newInstance(responseText);
+//                    } catch (NoSuchMethodException e) {
+//                        e.printStackTrace();
+//                    } catch (InvocationTargetException e) {
+//                        e.printStackTrace();
+//                    } catch (InstantiationException e) {
+//                        e.printStackTrace();
+//                    } catch (IllegalAccessException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    responseQueue.put(responseNumber, resp);
+//                    sentQueue.remove(responseNumber);
+//
+//                } else {  // response senza corrispondente request
+//
+//                    Response resp = new Response(responseText);
+//                    String command = resp.getComando();
+//                    if (command.equalsIgnoreCase("live")) {
+//                        final LiveMessage message = new LiveMessage(responseText);
+//                        Log.d(TAG, "live message received, cmd: " + command);
+//                        if (liveListener != null) {
+//                            liveListener.liveReceived(message);
+//                        }
+//                    }
+//
+//                }
+//
+//            }
+//
+//        });
+//
+//        receiveThread.setName("responses processing thread");
+//        receiveThread.start();
+//    }
+
+
     /**
      * crea il thread per ricevere le risposte dalla centrale
      */
@@ -335,8 +505,7 @@ public class Connection {
                 int timeoutSec = 0;
                 long startTime = 0;
                 String s = "";
-                String responseText = "";
-
+                StringBuilder responseText = new StringBuilder();
 
                 // ascolta l'inputStream e processa le risposte
                 while (true) {
@@ -346,7 +515,7 @@ public class Connection {
                         // Thread.sleep ci vuole se no quando chiamo
                         // interrupt() non viene generata l'eccezione
                         // e il ciclo non termina
-                        Thread.sleep(0);
+                        Thread.sleep(5);
 
                         try {
 
@@ -363,314 +532,69 @@ public class Connection {
                                 }
                             }
 
-                            //lettura dell'inputStream
                             if (dataInputStream.available() > 0) {
 
-                                int i = dataInputStream.read();
+                                byte[] bytes = new byte[4096];
+                                int read = dataInputStream.read(bytes);
+                                if(read>-1){
+                                    for(int i=0;i<read;i++){
+                                        byte b = bytes[i];
+                                        s = "" + (char) b;
+                                        if(processingResponse){
 
-                                if (i != -1) {
-                                    // if (true) {
-                                    s = "" + (char) i;
-                                    //s = dataInputStream.readUTF();
-                                    //s="";
-                                    //while(dataInputStream.available()>0)
-                                    //s += "" + (char)dataInputStream.read();
-                                    if (processingResponse) {
-                                        if (!s.equals(EOF)) {
+                                            if (!s.equals(EOF)) {
 
-                                            //accumula il carattere ricevuto
-                                            responseText += s;
+                                                //accumula il carattere ricevuto
+                                                responseText.append(s);
 
-                                            // Se il responseNumber è = 0 lo cerca nella
-                                            // stringa ricevuta finora.
-                                            // Appena lo trova,lo registra e smette di cercarlo
-                                            // Appena trova il response number lo associa alla request in coda
-                                            // e recupera il timeout
-                                            if (responseNumber == 0) {
-                                                int startCloseTag = responseText.indexOf(CLOSE_TAG);
-                                                if (startCloseTag != -1) {
-                                                    int startOpenTag = responseText.indexOf(OPEN_TAG);
-                                                    int endOpenTag = startOpenTag + OPEN_TAG.length();
-                                                    String sNum = responseText.substring(endOpenTag, startCloseTag);
-                                                    responseNumber = Integer.parseInt(sNum);
-                                                    Request req = sentQueue.get(responseNumber);
-                                                    if (req != null) {
-                                                        timeoutSec = req.getTimeout();
+                                                // Se il responseNumber è = 0 lo cerca nella
+                                                // stringa ricevuta finora.
+                                                // Appena lo trova,lo registra e smette di cercarlo
+                                                // Appena trova il response number lo associa alla request in coda
+                                                // e recupera il timeout
+                                                if (responseNumber == 0) {
+                                                    int startCloseTag = responseText.indexOf(CLOSE_TAG);
+                                                    if (startCloseTag != -1) {
+                                                        int startOpenTag = responseText.indexOf(OPEN_TAG);
+                                                        int endOpenTag = startOpenTag + OPEN_TAG.length();
+                                                        String sNum = responseText.substring(endOpenTag, startCloseTag);
+                                                        responseNumber = Integer.parseInt(sNum);
+                                                        Request req = sentQueue.get(responseNumber);
+                                                        if (req != null) {
+                                                            timeoutSec = req.getTimeout();
+                                                        }
                                                     }
                                                 }
+                                            } else {//ricevuto EOF, risposta completa
+                                                Log.d(TAG, "response received # " + responseNumber);
+                                                processResponse(responseNumber, responseText.toString());
+                                                processingResponse = false;
                                             }
-                                        } else {//ricevuto EOF, risposta completa
-                                            Log.d(TAG, "response received # " + responseNumber);
-                                            processResponse(responseNumber, responseText);
-                                            processingResponse = false;
-                                        }
 
 
-                                    } else {    //non stiamo processando una risposta
-                                        //se riceviamo un carattere di inizio risposta
-                                        //iniziamo a processarla
-                                        if (s.equals("@")) {
-                                            responseText = "";
-                                            responseNumber = 0;
-                                            startTime = System.currentTimeMillis();
-                                            processingResponse = true;
+                                        } else {    //non stiamo processando una risposta
+                                            //se riceviamo un carattere di inizio risposta
+                                            //iniziamo a processarla
+                                            if (s.equals("@")) {
+                                                responseText=new StringBuilder();
+                                                responseNumber = 0;
+                                                startTime = System.currentTimeMillis();
+                                                processingResponse = true;
+                                            }
+
                                         }
+
                                     }
                                 }
+
                             }
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     } catch (InterruptedException e) {
                         try {
                             dataInputStream.close();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                        break;
-                    }
-
-                }
-
-            }
-
-
-            /**
-             * Processa una response
-             */
-            private void processResponse(int responseNumber, String responseText) {
-
-                responseText = "<?xml version='1.0' encoding='utf-8'?>\n" + responseText;
-                Request req = sentQueue.get(responseNumber);
-                if (req != null) { // la response ha una corrispondente request
-
-                    // build response of the right class by reflection
-                    Class responseClass = req.getResponseClass();
-                    Response resp = null;
-                    Constructor<Response> constructor = null;
-                    try {
-                        constructor = responseClass.getConstructor(String.class);
-                        resp = constructor.newInstance(responseText);
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    } catch (InstantiationException e) {
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-
-                    responseQueue.put(responseNumber, resp);
-                    sentQueue.remove(responseNumber);
-
-                } else {  // response senza corrispondente request
-
-                    Response resp = new Response(responseText);
-                    String command = resp.getComando();
-                    if (command.equalsIgnoreCase("live")) {
-                        final LiveMessage message = new LiveMessage(responseText);
-                        Log.d(TAG, "live message received, cmd: " + command);
-                        if (liveListener != null) {
-                            liveListener.liveReceived(message);
-                        }
-                    }
-
-                }
-
-            }
-
-        });
-
-        receiveThread.setName("responses processing thread");
-        receiveThread.start();
-    }
-
-
-    /**
-     * crea il thread per ricevere le risposte dalla centrale
-     */
-    private void createReceiveThreadNew() {
-
-        // close socket in separate thread (not in the UI thread)
-        receiveThread = new Thread(new Runnable() {
-
-            private final String EOF = "" + new Character((char) 0x1A);
-            private final String OPEN_TAG = "<Numero>";
-            private final String CLOSE_TAG = "</Numero>";
-
-
-            @Override
-            public void run() {
-
-                int responseNumber = 0;
-                int timeoutSec = 0;
-                long startTime = 0;
-                String s = "";
-                String responseText = "";
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(dataInputStream));
-//                String line;
-//                StringBuilder total = new StringBuilder();
-//                try {
-//                    while ((line = r.readLine()) != null) {
-//                        total.append(line);
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-
-                // ascolta l'inputStream e processa le risposte
-                while (true) {
-
-                    try {
-
-                        // Thread.sleep ci vuole se no quando chiamo
-                        // interrupt() non viene generata l'eccezione
-                        // e il ciclo non termina
-                        Thread.sleep(0);
-
-                        try {
-
-                            //controllo del timeout
-                            //se stiamo processando una risposta ed è trascorso il timeout
-                            //smette di ascoltare la risposta
-                            if (timeoutSec > 0) {
-                                if (processingResponse) {
-                                    long currTime = System.currentTimeMillis();
-                                    int elapsed = (int) (currTime - startTime) / 1000;
-                                    if (elapsed > timeoutSec) {
-                                        processingResponse = false;
-                                    }
-                                }
-                            }
-
-                            //lettura dell'inputStream
-                            if(reader.ready()){
-
-
-                                String line = reader.readLine();
-                                if(line!=null){
-                                    if(processingResponse) {
-                                        if(!line.endsWith(EOF)){
-
-                                            //accumula il testo ricevuto
-                                            responseText += line;
-
-                                            // Se il responseNumber è = 0 lo cerca nella
-                                            // stringa ricevuta finora.
-                                            // Appena lo trova,lo registra e smette di cercarlo
-                                            // Appena trova il response number lo associa alla request in coda
-                                            // e recupera il timeout
-                                            if (responseNumber == 0) {
-                                                int startCloseTag = responseText.indexOf(CLOSE_TAG);
-                                                if (startCloseTag != -1) {
-                                                    int startOpenTag = responseText.indexOf(OPEN_TAG);
-                                                    int endOpenTag = startOpenTag + OPEN_TAG.length();
-                                                    String sNum = responseText.substring(endOpenTag, startCloseTag);
-                                                    responseNumber = Integer.parseInt(sNum);
-                                                    Request req = sentQueue.get(responseNumber);
-                                                    if (req != null) {
-                                                        timeoutSec = req.getTimeout();
-                                                    }
-                                                }
-                                            }
-
-
-                                        }else{//ricevuto EOF, risposta completa
-                                            Log.d(TAG, "response received # " + responseNumber);
-                                            processResponse(responseNumber, responseText);
-                                            processingResponse = false;
-                                        }
-
-                                    }else{   //non stiamo processando una risposta
-
-                                        //se riceviamo un carattere di inizio risposta
-                                        //iniziamo a processarla
-                                        if (line.startsWith("@")) {
-                                            responseText = "";
-                                            responseNumber = 0;
-                                            startTime = System.currentTimeMillis();
-                                            processingResponse = true;
-                                        }
-
-                                    }
-                                }
-
-                            }
-
-
-
-
-
-
-
-
-//
-//
-//
-//                            int i = reader.read();
-//
-//                            if (i != -1) {
-//                                // if (true) {
-//                                s = "" + (char) i;
-//                                //s = dataInputStream.readUTF();
-//                                //s="";
-//                                //while(dataInputStream.available()>0)
-//                                //s += "" + (char)dataInputStream.read();
-//                                if (processingResponse) {
-//                                    if (!s.equals(EOF)) {
-//
-//                                        //accumula il carattere ricevuto
-//                                        responseText += s;
-//
-//                                        // Se il responseNumber è = 0 lo cerca nella
-//                                        // stringa ricevuta finora.
-//                                        // Appena lo trova,lo registra e smette di cercarlo
-//                                        // Appena trova il response number lo associa alla request in coda
-//                                        // e recupera il timeout
-//                                        if (responseNumber == 0) {
-//                                            int startCloseTag = responseText.indexOf(CLOSE_TAG);
-//                                            if (startCloseTag != -1) {
-//                                                int startOpenTag = responseText.indexOf(OPEN_TAG);
-//                                                int endOpenTag = startOpenTag + OPEN_TAG.length();
-//                                                String sNum = responseText.substring(endOpenTag, startCloseTag);
-//                                                responseNumber = Integer.parseInt(sNum);
-//                                                Request req = sentQueue.get(responseNumber);
-//                                                if (req != null) {
-//                                                    timeoutSec = req.getTimeout();
-//                                                }
-//                                            }
-//                                        }
-//                                    } else {//ricevuto EOF, risposta completa
-//                                        Log.d(TAG, "response received # " + responseNumber);
-//                                        processResponse(responseNumber, responseText);
-//                                        processingResponse = false;
-//                                    }
-//
-//
-//                                } else {    //non stiamo processando una risposta
-//                                    //se riceviamo un carattere di inizio risposta
-//                                    //iniziamo a processarla
-//                                    if (s.equals("@")) {
-//                                        responseText = "";
-//                                        responseNumber = 0;
-//                                        startTime = System.currentTimeMillis();
-//                                        processingResponse = true;
-//                                    }
-//                                }
-//                            }
-//
-//
-//
-
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (InterruptedException e) {
-                        try {
-                            reader.close();
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
