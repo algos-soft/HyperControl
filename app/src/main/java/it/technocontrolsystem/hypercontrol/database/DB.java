@@ -727,6 +727,14 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
+    public static void deleteBoard(int id) {
+        String sql = "DELETE FROM " + Tables.BOARDS.getName();
+        sql += " WHERE " + BoardFields.ID.getName() + "=" + id;
+        getWritableDb().execSQL(sql);
+    }
+
+
+
     public static Board getBoard(int id) {
         Board board = null;
         if (id > 0) {
@@ -827,6 +835,15 @@ public class DB extends SQLiteOpenHelper {
         return id;
 
     }
+
+
+
+    public static void deleteMenu(int id) {
+        String sql = "DELETE FROM " + Tables.MENUS.getName();
+        sql += " WHERE " + MenuFields.ID.getName() + "=" + id;
+        getWritableDb().execSQL(sql);
+    }
+
 
     public static Menu getMenu(int id) {
         Menu menu = null;

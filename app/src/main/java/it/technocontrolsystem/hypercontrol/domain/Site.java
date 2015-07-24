@@ -64,4 +64,12 @@ public class Site {
         return DB.getPlants(getId());
     }
 
+    public Board[] getBoards(){
+        return DB.getBoards(getId());
+    }
+
+    public Menu[] getMenus(){
+        return DB.getMenus(getId());
+    }
+
 }

@@ -244,14 +244,33 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
 
 
     public void deleteAllRecords() {
+
         // Cancella tutti gli impianti e tutti i record collegati a cascata
+        // (aree, sensori)
         Plant[] plants = getSite().getPlants();
         for (Plant plant : plants) {
             DB.deletePlant(plant.getId());
             Log.d(TAG, "Plant id " + plant.getId() + " " + plant.getName() + " deleted");
         }
-
         Log.d(TAG, plants.length + " plants deleted");
+
+        // cancella le schede
+        Board[] boards = getSite().getBoards();
+        for (Board board : boards) {
+            DB.deleteBoard(board.getId());
+            Log.d(TAG, "Board id " + board.getId() + " " + board.getName() + " deleted");
+        }
+        Log.d(TAG, boards.length + " boards deleted");
+
+
+        // cancella i menu
+        Menu[] menus = getSite().getMenus();
+        for (Menu menu : menus) {
+            DB.deleteMenu(menu.getId());
+            Log.d(TAG, "Menu id " + menu.getId() + " " + menu.getName() + " deleted");
+        }
+        Log.d(TAG, menus.length + " menus deleted");
+
 
     }
 
@@ -291,7 +310,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
             Log.d(TAG, pResp.getPlants().length + " plants created");
 
         } else {
-            throw new Exception("List Plants Request timeout");
+            throw new Exception("Richiesta impianti fallita");
         }
     }
 
@@ -307,7 +326,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
 
             ListSensorsResponse sResp = (ListSensorsResponse) resp;
 
-            int createdCount=0;
+            int createdCount = 0;
 
             for (Sensor sensor : sResp.getSensors()) {
 
@@ -340,6 +359,8 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
 
             Log.d(TAG, createdCount + " sensors created");
 
+        } else {    // response null - timeout?
+            throw new Exception("Richiesta sensori fallita");
         }
 
     }
@@ -347,7 +368,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
     /**
      * Riempie la tabella schede
      */
-    private void fillBoards() {
+    private void fillBoards() throws Exception {
         Request req = new ListBoardsRequest();
         Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
@@ -363,13 +384,15 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
 
             }
             Log.d(TAG, sResp.getBoards().length + " boards created");
+        } else {    // response null - timeout?
+            throw new Exception("Richiesta schede fallita");
         }
     }
 
     /**
      * Riempie la tabella menu
      */
-    private void fillMenus() {
+    private void fillMenus() throws Exception {
         Request req = new ListMenuRequest();
         Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
@@ -385,6 +408,8 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
 
             }
             Log.d(TAG, sResp.getMenus().length + " menus created");
+        } else {    // response null - timeout?
+            throw new Exception("Richiesta comandi fallita");
         }
     }
 
