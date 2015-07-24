@@ -249,17 +249,7 @@ public class Connection {
 
         if (socketCreator.getSocket() != null) {    // riuscito
             socket = socketCreator.getSocket();
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
-//                    try {
-//                        Thread.sleep(500);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
             dataInputStream = new DataInputStream(socket.getInputStream());
 
 
