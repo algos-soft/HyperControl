@@ -218,6 +218,7 @@ public class Connection {
         return processingResponse;
     }
 
+
     /**
      * @return true se la connessione è aperta
      * (il socket è aperto e i thread di input e output sono attivi)
