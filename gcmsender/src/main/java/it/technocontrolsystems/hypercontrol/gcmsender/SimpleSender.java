@@ -49,6 +49,9 @@ public class SimpleSender {
     }
 
 
+    /**
+     * Crea il pannello della UI
+     */
     private JPanel creaPanBottoni() {
         JPanel pan = new JPanel();
         pan.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));

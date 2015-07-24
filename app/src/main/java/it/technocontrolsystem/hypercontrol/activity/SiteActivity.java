@@ -7,12 +7,16 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
+import it.technocontrolsystem.hypercontrol.communication.ListSensorsRequest;
+import it.technocontrolsystem.hypercontrol.communication.Request;
+import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.communication.StatusButtonListener;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.PlantDisplay;
@@ -89,6 +93,18 @@ public class SiteActivity extends HCSiteActivity {
 
             // carica i dati
             populateTask = (AbsPopulateTask)new PopulateTask().execute();
+
+
+            Button bTestReq=(Button)findViewById(R.id.bTestReq);
+            bTestReq.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Request req = new ListSensorsRequest();
+                    Response resp = HyperControlApp.sendRequest(req);
+                    int a=87;
+                }
+            });
+
 
 
         } else {
