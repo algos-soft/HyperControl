@@ -38,6 +38,12 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
                 public void run() {
 //                    postConnection();
                     activity.updateStatus();
+                    try {
+                        activity.getListAdapter().attachLiveListener();
+                        activity.startLive();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     button.setTextOff(activity.getString(R.string.btn_conn_offline));  // rimette a posto in ogni caso
                     button.setChecked(true);
                 }

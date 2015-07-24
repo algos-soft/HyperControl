@@ -246,7 +246,7 @@ public abstract class HCSiteActivity extends HCActivity {
     /**
      * attiva la trasmissione aggiornamenti live
      */
-    private void startLive() throws Exception {
+    public void startLive() throws Exception {
 
         if (Lib.isNetworkAvailable()) {
             LiveRequest request = new LiveRequest(getLiveCode(), getParamPlantNumCode(), getParamAreaNumCode());
