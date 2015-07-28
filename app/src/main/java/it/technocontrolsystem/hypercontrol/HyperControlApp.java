@@ -47,6 +47,7 @@ public class HyperControlApp extends Application {
         instance.lastSyncDBError = null;
         instance.connectivityChangedListeners = new ArrayList<>();
         instance.hasConnectivity = false;
+        instance.developer=false;
     }
 
     public static Context getContext() {
@@ -82,6 +83,19 @@ public class HyperControlApp extends Application {
 
     public static Connection getConnection() {
         return getInstance().conn;
+    }
+
+    /**
+     * Determina se la connessione è attiva e utilizzabile
+     */
+    public static boolean isConnected(){
+        boolean connected=false;
+        if(Lib.isNetworkAvailable()){
+            if(getConnection()!=null){
+                connected=getConnection().isOpen();
+            }
+        }
+        return connected;
     }
 
     public static String getLastConnectionError() {

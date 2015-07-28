@@ -60,6 +60,8 @@ public class ConnectionTask extends AsyncTask<Void, Void, Connection > {
             conn = new Connection(site);
             success=true;
 
+            conn.open();
+
 
         }catch(NetworkUnavailableException e){
             exc=e;

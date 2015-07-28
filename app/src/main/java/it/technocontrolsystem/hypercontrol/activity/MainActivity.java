@@ -9,7 +9,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Site;
@@ -76,7 +75,7 @@ public class MainActivity extends Activity {
 
     private void singleSite() {
         Intent intent = new Intent();
-        intent.setClass(this, StartSiteActivity.class);
+        intent.setClass(this, SiteActivity.class);
         Site site = DB.getSites()[0];
         intent.putExtra("siteid", site.getId());
         startActivity(intent);
@@ -120,7 +119,7 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 int siteid = data.getIntExtra("siteid", 0);
                 Intent intent = new Intent();
-                intent.setClass(this, StartSiteActivity.class);
+                intent.setClass(this, SiteActivity.class);
                 intent.putExtra("siteid", siteid);
                 startActivity(intent);
             }

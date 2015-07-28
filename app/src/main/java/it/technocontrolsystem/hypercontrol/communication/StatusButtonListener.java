@@ -9,8 +9,8 @@ import android.widget.ToggleButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
-import it.technocontrolsystem.hypercontrol.activity.HCActivity;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
+import it.technocontrolsystem.hypercontrol.asynctasks.OpenConnectionTask;
 
 /**
  * Created by alex on 5-07-2015.
@@ -36,16 +36,16 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
             Runnable successRunnable = new Runnable() {
                 @Override
                 public void run() {
+
 //                    postConnection();
-                    activity.updateStatus();
-                    try {
-                        activity.getListAdapter().attachLiveListener();
-                        activity.startLive();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+//                    activity.updateStatus();
+//                    try {
+//                        activity.startLive();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
                     button.setTextOff(activity.getString(R.string.btn_conn_offline));  // rimette a posto in ogni caso
-                    button.setChecked(true);
+                    activity.syncConnectButton();
                 }
             };
 
@@ -58,7 +58,12 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
                     }
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                     builder.setTitle("Errore di connessione");
-                    builder.setMessage(Html.fromHtml(HyperControlApp.getLastConnectionError()));
+                    String error=HyperControlApp.getLastConnectionError();
+                    if (error!=null) {
+                        builder.setMessage(Html.fromHtml(error));
+                    }else{
+                        builder.setMessage("Errore di connessione");
+                    }
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -67,13 +72,14 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
                     });
                     builder.show();
                     button.setTextOff(activity.getString(R.string.btn_conn_offline));  // rimette a posto in ogni caso
-                    button.setChecked(false);
                     activity.getErrorButton().setVisibility(View.VISIBLE);
                 }
             };
 
             activity.getErrorButton().setVisibility(View.GONE);
-            new ConnectionTask(activity, activity.getSite(), successRunnable, failRunnable).execute();
+
+            OpenConnectionTask task = new OpenConnectionTask(activity, activity.getSite(), successRunnable, failRunnable);
+            task.execute();
 
         }else{ // going OFF
 

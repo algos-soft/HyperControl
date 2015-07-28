@@ -1,7 +1,6 @@
-package it.technocontrolsystem.hypercontrol.communication;
+package it.technocontrolsystem.hypercontrol.asynctasks;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.util.Log;
@@ -10,6 +9,20 @@ import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.activity.ConfigActivity;
+import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
+import it.technocontrolsystem.hypercontrol.communication.LanguageRequest;
+import it.technocontrolsystem.hypercontrol.communication.ListBoardsRequest;
+import it.technocontrolsystem.hypercontrol.communication.ListBoardsResponse;
+import it.technocontrolsystem.hypercontrol.communication.ListMenuRequest;
+import it.technocontrolsystem.hypercontrol.communication.ListMenuResponse;
+import it.technocontrolsystem.hypercontrol.communication.ListPlantsRequest;
+import it.technocontrolsystem.hypercontrol.communication.ListPlantsResponse;
+import it.technocontrolsystem.hypercontrol.communication.ListSensorsRequest;
+import it.technocontrolsystem.hypercontrol.communication.ListSensorsResponse;
+import it.technocontrolsystem.hypercontrol.communication.Request;
+import it.technocontrolsystem.hypercontrol.communication.Response;
+import it.technocontrolsystem.hypercontrol.communication.VersionRequest;
+import it.technocontrolsystem.hypercontrol.communication.VersionResponse;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Board;
@@ -19,35 +32,38 @@ import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 
 /**
+ * Task per sincronizzare il database con la centrale
+ * al termine lancia un PopulateSiteTask per popolare l'adapter
  * Created by alex on 5-07-2015.
  */
-public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
+public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
 
-    private Context context;
+    private SiteActivity activity;
     private Site site;
-    private Runnable successRunnable;
-    private Runnable failRunnable;
     ProgressDialog progress;
-    Exception exception;
-    boolean success = false;
     private PowerManager.WakeLock lock;
     private String logRow;
+    private Runnable successRunnable;
+    private Runnable failRunnable;
 
     private static final String TAG = "SyncDB";
 
 
-    public SyncSiteTask(Context context, Site site, Runnable successRunnable, Runnable failRunnable) {
-        this.context = context;
+    public SyncSiteTask(SiteActivity activity, Site site, Runnable successRunnable, Runnable failRunnable) {
+        this.activity = activity;
         this.site = site;
-        this.successRunnable = successRunnable;
-        this.failRunnable = failRunnable;
-
-        progress = new ProgressDialog(context);
+        this.successRunnable=successRunnable;
+        this.failRunnable=failRunnable;
+        progress = new ProgressDialog(activity);
         progress.setCanceledOnTouchOutside(false);
 
     }
 
-    @Override
+    public SyncSiteTask(SiteActivity activity, Site site) {
+        this(activity, site, null, null);
+    }
+
+        @Override
     protected void onPreExecute() {
         Log.d(TAG, "Start sync database");
         lock = Lib.acquireWakeLock();
@@ -57,8 +73,8 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-
+    protected Exception doInBackground(Void... params) {
+        Exception exception=null;
         try {
 
             HyperControlApp.setLastSyncDBError(null);
@@ -69,15 +85,12 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
             // sincronizza il db con la centrale
             syncDB();
 
-            success = true;
-
         } catch (Exception e) {
             exception = e;
-            success = false;
             HyperControlApp.setLastSyncDBError(e.getMessage());
             e.printStackTrace();
         }
-        return null;
+        return exception;
     }
 
 
@@ -99,22 +112,35 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Void> {
 
 
     @Override
-    protected void onPostExecute(Void aVoid) {
+    protected void onPostExecute(Exception exception) {
 
         if (progress != null) {
             progress.dismiss();
         }
 
-        if (success) {
-            if (successRunnable != null) {
-                successRunnable.run();
+        // popola il site e aggiorna lo stato.
+        // popola in ogni caso il site, anche se la connessione è fallita (i dati sono locali)
+        PopulateSiteTask task = new PopulateSiteTask(activity, successRunnable, failRunnable);
+        task.execute();
+
+        if (exception==null) {
+
+            // dopo che ha aggiornato la configurazione
+            // manda alla centrale il comando di start live
+            try {
+                activity.startLive();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
             Log.d(TAG, "database sync successful");
+
         } else {
-            if (failRunnable != null) {
+
+            Log.d(TAG, "database sync failed. "+exception.getMessage());
+            if(failRunnable!=null){
                 failRunnable.run();
             }
-            Log.d(TAG, "database sync failed");
         }
 
         Lib.releaseWakeLock(lock);

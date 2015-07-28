@@ -15,7 +15,8 @@ import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 
 /**
- * Connection with the unit
+ * TCP/IP Connection to a site
+ * Created by alex on 25-07-2015.
  */
 public class Connection {
 
@@ -52,7 +53,7 @@ public class Connection {
     private static final String TAG = "CONN";
 
 
-    public Connection(Site site) throws Exception {
+    public Connection(Site site) {
         Log.d(TAG, "creating new connection...");
 
         this.site = site;
@@ -63,25 +64,13 @@ public class Connection {
 
         connectionStatusChangedListeners = new ArrayList<>();
 
-        // apre la connessione
-        open();
-
     }
 
-    /**
-     * Mock object constructor
-     */
-    public Connection() {
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**
      * Apre la connessione
      * Crea il socket e i background threads (Request e Receive)
+     * effettua il login
      */
     public void open() throws Exception {
         if (Lib.isNetworkAvailable()) {
@@ -90,13 +79,12 @@ public class Connection {
             createRequestThread();
             createReceiveThread();
             open = true;
-            Log.d(TAG, "connection created successfully");
-            fireStatusChanged(oldStatus, true);
-
             doLogin();
+            fireStatusChanged(oldStatus, true);
+            Log.d(TAG, "connection opened successfully");
 
         } else {
-            Log.d(TAG, "create connection failed");
+            Log.d(TAG, "open connection failed");
             throw new NetworkUnavailableException();
         }
 
@@ -108,6 +96,7 @@ public class Connection {
      */
     public void close() {
         boolean oldStatus=open;
+        Log.d(TAG, "connection close requested");
 
         if (requestThread != null) {
             requestThread.interrupt(); // nel Thread il metodo Thread.sleep() genera una InterruptedException
@@ -128,6 +117,7 @@ public class Connection {
         open = false;
 
         fireStatusChanged(oldStatus, false);
+        Log.d(TAG, "connection has been closed");
 
     }
 

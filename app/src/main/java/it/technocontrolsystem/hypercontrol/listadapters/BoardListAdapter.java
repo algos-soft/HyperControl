@@ -76,7 +76,7 @@ public class BoardListAdapter extends HCListAdapter<BoardModel>{
         if((conn!=null)&&(conn.isOpen())){
             model=(BoardModel) getModel(number);
             BoardStatusRequest request = new BoardStatusRequest(number);
-            resp = (BoardStatusResponse) conn.sendRequest(request);
+            resp = (BoardStatusResponse) HyperControlApp.sendRequest(request);
             if(resp!=null){
                 int status = resp.getStatus();
                 model.setStatus(status);

@@ -86,10 +86,6 @@
             android:label="@string/title_activity_login" >
         </activity>
         <activity
-            android:name=".activity.StartSiteActivity"
-            android:label="@string/title_activity_start_site" >
-        </activity>
-        <activity
             android:name=".activity.SitesListActivity"
             android:label="@string/title_activity_sites_list"
             android:launchMode="singleTask" >

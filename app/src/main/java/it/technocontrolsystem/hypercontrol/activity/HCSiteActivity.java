@@ -2,10 +2,7 @@ package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PowerManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,12 +12,13 @@ import android.widget.ToggleButton;
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.UpdateSiteTask;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
-import it.technocontrolsystem.hypercontrol.model.ModelIF;
 
 /**
  * Superclasse di tutte le HCActivity che sono relative a un Site
@@ -33,14 +31,15 @@ public abstract class HCSiteActivity extends HCActivity {
     public static final int MENU_MENU = 4;
     public static final int MENU_SITES = 5;
 
-//    private static final int NEW_SITE_ACTION=1;
-
-    protected AbsUpdateTask updateTask;
+    // per distinguere se onResume è chiamato dopo onCreate() o dopo onPause()
+    private boolean paused=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         progress = new ProgressDialog(this);
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
 
         HyperControlApp.addOnConnectivityChangedListener(new HyperControlApp.OnConnectivityChangedListener() {
             @Override
@@ -48,8 +47,6 @@ public abstract class HCSiteActivity extends HCActivity {
                 connectivityHasChanged(newStatus);
             }
         });
-
-
 
     }
 
@@ -77,45 +74,64 @@ public abstract class HCSiteActivity extends HCActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        // se non è nuova istanza aggiorna lo stato
+        if(paused){
+            updateStatus();
+        }
+
         try {
-            Connection conn= HyperControlApp.getConnection();
-            if (Lib.isNetworkAvailable() && (conn != null) && (conn.isOpen())) {
-                getListAdapter().attachLiveListener();
-                startLive();
-            } else {
+
+            if(!HyperControlApp.isConnected()){
                 clearStatus();
             }
+
+//            Connection conn= HyperControlApp.getConnection();
+//            if (Lib.isNetworkAvailable() && (conn != null) && (conn.isOpen())) {
+//                startLive();
+//            } else {
+//                clearStatus();
+//            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        paused=false;
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // dismiss dialogs when paused
+        // hide dialogs when paused
         if (progress != null) {
-            progress.dismiss();
+            progress.hide();
         }
+        paused=true;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // cancel update task if running
-        if (updateTask != null) {
-            updateTask.cancel(true);
-        }
-        // drop references from inner class to main Activity
-        updateTask = null;
-
-
     }
+
+    /**
+     * Ritorna l'update task
+     */
+    public abstract AbsUpdateTask getUpdateTask();
 
     /**
      * Aggiorna lo stato corrente di tutti gli elementi dalla centrale
      */
-    public abstract void updateStatus();
+    public void updateStatus(){
+        if(HyperControlApp.isConnected()){
+            AbsUpdateTask task = getUpdateTask();
+            if(task!=null){
+                task.execute();
+            }
+        }
+    }
 
     /**
      * Svuota lo stato corrente di tutti gli elementi
@@ -136,111 +152,6 @@ public abstract class HCSiteActivity extends HCActivity {
         }
     }
 
-
-    /**
-     * Task per aggiornare lo stato dalla centrale.
-     */
-    abstract class AbsUpdateTask extends AsyncTask<Void, Integer, Void> {
-
-        private PowerManager.WakeLock lock;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-
-            Log.d(TAG, "UpdateTask - startBackground");
-
-            // attende che si liberi il semaforo
-            waitForSemaphore();
-            workingInBg = true;
-
-            // mostra il dialogo
-            publishProgress(-1);
-
-            try {
-
-                publishProgress(-2, getListAdapter().getCount());
-
-                // aggiorna lo stato
-                Connection conn = HyperControlApp.getConnection();
-                boolean open=((conn!=null)&&(conn.isOpen()));
-                if (open) {
-                    for (int i = 0; i < getListAdapter().getCount(); i++) {
-
-                        if (!(isCancelled() | Thread.interrupted())) {
-                            ModelIF model = (ModelIF) getListAdapter().getItem(i);
-                            getListAdapter().updateByNumber(model.getNumber());
-                            publishProgress(-3, i + 1);
-                        } else {
-                            break;
-                        }
-                    }
-                } else {
-                    getListAdapter().clearStatus();
-                }
-
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-
-            // spegne il semaforo
-            workingInBg = false;
-
-            Log.d(TAG, "UpdateTask - endBackground");
-
-
-            return null;
-        }
-
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            int param1 = 0, param2 = 0;
-            param1 = values[0];
-            if (values.length > 1) {
-                param2 = values[1];
-            }
-            switch (param1) {
-                case -1: {
-                    Lib.lockOrientation(HCSiteActivity.this);
-                    lock = Lib.acquireWakeLock();
-                    progress.setMessage("aggiornamento stato...");
-                    progress.setProgress(0);
-                    progress.show();
-                    break;
-                }
-
-                case -2: {
-                    progress.setMax(param2);
-                    break;
-                }
-
-                case -3: {
-                    progress.setProgress(param2);
-                    break;
-                }
-
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            progress.dismiss();
-            Lib.unlockOrientation(HCSiteActivity.this);
-            if (lock != null) {
-                Lib.releaseWakeLock(lock);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            progress.dismiss();
-            getListAdapter().notifyDataSetChanged();
-            Lib.unlockOrientation(HCSiteActivity.this);
-            if (lock != null) {
-                Lib.releaseWakeLock(lock);
-            }
-        }
-    }
 
 
     /**
@@ -352,18 +263,6 @@ public abstract class HCSiteActivity extends HCActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if(requestCode==NEW_SITE_ACTION){
-//            if(resultCode==RESULT_OK){
-//                Intent intent = new Intent();
-//                intent.setClass(this, SitesListActivity.class);
-//                startActivity(intent);
-//                finish();
-//            }
-//        }
-//    }
 
     /**
      * @return il listAdapter come HCListAdapter

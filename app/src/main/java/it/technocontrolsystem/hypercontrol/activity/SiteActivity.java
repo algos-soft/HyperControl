@@ -2,29 +2,26 @@ package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ToggleButton;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
+import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.OpenConnectionTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.PopulateSiteTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.UpdateSiteTask;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
-import it.technocontrolsystem.hypercontrol.communication.ListSensorsRequest;
-import it.technocontrolsystem.hypercontrol.communication.Request;
-import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.communication.StatusButtonListener;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.PlantDisplay;
-import it.technocontrolsystem.hypercontrol.domain.Plant;
 import it.technocontrolsystem.hypercontrol.domain.Site;
-import it.technocontrolsystem.hypercontrol.listadapters.PlantListAdapter;
-import it.technocontrolsystem.hypercontrol.model.PlantModel;
 
 /**
  * Activity to display a single site
@@ -39,58 +36,59 @@ public class SiteActivity extends HCSiteActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "SiteActivity - onCreate()");
 
+        Log.d(TAG, "SiteActivity - onCreate()");
 
         this.idSite = getIntent().getIntExtra("siteid", 0);
 
-        if (idSite != 0) {
-
-            setContentView(R.layout.activity_site);
-            this.version = getIntent().getIntExtra("siteversion", 0);//federico
-
-            // uso un inClickListener per poter gestire lo stato
-            // senza invocare il checked change listener
-            getConnectButton().setOnClickListener(new StatusButtonListener(this));
-
-            // regola il bottone CONNECTED in base allo stato della connessione
-            syncConnectButton();
+        setContentView(R.layout.activity_site);
+        this.version = getIntent().getIntExtra("siteversion", 0);//federico
 
 
-            // attacca un listener al bottone di errore connessione
-            getErrorButton().setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    errorButtonClicked();
-                }
-            });
+        // se nuova istanza, crea una nuova Connection e la registra (non la apre per ora)
+        if(isNewInstance()){
+            HyperControlApp.setConnection(new Connection(getSite()));
+        }
 
-            // regola la visibilità del bottone di errore connessione
-            // se c'è un errore di connessione lo visualizza se no lo rende invisibile
-            if (HyperControlApp.getLastConnectionError()!=null) {
-                getErrorButton().setVisibility(View.VISIBLE);
-            }else {
-                getErrorButton().setVisibility(View.GONE);
+        // uso un inClickListener per poter gestire lo stato
+        // senza invocare il checked change listener
+        getConnectButton().setOnClickListener(new StatusButtonListener(this));
+
+        // regola il bottone CONNECTED in base allo stato della connessione
+        syncConnectButton();
+
+        // listener sul bottone di errore connessione
+        getErrorButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                errorButtonClicked();
             }
+        });
 
-            // crea l'adapter
-            setListAdapter(new PlantListAdapter(SiteActivity.this));
+        // regola la visibilità del bottone di errore connessione
+        // se c'è un errore di connessione registrato, lo visualizza se no lo rende invisibile
+        if (HyperControlApp.getLastConnectionError()!=null) {
+            getErrorButton().setVisibility(View.VISIBLE);
+        }else {
+            getErrorButton().setVisibility(View.GONE);
+        }
 
-            getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    PlantDisplay display = (PlantDisplay) view;
-                    Intent intent = new Intent();
-                    intent.setClass(SiteActivity.this, PlantActivity.class);
-                    intent.putExtra("plantid", display.getPlantId());
-                    startActivity(intent);
-                }
-            });
+        // listener per il clic sugli item della ListView
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PlantDisplay display = (PlantDisplay) view;
+                Intent intent = new Intent();
+                intent.setClass(SiteActivity.this, PlantActivity.class);
+                intent.putExtra("plantid", display.getPlantId());
+                startActivity(intent);
+            }
+        });
 
 
-            Log.d(TAG, "Connection is: " + HyperControlApp.getConnection());
+//        Log.d(TAG, "Connection is: " + HyperControlApp.getConnection());
 
-            Log.d(TAG, "create + execute PopulateTask");
+//        Log.d(TAG, "create + execute PopulateTask");
 
 //            // aggiunge un listener alla connessione
 //            Connection conn = HyperControlApp.getConnection();
@@ -108,13 +106,45 @@ public class SiteActivity extends HCSiteActivity {
 //                });
 //            }
 
-            // carica i dati
-            populateTask = (AbsPopulateTask)new PopulateTask().execute();
 
+        if(isNewInstance()) {
 
-        } else {
-            finish();
+            if(Lib.isNetworkAvailable()) {
+                try{
+
+                    Runnable successRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            syncConnectButton();
+                        }
+                    };
+
+                    // apre la connessione, sincronizza il db, popola l'adapter, aggiorna lo stato
+                    OpenConnectionTask task = new OpenConnectionTask(this, getSite(), successRunnable, null);
+                    task.execute();
+
+                }catch(Exception e){
+
+                    // dialogo errore connessione
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Errore di connessione");
+                    builder.setMessage(e.getMessage());
+                    builder.setPositiveButton("OK", null);
+                    builder.show();
+
+                    // popola comunque l'adapter
+                    new PopulateSiteTask(this).execute();
+                }
+            }else{  // new instance, network unavailable
+                // popola comunque l'adapter
+                new PopulateSiteTask(this).execute();
+            }
+
+        }else{  // config change
+            new PopulateSiteTask(this).execute();
         }
+
+
 
     }
 
@@ -126,8 +156,6 @@ public class SiteActivity extends HCSiteActivity {
         // regola il bottone CONNECTED in base allo stato della connessione
         syncConnectButton();
 
-        // aggiorna lo stato
-        updateStatus();
     }
 
 
@@ -140,6 +168,7 @@ public class SiteActivity extends HCSiteActivity {
             Connection conn=HyperControlApp.getConnection();
             if (conn!=null){
                 conn.close();
+                HyperControlApp.setConnection(null);
             }
         }
 
@@ -161,13 +190,9 @@ public class SiteActivity extends HCSiteActivity {
     }
 
     @Override
-    public void updateStatus() {
-        Connection conn = HyperControlApp.getConnection();
-        if ((conn != null) && (conn.isOpen())) {
-            updateTask=(AbsUpdateTask)new UpdateTask().execute();
-        }
+    public AbsUpdateTask getUpdateTask() {
+        return new UpdateSiteTask(this);
     }
-
 
     /**
      * Invocato quando cambia lo stato della connettività del device
@@ -183,70 +208,30 @@ public class SiteActivity extends HCSiteActivity {
 
 
 
-    /**
-     * AsyncTask per caricare i dati nell'adapter
-     */
-    class PopulateTask extends AbsPopulateTask {
-
-        @Override
-        public void populateAdapter() {
-            Log.d(TAG, "Start populate adapter");
-            Plant[] plants = DB.getPlants(idSite);
-            publishProgress(-2, plants.length);
-            PlantModel model;
-            getListAdapter().clear();
-            int i = 0;
-            for (final Plant plant : plants) {
-                model = new PlantModel(plant);
-                getListAdapter().add(model);
-                i++;
-                publishProgress(-3, i);
-
-                if (isCancelled()){
-                    break;
-                }
-
-            }
-            Log.d(TAG, "End populate adapter");
-        }
-
-        @Override
-        public String getType() {
-            return "impianti";
-        }
-
-    }
+//    /**
+//     * Esegue populate e quando ha finito esegue update
+//     */
+//    class PopulateAndUpdateTask extends PopulateSiteTask {
+//
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            UpdateTask uTask = new UpdateTask();
+//            uTask.execute();
+//        }
+//    }
 
 
-    /**
-     * Task per aggiornare lo stato dalla centrale.
-     */
-    class UpdateTask extends AbsUpdateTask {
-    }
-
-    /**
-     * Esegue populate e quando ha finito esegue update
-     */
-    class PopulateAndUpdateTask extends PopulateTask{
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            UpdateTask uTask = new UpdateTask();
-            uTask.execute();
-        }
-    }
-
-
-    public void populateAndUpdate(){
-        PopulateAndUpdateTask task = new PopulateAndUpdateTask();
-        task.execute();
-    }
+//    public void populateAndUpdate(){
+//        PopulateAndUpdateTask task = new PopulateAndUpdateTask();
+//        task.execute();
+//    }
 
 
     /**
      * Sincronizza lo stato del bottone CONNECT in base allo stato della connessione
      */
-    private void syncConnectButton(){
+    public void syncConnectButton(){
         Connection conn=HyperControlApp.getConnection();
         boolean open = (conn!=null) && (conn.isOpen());
         getConnectButton().setChecked(open);
@@ -256,7 +241,12 @@ public class SiteActivity extends HCSiteActivity {
     private void errorButtonClicked() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Errore di connessione");
-        builder.setMessage(Html.fromHtml(HyperControlApp.getLastConnectionError()));
+        String err=HyperControlApp.getLastConnectionError();
+        if(err!=null){
+            builder.setMessage(Html.fromHtml(err));
+        }else{
+            builder.setMessage("Errore di connessione");
+        }
         builder.setPositiveButton("OK", null);
         builder.show();
     }

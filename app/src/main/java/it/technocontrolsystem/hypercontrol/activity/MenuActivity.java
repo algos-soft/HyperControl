@@ -3,11 +3,12 @@ package it.technocontrolsystem.hypercontrol.activity;
 import android.os.Bundle;
 
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.PopulateAreaTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.PopulateMenuTask;
 import it.technocontrolsystem.hypercontrol.database.DB;
-import it.technocontrolsystem.hypercontrol.domain.Menu;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.MenuListAdapter;
-import it.technocontrolsystem.hypercontrol.model.MenuModel;
 
 
 public class MenuActivity extends HCSiteActivity {
@@ -25,71 +26,77 @@ public class MenuActivity extends HCSiteActivity {
         idPage = getIntent().getIntExtra("pageid", -1);
         title=getIntent().getStringExtra("title");
 
-        if (idSite != 0) {
+        getListView().setDivider(null);
 
-            getListView().setDivider(null);
+        // crea l'adapter per la ListView
+        setListAdapter(new MenuListAdapter(MenuActivity.this));
 
-            // crea l'adapter per la ListView
-            setListAdapter(new MenuListAdapter(MenuActivity.this));
-
-            // carica i dati
-            populateTask = (AbsPopulateTask)new PopulateTask().execute();
-
-        } else {
-            finish();
-        }
+        // carica i dati
+        new PopulateMenuTask(this).execute();
 
     }
 
 
 
-    /**
-     * AsyncTask per caricare i dati nell'adapter
-     */
-    class PopulateTask extends AbsPopulateTask {
-
-        @Override
-        public void populateAdapter() {
-
-            Menu[] menus = DB.getMenusBySiteAndPage(idSite, idPage);
-
-            //Menu[] menus = DB.getMenus(idSite);
-            publishProgress(-2, menus.length);
-
-            MenuModel model;
-            getListAdapter().clear();
-            int i = 0;
-            for (final Menu menu : menus) {
-                model = new MenuModel(menu);
-                getListAdapter().add(model);
-                i++;
-                publishProgress(-3, i);
-
-                if (isCancelled()){
-                    break;
-                }
-
-            }
-
-        }
-
-        @Override
-        public String getType() {
-            return "menu";
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            regolaHeader();
-        }
-    }
-
+//    /**
+//     * AsyncTask per caricare i dati nell'adapter
+//     */
+//    class PopulateTask extends AbsPopulateTask {
+//
+//        public PopulateTask() {
+//            super(MenuActivity.this);
+//        }
+//
+//        @Override
+//        public void populateAdapter() {
+//
+//            Menu[] menus = DB.getMenusBySiteAndPage(idSite, idPage);
+//
+//            //Menu[] menus = DB.getMenus(idSite);
+//            publishProgress(-2, menus.length);
+//
+//            MenuModel model;
+//            getListAdapter().clear();
+//            int i = 0;
+//            for (final Menu menu : menus) {
+//                model = new MenuModel(menu);
+//                getListAdapter().add(model);
+//                i++;
+//                publishProgress(-3, i);
+//
+//                if (isCancelled()){
+//                    break;
+//                }
+//
+//            }
+//
+//        }
+//
+//        @Override
+//        public String getType() {
+//            return "menu";
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Exception exception) {
+//            super.onPostExecute(exception);
+//            regolaHeader();
+//        }
+//
+//
+//        @Override
+//        public AsyncTask getUpdateTask() {
+//            return null;
+//        }
+//
+//    }
 
 
     @Override
-    public void updateStatus() {
+    public AbsUpdateTask getUpdateTask() {
+        return null;
     }
+
 
     @Override
     public String getHeadline2() {
@@ -138,6 +145,7 @@ public class MenuActivity extends HCSiteActivity {
     }
 
 
-
-
+    public int getIdPage() {
+        return idPage;
+    }
 }

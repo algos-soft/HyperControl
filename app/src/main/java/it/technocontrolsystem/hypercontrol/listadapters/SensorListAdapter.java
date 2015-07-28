@@ -70,7 +70,7 @@ public class SensorListAdapter extends HCListAdapter<SensorModel> {
             int numPlant = area.getPlant().getNumber();
             int numArea = area.getNumber();
             SensorsStatusRequest request = new SensorsStatusRequest(numPlant, numArea);
-            resp = (SensorsStatusResponse) conn.sendRequest(request);
+            resp = (SensorsStatusResponse) HyperControlApp.sendRequest(request);
             HashMap<Integer, SensorModel> responseMap = resp.getResponseMap();
             SensorModel responseModel;
 
@@ -110,7 +110,7 @@ public class SensorListAdapter extends HCListAdapter<SensorModel> {
         if ((conn != null) && (conn.isOpen())) {
             model = (SensorModel) getModel(number);
             SensorsStatusRequest request = new SensorsStatusRequest(number);
-            resp = (SensorsStatusResponse) conn.sendRequest(request);
+            resp = (SensorsStatusResponse) HyperControlApp.sendRequest(request);
 
             if (resp != null) {
                 // capire se si può semplificare aggiungendo un metodo che mi permette di recuperare il singolo sensore

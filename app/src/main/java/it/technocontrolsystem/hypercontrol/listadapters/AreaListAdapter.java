@@ -86,7 +86,7 @@ public class AreaListAdapter extends HCListAdapter<AreaModel>{
             model=(AreaModel) getModel(number);
             int plantNum= model.getArea().getPlant().getNumber();
             AreaStatusRequest request = new AreaStatusRequest(plantNum,number);
-            resp = (AreaStatusResponse) conn.sendRequest(request);
+            resp = (AreaStatusResponse) HyperControlApp.sendRequest(request);
             if(resp!=null){
                 int status = resp.getStatus();
                 boolean alarm = resp.isAlarm();

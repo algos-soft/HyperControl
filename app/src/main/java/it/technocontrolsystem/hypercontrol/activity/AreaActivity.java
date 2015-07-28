@@ -5,17 +5,20 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.PopulateAreaTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.PopulatePlantTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.UpdateAreaTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.UpdatePlantTask;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.SensorCommandRequest;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
-import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.listadapters.SensorListAdapter;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
@@ -32,17 +35,8 @@ public class AreaActivity extends HCSiteActivity {
 
         this.idArea = getIntent().getIntExtra("areaid", 0);
 
-        if (idArea != 0) {
-
-            // crea l'adapter per la ListView
-            setListAdapter(new SensorListAdapter(AreaActivity.this, getArea()));
-
-            // carica i dati
-            populateTask = (AbsPopulateTask)new PopulateTask().execute();
-
-        } else {
-            finish();
-        }
+        // carica i dati
+        new PopulateAreaTask(this).execute();
 
     }
 
@@ -52,17 +46,15 @@ public class AreaActivity extends HCSiteActivity {
         super.onResume();
 
         // aggiorna i dati
-        updateStatus();
+        //updateStatus();
 
     }
 
     @Override
-    public void updateStatus(){
-        Connection conn= HyperControlApp.getConnection();
-        if(conn!=null && conn.isOpen()){
-            updateTask=(AbsUpdateTask)new UpdateTask().execute();
-        }
+    public AbsUpdateTask getUpdateTask() {
+        return new UpdateAreaTask(this);
     }
+
 
     public String getHeadline2(){
         return getArea().getPlant().getName();
@@ -79,66 +71,77 @@ public class AreaActivity extends HCSiteActivity {
         return DB.getSensorCountByArea(getArea().getId());
     }
 
-    /**
-     * AsyncTask per caricare i dati nell'adapter
-     */
-    class PopulateTask extends AbsPopulateTask {
+//    /**
+//     * AsyncTask per caricare i dati nell'adapter
+//     */
+//    class PopulateTask extends AbsPopulateTask {
+//
+//        public PopulateTask() {
+//            super(AreaActivity.this);
+//        }
+//
+//        @Override
+//        public void populateAdapter() {
+//            Sensor[] sensors = DB.getSensorsByArea(idArea);
+//            publishProgress(-2, sensors.length);
+//            SensorModel aModel;
+//            getListAdapter().clear();
+//            int i = 0;
+//            for (final Sensor sensor : sensors) {
+//                aModel = new SensorModel(sensor);
+//                getListAdapter().add(aModel);
+//                i++;
+//                publishProgress(-3, i);
+//
+//                if (isCancelled()){
+//                    break;
+//                }
+//
+//            }
+//
+//        }
+//
+//        @Override
+//        public String getType() {
+//            return "sensori";
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Exception exception) {
+//            super.onPostExecute(exception);
+//
+//            //== a cosa serve questo? - alex lug-2015 ==
+//            //con questo listener  riesco a recuperare le info del sensore,
+//            // ma non riesco a visualizzare il menu contestuale
+//            getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//
+//
+//                @Override
+//                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                    sensMod = (SensorModel) getListView().getItemAtPosition(position);
+//                    registerForContextMenu(parent);
+//                    openContextMenu(parent);
+//                    return true;
+//                }
+//
+//
+//            });
+//
+//        }
+//
+//
+//        @Override
+//        public AsyncTask getUpdateTask() {
+//            return null;
+//        }
+//    }
 
-        @Override
-        public void populateAdapter() {
-            Sensor[] sensors = DB.getSensorsByArea(idArea);
-            publishProgress(-2, sensors.length);
-            SensorModel aModel;
-            getListAdapter().clear();
-            int i = 0;
-            for (final Sensor sensor : sensors) {
-                aModel = new SensorModel(sensor);
-                getListAdapter().add(aModel);
-                i++;
-                publishProgress(-3, i);
 
-                if (isCancelled()){
-                    break;
-                }
-
-            }
-
-        }
-
-        @Override
-        public String getType() {
-            return "sensori";
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            //== a cosa serve questo? - alex lug-2015 ==
-            //con questo listener  riesco a recuperare le info del sensore,
-            // ma non riesco a visualizzare il menu contestuale
-            getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    sensMod = (SensorModel) getListView().getItemAtPosition(position);
-                    registerForContextMenu(parent);
-                    openContextMenu(parent);
-                    return true;
-                }
-
-
-            });
-
-        }
-    }
-
-    /**
-     * Task per aggiornare lo stato dalla centrale.
-     */
-    class UpdateTask extends AbsUpdateTask {
-    }
+//    /**
+//     * Task per aggiornare lo stato dalla centrale.
+//     */
+//    class UpdateTask extends AbsUpdateTask {
+//    }
 
 
 

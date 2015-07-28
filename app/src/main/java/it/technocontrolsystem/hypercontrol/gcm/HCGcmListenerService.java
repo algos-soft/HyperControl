@@ -32,7 +32,7 @@ import com.google.android.gms.gcm.GcmListenerService;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
-import it.technocontrolsystem.hypercontrol.activity.StartSiteActivity;
+import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Plant;
@@ -94,7 +94,7 @@ public class HCGcmListenerService extends GcmListenerService {
             case "alarm":
                 int siteid=1;   // provvisorio!!!
                 Intent intent = new Intent();
-                intent.setClass(this, StartSiteActivity.class);
+                intent.setClass(this, SiteActivity.class);
                 intent.putExtra("siteid", siteid);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);

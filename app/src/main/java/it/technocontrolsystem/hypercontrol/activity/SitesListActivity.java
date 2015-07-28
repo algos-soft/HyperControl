@@ -13,10 +13,10 @@ import android.widget.Button;
 
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.asynctasks.PopulateSiteListTask;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.SiteDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Site;
-import it.technocontrolsystem.hypercontrol.listadapters.SiteListAdapter;
 import it.technocontrolsystem.hypercontrol.model.SiteModel;
 
 public class SitesListActivity extends HCActivity {
@@ -29,16 +29,14 @@ public class SitesListActivity extends HCActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_listsites);
 
-        //crea l'adapter per la ListView
-        setListAdapter(new SiteListAdapter(this));
-
         // attacca un click listener alla ListView
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 SiteDisplay display = (SiteDisplay) view;
                 Intent intent = new Intent();
-                intent.setClass(SitesListActivity.this, StartSiteActivity.class);
+//                intent.setClass(SitesListActivity.this, StartSiteActivity.class);
+                intent.setClass(SitesListActivity.this, SiteActivity.class);
                 intent.putExtra("siteid", display.getSite().getId());
                 SitesListActivity.this.startActivity(intent);
             }
@@ -57,7 +55,7 @@ public class SitesListActivity extends HCActivity {
         });
 
         //carica i dati
-        populateTask = (AbsPopulateTask) new PopulateTask().execute();
+        new PopulateSiteListTask(this).execute();
 
     }
 
@@ -84,7 +82,7 @@ public class SitesListActivity extends HCActivity {
         switch (item.getItemId()) {
             case R.id.site_menu_apri:
                 intent = new Intent();
-                intent.setClass(SitesListActivity.this, StartSiteActivity.class);
+                intent.setClass(SitesListActivity.this, SiteActivity.class);
                 intent.putExtra("siteid", display.getSite().getId());
                 SitesListActivity.this.startActivity(intent);
                 return true;
@@ -165,7 +163,7 @@ public class SitesListActivity extends HCActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             Intent intent = new Intent();
-                            intent.setClass(SitesListActivity.this, StartSiteActivity.class);
+                            intent.setClass(SitesListActivity.this, SiteActivity.class);
                             intent.putExtra("siteid", site.getId());
                             startActivity(intent);
                         }
@@ -178,42 +176,6 @@ public class SitesListActivity extends HCActivity {
         }
 
 
-
-    }
-
-
-    /**
-     * AsyncTask per caricare i dati nell'adapter
-     */
-    class PopulateTask extends AbsPopulateTask {
-
-        @Override
-        public void populateAdapter() {
-
-            Site[] sites = DB.getSites();
-            publishProgress(-2, sites.length);
-
-            SiteModel model;
-            getListAdapter().clear();
-            int i = 0;
-            for (final Site site : sites) {
-                model = new SiteModel(site);
-                getListAdapter().add(model);
-                i++;
-                publishProgress(-3, i);
-
-                if (isCancelled()) {
-                    break;
-                }
-
-            }
-
-        }
-
-        @Override
-        public String getType() {
-            return "siti";
-        }
 
     }
 

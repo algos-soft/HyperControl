@@ -30,7 +30,7 @@ public abstract class HCListAdapter<T> extends ArrayAdapter<T> {
 
 
     // assegno un LiveListener alla connessione
-    public void attachLiveListener(){
+    public void attachLiveListenerToConnection(){
         Connection conn = HyperControlApp.getConnection();
         if(conn!=null){
             conn.setLiveListener(new Connection.LiveListener() {

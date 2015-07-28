@@ -85,7 +85,7 @@ public class PlantListAdapter extends HCListAdapter<PlantModel> {
         if((conn!=null) && (conn.isOpen())){
             model=(PlantModel) getModel(number);
             PlantsStatusRequest request = new PlantsStatusRequest(number);
-            resp = (PlantsStatusResponse) conn.sendRequest(request);
+            resp = (PlantsStatusResponse) HyperControlApp.sendRequest(request);
             if(resp!=null){
                 int status = resp.getStatus();
                 boolean alarm = resp.isAlarm();
