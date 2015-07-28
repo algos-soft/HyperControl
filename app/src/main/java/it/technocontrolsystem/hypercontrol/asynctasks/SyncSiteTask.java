@@ -282,7 +282,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
     public void deleteAllRecords() {
 
         // Cancella tutti gli impianti e tutti i record collegati a cascata
-        // (aree, sensori)
+        // (aree, sensori, uscite)
         Plant[] plants = getSite().getPlants();
         for (Plant plant : plants) {
             DB.deletePlant(plant.getId());

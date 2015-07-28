@@ -53,10 +53,6 @@ public class PlantActivity extends HCSiteActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-//        // aggiorna i dati
-//        updateStatus();
-
     }
 
     @Override
