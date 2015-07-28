@@ -81,24 +81,16 @@ public class ListOutputsResponse extends Response {
                     output.setNumber(numSensor);
                 } else if (name.equals("Nome")) {
                     output.setName(parser.nextText());
+                } else if (name.equals("Impianto")) {
+                    readPlants(output);
+                    stop = true;
+                } else {
+                    stop = true;
                 }
-//                } else if (name.equals("Tipo")) {
-//                    //String type=parser.nextText();
-//                    // int code=SensorType.getCode(type);
-//                    //sensor.setTipo(code);
-//                    int type=Integer.parseInt(parser.nextText());
-//                    output.setTipo(type);
-            } else if (name.equals("Impianto")) {
-                readPlants(output);
-                stop = true;
             } else {
                 stop = true;
             }
         }
-//            else {
-//                stop = true;
-//        }
-
     }
 
 
@@ -108,6 +100,7 @@ public class ListOutputsResponse extends Response {
      * @throws XmlPullParserException
      * @throws IOException
      */
+
     private void readPlants(Output output) throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {

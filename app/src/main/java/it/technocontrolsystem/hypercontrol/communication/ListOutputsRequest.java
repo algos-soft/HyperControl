@@ -6,7 +6,7 @@ package it.technocontrolsystem.hypercontrol.communication;
 public class ListOutputsRequest extends Request {
     @Override
     public Class getResponseClass() {
-        return ListSensorsResponse.class;
+        return ListOutputsResponse.class;
     }
 
     public String getMessage() {

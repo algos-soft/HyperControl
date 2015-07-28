@@ -1,27 +1,22 @@
 package it.technocontrolsystem.hypercontrol.asynctasks;
 
-import it.technocontrolsystem.hypercontrol.activity.AreaActivity;
-import it.technocontrolsystem.hypercontrol.activity.PlantActivity;
-import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
+import it.technocontrolsystem.hypercontrol.activity.AreaSensorsActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
-import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Sensor;
-import it.technocontrolsystem.hypercontrol.listadapters.AreaListAdapter;
 import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
 import it.technocontrolsystem.hypercontrol.listadapters.SensorListAdapter;
-import it.technocontrolsystem.hypercontrol.model.AreaModel;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 /**
  * Created by alex on 27-07-2015.
  */
-public class PopulateAreaTask extends AbsPopulateTask {
+public class PopulateAreaSensorsTask extends AbsPopulateTask {
 
-    public PopulateAreaTask(AreaActivity activity, Runnable successRunnable, Runnable failRunnable) {
+    public PopulateAreaSensorsTask(AreaSensorsActivity activity, Runnable successRunnable, Runnable failRunnable) {
         super(activity, successRunnable, failRunnable);
     }
 
-    public PopulateAreaTask(AreaActivity activity) {
+    public PopulateAreaSensorsTask(AreaSensorsActivity activity) {
         this(activity, null, null);
     }
 
@@ -59,8 +54,8 @@ public class PopulateAreaTask extends AbsPopulateTask {
         return "sensori";
     }
 
-    private AreaActivity getSpecActivity() {
-        return (AreaActivity) activity;
+    private AreaSensorsActivity getSpecActivity() {
+        return (AreaSensorsActivity) activity;
     }
 
 

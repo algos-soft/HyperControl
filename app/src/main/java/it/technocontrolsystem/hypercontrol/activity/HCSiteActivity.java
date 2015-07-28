@@ -13,7 +13,6 @@ import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
-import it.technocontrolsystem.hypercontrol.asynctasks.UpdateSiteTask;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
 import it.technocontrolsystem.hypercontrol.communication.Response;
@@ -231,7 +230,7 @@ public abstract class HCSiteActivity extends HCActivity {
             }
             case MENU_OUTPUTS: {
                 Intent intent = new Intent();
-                intent.setClass(this, OutputActivity.class);
+                intent.setClass(this, AreaOutputsActivity.class);
                 intent.putExtra("siteid", getSite().getId());
                 startActivity(intent);
                 break;

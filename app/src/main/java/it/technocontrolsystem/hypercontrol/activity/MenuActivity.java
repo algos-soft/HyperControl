@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
-import it.technocontrolsystem.hypercontrol.asynctasks.PopulateAreaTask;
 import it.technocontrolsystem.hypercontrol.asynctasks.PopulateMenuTask;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Site;

@@ -68,6 +68,9 @@ public class AreaDisplay extends ItemDisplay {
         return getItemId();
     }
 
+    public Area getArea(){
+        return DB.getArea(getAreaId());
+    }
 
     @Override
     /**

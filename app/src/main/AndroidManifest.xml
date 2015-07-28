@@ -51,7 +51,7 @@
             android:launchMode="singleTask" >
         </activity>
         <activity
-            android:name=".activity.AreaActivity"
+            android:name=".activity.AreaSensorsActivity"
             android:label="@string/title_activity_sensor"
             android:launchMode="singleTask" >
         </activity>
@@ -152,7 +152,7 @@
         <service android:name=".service_old.GcmIntentService" />
 
         <activity
-            android:name=".activity.OutputActivity"
+            android:name=".activity.AreaOutputsActivity"
             android:label="@string/title_activity_output" >
         </activity>
     </application>

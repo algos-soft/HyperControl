@@ -99,7 +99,6 @@ public class ListSensorsResponse extends Response {
             } else {
                 stop = true;
             }
-
         }
     }
 
