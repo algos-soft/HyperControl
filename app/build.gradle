@@ -16,8 +16,8 @@ android {
         applicationId "it.technocontrolsystem.hypercontrol"
         minSdkVersion 11
         targetSdkVersion 21
-        versionCode 4
-        versionName "1.2b"
+        versionCode 5
+        versionName "1.3b"
     }
     buildTypes {
         release {
