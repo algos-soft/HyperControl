@@ -71,7 +71,8 @@ public class OutputActivity extends HCSiteActivity {
 
     @Override
     public int getNumItemsInList() {
-        return DB.getOutputCountBySite(getSite().getId());
+        return Integer.parseInt(null);
+     //   return DB.getOutputCountBySite(getSite().getId());
     }
 
 //    /**

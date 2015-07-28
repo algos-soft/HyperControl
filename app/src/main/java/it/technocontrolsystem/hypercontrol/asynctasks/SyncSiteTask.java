@@ -429,24 +429,50 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
      * Riempie la tabella uscite
      */
     private void fillOutputs() throws Exception {
+
         Request req = new ListOutputsRequest();
         Response resp = HyperControlApp.sendRequest(req);
         if (resp != null) {
+
             ListOutputsResponse sResp = (ListOutputsResponse) resp;
+
+            int createdCount = 0;
+
             for (Output output : sResp.getOutputs()) {
-                output.setIdSite(getSite().getId());
-                DB.saveOutput(output);
 
-                String s=output.getId() + " " + output.getName();
-                Log.d(TAG, "Output "+s+" created");
-                logRow = "Uscita " + s + " creata";
-                publishProgress(-2);
+                int idSite = getSite().getId();
+                int numPlant = output.getNumPlant();
+                Plant plant = DB.getPlantBySiteAndNumber(idSite, numPlant);
 
+                if (plant != null) {
+
+                    // recupera l'id plant e crea l'uscita sul db
+                    output.setIdPlant(plant.getId());
+                    int id = DB.saveOutput(output);
+                    output.setId(id);
+
+                    String s = output.getId() + " " + output.getName();
+                    Log.d(TAG, "Output " + s + " created");
+                    logRow = "Uscita " + s + " creata";
+                    publishProgress(-2);
+                    createdCount++;
+
+                    // crea i record nella tabella di incrocio
+                    Integer[] areaNums = output.getAreaNums();
+                    for (int areaNum : areaNums) {
+                        Area area = DB.getAreaByIdPlantAndAreaNumber(plant.getId(), areaNum);
+                        DB.saveAreaOutput(area.getId(), output.getId());
+                    }
+
+                }
             }
-            Log.d(TAG, sResp.getOutputs().length + " outputs created");
+
+            Log.d(TAG, createdCount + " outputs created");
+
         } else {    // response null - timeout?
             throw new Exception("Richiesta uscite fallita");
         }
+
     }
 
 
