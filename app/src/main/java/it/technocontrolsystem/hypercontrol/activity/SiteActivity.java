@@ -18,7 +18,6 @@ import it.technocontrolsystem.hypercontrol.asynctasks.OpenConnectionTask;
 import it.technocontrolsystem.hypercontrol.asynctasks.PopulateSiteTask;
 import it.technocontrolsystem.hypercontrol.asynctasks.UpdateSiteTask;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
-import it.technocontrolsystem.hypercontrol.communication.StatusButtonListener;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.display.PlantDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Site;

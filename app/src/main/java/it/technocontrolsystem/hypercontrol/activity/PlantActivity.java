@@ -36,7 +36,8 @@ public class PlantActivity extends HCSiteActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 AreaDisplay display = (AreaDisplay) view;
                 Intent intent = new Intent();
-                intent.setClass(PlantActivity.this, AreaSensorsActivity.class);
+//                intent.setClass(PlantActivity.this, AreaSensorsActivity.class);
+                intent.setClass(PlantActivity.this, AreaActivity.class);
                 intent.putExtra("areaid", display.getAreaId());
                 startActivity(intent);
             }

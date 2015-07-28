@@ -3,10 +3,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/header_view"/>
+    <include layout="@layout/header_view" />
 
-    <include layout="@layout/list_view"/>
+    <include layout="@layout/list_view" />
 
-    <include layout="@layout/conn_status_view"/>
+    <android.support.v7.widget.SwitchCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/contentSwitch"
+        android:textOff="Sensori"
+        android:textOn="Uscite"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        />
+
+    <include layout="@layout/conn_status_view" />
 
 </LinearLayout>

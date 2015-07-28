@@ -1,4 +1,4 @@
-package it.technocontrolsystem.hypercontrol.communication;
+package it.technocontrolsystem.hypercontrol.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -11,6 +11,7 @@ import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.activity.SiteActivity;
 import it.technocontrolsystem.hypercontrol.asynctasks.OpenConnectionTask;
+import it.technocontrolsystem.hypercontrol.communication.Connection;
 
 /**
  * Created by alex on 5-07-2015.
@@ -36,14 +37,6 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
             Runnable successRunnable = new Runnable() {
                 @Override
                 public void run() {
-
-//                    postConnection();
-//                    activity.updateStatus();
-//                    try {
-//                        activity.startLive();
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
                     button.setTextOff(activity.getString(R.string.btn_conn_offline));  // rimette a posto in ogni caso
                     activity.syncConnectButton();
                 }
@@ -119,37 +112,5 @@ public class StatusButtonListener implements CompoundButton.OnClickListener {
 
     }
 
-//    /**
-//     * Eseguito dopo l'attivazione della connessione.
-//     * Controlla che il database sia sincronizzato.
-//     */
-//    private void postConnection(){
-//
-//        Runnable successRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                activity.populateAndUpdate();
-//            }
-//        };
-//
-//        Runnable failRunnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-//                builder.setMessage("Impossibile sincronizzare il database");
-//                builder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        dialog.dismiss();
-//                    }
-//                });
-//                builder.show();
-//            }
-//        };
-//
-//        SyncSiteTask task = new SyncSiteTask(activity, activity.getSite(), successRunnable, failRunnable);
-//        task.execute();
-//
-//    }
 
 }

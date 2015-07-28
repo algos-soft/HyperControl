@@ -51,6 +51,10 @@
             android:launchMode="singleTask" >
         </activity>
         <activity
+            android:name=".activity.AreaActivity"
+            android:launchMode="singleTask" >
+        </activity>
+        <activity
             android:name=".activity.AreaSensorsActivity"
             android:label="@string/title_activity_sensor"
             android:launchMode="singleTask" >

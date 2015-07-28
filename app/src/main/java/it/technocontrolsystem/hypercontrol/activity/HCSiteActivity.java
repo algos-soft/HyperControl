@@ -137,7 +137,10 @@ public abstract class HCSiteActivity extends HCActivity {
      * Svuota lo stato corrente di tutti gli elementi
      */
     public void clearStatus() {
-        getListAdapter().clearStatus();
+        HCListAdapter adapter=getListAdapter();
+        if(adapter!=null){
+            adapter.clearStatus();
+        }
     }
 
 
