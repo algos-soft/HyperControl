@@ -15,6 +15,8 @@ import it.technocontrolsystem.hypercontrol.communication.ListBoardsRequest;
 import it.technocontrolsystem.hypercontrol.communication.ListBoardsResponse;
 import it.technocontrolsystem.hypercontrol.communication.ListMenuRequest;
 import it.technocontrolsystem.hypercontrol.communication.ListMenuResponse;
+import it.technocontrolsystem.hypercontrol.communication.ListOutputsRequest;
+import it.technocontrolsystem.hypercontrol.communication.ListOutputsResponse;
 import it.technocontrolsystem.hypercontrol.communication.ListPlantsRequest;
 import it.technocontrolsystem.hypercontrol.communication.ListPlantsResponse;
 import it.technocontrolsystem.hypercontrol.communication.ListSensorsRequest;

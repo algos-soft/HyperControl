@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.R;
+import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.database.DB;
@@ -34,18 +35,18 @@ public class OutputActivity extends HCSiteActivity {
 //
 //        if (idArea != 0) {
          this.idSite = getIntent().getIntExtra("siteid", 0);
-         if (idSite != 0) {
 
-            // crea l'adapter per la ListView
-            setListAdapter(new OutputListAdapter(OutputActivity.this));
+        // crea l'adapter per la ListView
+        setListAdapter(new OutputListAdapter(OutputActivity.this));
 
-            // carica i dati
-            populateTask = (AbsPopulateTask)new PopulateTask().execute();
+//        // carica i dati
+//        populateTask = (AbsPopulateTask)new PopulateTask().execute();
 
-        } else {
-            finish();
-        }
+    }
 
+    @Override
+    public AbsUpdateTask getUpdateTask() {
+        return null;
     }
 
     @Override
@@ -73,45 +74,45 @@ public class OutputActivity extends HCSiteActivity {
         return DB.getOutputCountBySite(getSite().getId());
     }
 
-    /**
-     * AsyncTask per caricare i dati nell'adapter
-     */
-    class PopulateTask extends AbsPopulateTask {
+//    /**
+//     * AsyncTask per caricare i dati nell'adapter
+//     */
+//    class PopulateTask extends AbsPopulateTask {
+//
+//        @Override
+//        public void populateAdapter() {
+//            Output[] outputs = DB.getOutputs(idSite);
+//            publishProgress(-2, outputs.length);
+//            OutputModel model;
+//            getListAdapter().clear();
+//            int i = 0;
+//            for (final Output output : outputs) {
+//                model = new OutputModel(output);
+//                getListAdapter().add(model);
+//                i++;
+//                publishProgress(-3, i);
+//
+//                if (isCancelled()){
+//                    break;
+//                }
+//
+//            }
+//
+//        }
+//
+//        @Override
+//        public String getType() {
+//            return "uscite";
+//        }
+//
+//
+//    }
 
-        @Override
-        public void populateAdapter() {
-            Output[] outputs = DB.getOutputs(idSite);
-            publishProgress(-2, outputs.length);
-            OutputModel model;
-            getListAdapter().clear();
-            int i = 0;
-            for (final Output output : outputs) {
-                model = new OutputModel(output);
-                getListAdapter().add(model);
-                i++;
-                publishProgress(-3, i);
-
-                if (isCancelled()){
-                    break;
-                }
-
-            }
-
-        }
-
-        @Override
-        public String getType() {
-            return "uscite";
-        }
-
-
-    }
-
-    /**
-     * Task per aggiornare lo stato dalla centrale.
-     */
-    class UpdateTask extends AbsUpdateTask {
-    }
+//    /**
+//     * Task per aggiornare lo stato dalla centrale.
+//     */
+//    class UpdateTask extends AbsUpdateTask {
+//    }
 
     public int getLiveCode() {
         return 0;
