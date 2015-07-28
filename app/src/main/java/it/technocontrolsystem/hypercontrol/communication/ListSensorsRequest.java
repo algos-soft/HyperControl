@@ -17,10 +17,7 @@ public class ListSensorsRequest extends Request {
 
     @Override
     public int getTimeout() {
-        // 20 minuti, molto alto perché i sensori vengono inviati
-        // tutti insieme con una unica richiesta, indicativamente
-        // trasferisce 100 sensori al minuto
-        return 1200;
+        return 300;
     }
 
     @Override

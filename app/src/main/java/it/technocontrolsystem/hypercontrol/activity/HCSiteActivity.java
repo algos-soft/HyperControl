@@ -30,6 +30,7 @@ public abstract class HCSiteActivity extends HCActivity {
     public static final int MENU_EVENTI = 3;
     public static final int MENU_MENU = 4;
     public static final int MENU_SITES = 5;
+    public static final int MENU_OUTPUTS = 6;
 
     // per distinguere se onResume è chiamato dopo onCreate() o dopo onPause()
     private boolean paused=false;
@@ -189,6 +190,9 @@ public abstract class HCSiteActivity extends HCActivity {
         item = menu.add(Menu.NONE, MENU_BOARDS, Menu.NONE, getString(R.string.menu_boards));
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
+        item = menu.add(Menu.NONE, MENU_OUTPUTS, Menu.NONE, getString(R.string.menu_outputs));
+        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
         item = menu.add(Menu.NONE, MENU_MENU, Menu.NONE, getString(R.string.menu_commands));
         item.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
@@ -221,6 +225,13 @@ public abstract class HCSiteActivity extends HCActivity {
             case MENU_BOARDS: {
                 Intent intent = new Intent();
                 intent.setClass(this, BoardActivity.class);
+                intent.putExtra("siteid", getSite().getId());
+                startActivity(intent);
+                break;
+            }
+            case MENU_OUTPUTS: {
+                Intent intent = new Intent();
+                intent.setClass(this, OutputActivity.class);
                 intent.putExtra("siteid", getSite().getId());
                 startActivity(intent);
                 break;

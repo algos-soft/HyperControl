@@ -32,7 +32,7 @@ public abstract class ItemDisplay extends LinearLayout {
     //protected ImageView statusView;
     protected ImageView testView;
    // private CompoundButton bswitch;
-   private MultiStateToggleButton bswitch;
+   protected MultiStateToggleButton bswitch;
     protected CheckBox checkBox;
     private int itemId;
     protected TextView redText;

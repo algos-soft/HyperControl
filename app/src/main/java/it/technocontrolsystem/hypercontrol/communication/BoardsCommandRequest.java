@@ -3,10 +3,10 @@ package it.technocontrolsystem.hypercontrol.communication;
 /**
  * Created by Federico on 04/05/2015.
  */
-public class BoardsCommanRequest extends CommandRequest {
+public class BoardsCommandRequest extends CommandRequest {
     private boolean test;
 
-    public BoardsCommanRequest(int itemId, boolean enable, boolean test) {
+    public BoardsCommandRequest(int itemId, boolean enable, boolean test) {
         super(itemId, enable);
         this.test = test;
     }

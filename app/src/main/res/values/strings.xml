@@ -63,5 +63,6 @@
     <string name="title_activity_start_site">StartSiteActivity</string>
     <string name="title_activity_sites_list">SitesListActivity</string>
     <string name="title_activity_registration">RegistrationActivity</string>
+    <string name="title_activity_output">OutputActivity</string>
 
 </resources>

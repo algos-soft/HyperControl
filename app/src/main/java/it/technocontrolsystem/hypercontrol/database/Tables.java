@@ -10,7 +10,9 @@ public enum Tables {
     SENSORS("sensors"),
     AREA_SENSOR("areasensor"),
     BOARDS("boards"),
-    MENUS("menus");
+    MENUS("menus"),
+    OUTPUTS("outputs"),
+    AREA_OUTPUT("areaoutput");
 
     private String name;
 

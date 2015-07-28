@@ -27,6 +27,7 @@ import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Board;
 import it.technocontrolsystem.hypercontrol.domain.Menu;
+import it.technocontrolsystem.hypercontrol.domain.Output;
 import it.technocontrolsystem.hypercontrol.domain.Plant;
 import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.domain.Site;
@@ -259,6 +260,13 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         fillBoards();
         Log.d(TAG, "end receive boards");
 
+        // Riempie il DB con le uscite
+        Log.d(TAG, "start receive outputs");
+        logRow = "trasferimento uscite...";
+        publishProgress(-2);
+        fillOutputs();
+        Log.d(TAG, "end receive outputs");
+
         // Riempie il DB con i menu
         Log.d(TAG, "start receive menus");
         logRow = "trasferimento menu...";
@@ -414,6 +422,31 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
             throw new Exception("Richiesta schede fallita");
         }
     }
+
+    /**
+     * Riempie la tabella uscite
+     */
+    private void fillOutputs() throws Exception {
+        Request req = new ListOutputsRequest();
+        Response resp = HyperControlApp.sendRequest(req);
+        if (resp != null) {
+            ListOutputsResponse sResp = (ListOutputsResponse) resp;
+            for (Output output : sResp.getOutputs()) {
+                output.setIdSite(getSite().getId());
+                DB.saveOutput(output);
+
+                String s=output.getId() + " " + output.getName();
+                Log.d(TAG, "Output "+s+" created");
+                logRow = "Uscita " + s + " creata";
+                publishProgress(-2);
+
+            }
+            Log.d(TAG, sResp.getOutputs().length + " outputs created");
+        } else {    // response null - timeout?
+            throw new Exception("Richiesta uscite fallita");
+        }
+    }
+
 
     /**
      * Riempie la tabella menu

@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.AreaFields;
+import it.technocontrolsystem.hypercontrol.domain.AreaOutputFields;
 import it.technocontrolsystem.hypercontrol.domain.AreaSensorFields;
 import it.technocontrolsystem.hypercontrol.domain.Board;
 import it.technocontrolsystem.hypercontrol.domain.BoardFields;
 import it.technocontrolsystem.hypercontrol.domain.Menu;
 import it.technocontrolsystem.hypercontrol.domain.MenuFields;
+import it.technocontrolsystem.hypercontrol.domain.Output;
+import it.technocontrolsystem.hypercontrol.domain.OutputFields;
 import it.technocontrolsystem.hypercontrol.domain.Plant;
 import it.technocontrolsystem.hypercontrol.domain.PlantFields;
 import it.technocontrolsystem.hypercontrol.domain.Sensor;
@@ -257,6 +260,7 @@ public class DB extends SQLiteOpenHelper {
         getWritableDb().execSQL(sql);
 
     }
+
 
     // ================ START PLANTS ===================
 
@@ -506,6 +510,25 @@ public class DB extends SQLiteOpenHelper {
 
         return aarea;
     }
+
+    public static int[] getAreaIdsByOutput(int idOutput) {
+        String[] columns = {AreaOutputFields.IDAREA.getName()};
+        String selection = AreaOutputFields.IDOUTPUT.getName() + "=" + idOutput;
+        Cursor cur = getReadableDb().query(Tables.AREA_OUTPUT.getName(), columns, selection, null, null, null, null);
+        int[] aarea = new int[cur.getCount()];
+        int i = 0;
+        int idx = cur.getColumnIndex(AreaOutputFields.IDAREA.getName());
+        while (cur.moveToNext()) {
+            int idArea = cur.getInt(idx);
+            aarea[i] = idArea;
+            i++;
+        }
+
+        cur.close();
+
+        return aarea;
+    }
+
 
 
     /**
@@ -941,6 +964,158 @@ public class DB extends SQLiteOpenHelper {
         String query = "SELECT COUNT(*) FROM " + Tables.MENUS.getName();
         query += " WHERE " + MenuFields.IDSITE.getName() + "=" + idSite;
         query += " AND " + MenuFields.PAGE.getName() + "=" + idPage;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    }
+
+    // ================ START OUTPUTS ===================
+
+
+
+
+  private String getOutputsTableCreateString() {
+
+        String s;
+        s = "CREATE TABLE " + Tables.OUTPUTS.getName() + " (";
+
+        OutputFields field;
+        OutputFields[] fields = OutputFields.values();
+        for (int i = 0; i < fields.length; i++) {
+            field = fields[i];
+            s += field.getName() + " " + field.getType();
+            if (i < fields.length - 1) {
+                s += ", ";
+            }
+        }
+        s += ");";
+
+        return s;
+    }
+
+
+    public static int saveOutput(Output output) {
+
+        int id = 0;
+        ContentValues values = new ContentValues();
+        values.put(OutputFields.IDSITE.getName(), output.getIdSite());
+        values.put(OutputFields.NUMBER.getName(), output.getNumber());
+        values.put(OutputFields.NAME.getName(), output.getName());
+//        values.put(OutputFields.TYPE.getName(), output.getTipo());
+        id = save(Tables.OUTPUTS.getName(), OutputFields.ID.getName(), values, output.getId());
+        output.setId(id);
+//
+//        //delete all the output rows in the cross-table
+//        String where = AreaOutputFields.IDOUTPUT+ "=" + id;
+//        getWritableDb().delete(Tables.AREA_OUTPUT.getName(), where, null);
+//
+//        //create the new output rows in the cross-table
+//        for (int idArea : output.getAreaIds()) {
+//            values = new ContentValues();
+//            values.put(AreaOutputFields.IDAREA.getName(), idArea);
+//            values.put(AreaOutputFields.IDOUTPUT.getName(), id);
+//            getWritableDb().insert(Tables.AREA_OUTPUT.getName(), null, values);
+//        }
+
+        return id;
+
+    }
+
+    public static void deleteOutput(int id) {
+        String sql = "DELETE FROM " + Tables.OUTPUTS.getName();
+        sql += " WHERE " + OutputFields.ID.getName() + "=" + id;
+        getWritableDb().execSQL(sql);
+    }
+   /*
+    public static Output[] getOutputsBySite(int idSite) {
+        ArrayList<Output> outputs = new ArrayList<Output>();
+        int[] outputIds = getOutputIdsByArea(idSite);
+        for (int id : outputIds) {
+            Output output = getOutput(id);
+            outputs.add(output);
+        }
+        Output[] aoutput = outputs.toArray(new Output[0]);
+        return aoutput;
+    }
+
+    public static int[] getOutputIdsByArea(int idArea) {
+        String[] columns = {AreaOutputFields.IDOUTPUT.getName()};
+        String selection = AreaOutputFields.IDAREA.getName() + "=" + idArea;
+        Cursor cur = getReadableDb().query(Tables.AREA_OUTPUT.getName(), columns, selection, null, null, null, null);
+        int[] aoutput = new int[cur.getCount()];
+        int i = 0;
+        int idx = cur.getColumnIndex(AreaOutputFields.IDOUTPUT.getName());
+        while (cur.moveToNext()) {
+            int idOutput = cur.getInt(idx);
+            aoutput[i] = idOutput;
+            i++;
+        }
+
+        cur.close();
+
+        return aoutput;
+    }
+
+*/
+     public static Output[] getOutputs(int idSite) {
+        ArrayList<Output> outputs = new ArrayList<Output>();
+        String sql;
+        sql = "SELECT " + OutputFields.ID.getName() + " FROM " + Tables.OUTPUTS.getName();
+        sql += " WHERE " + OutputFields.IDSITE.getName() + "=" + idSite;
+        Cursor cur = getReadableDb().rawQuery(sql, null);
+        while (cur.moveToNext()) {
+            int idx = cur.getColumnIndex(OutputFields.ID.getName());
+            int id = cur.getInt(idx);
+            Output output = getOutput(id);
+            outputs.add(output);
+        }
+
+        cur.close();
+
+         Output[] aoutput = outputs.toArray(new Output[0]);
+        return aoutput;
+
+    }
+
+   public static Output getOutput(int id) {
+        Output output = null;
+        if (id > 0) {
+            String sql;
+            sql = "SELECT * FROM " + Tables.OUTPUTS.getName();
+            sql += " WHERE " + OutputFields.ID.getName() + "=" + id;
+            Cursor cur = getReadableDb().rawQuery(sql, null);
+            cur.moveToFirst();
+
+            int idx;
+
+            idx = cur.getColumnIndex(OutputFields.IDSITE.getName());
+            int idSite = cur.getInt(idx);
+
+            idx = cur.getColumnIndex(OutputFields.NUMBER.getName());
+            int number = cur.getInt(idx);
+
+            idx = cur.getColumnIndex(OutputFields.NAME.getName());
+            String name = cur.getString(idx);
+
+            cur.close();
+
+            output = new Output();
+
+            output.setId(id);
+            output.setIdSite(idSite);
+            output.setNumber(number);
+          //  output.setTipo(type);
+            output.setName(name);
+//            int[] areaIds = getAreaIdsByOutput(output.getId());
+//            output.setAreaIds(areaIds);
+        }
+        return output;
+    }
+
+    public static int getOutputsCount() {
+        return getCount(Tables.OUTPUTS.getName());
+    }
+
+    public static int getOutputCountBySite(int idSite) {
+        String query = "SELECT COUNT(*) FROM " + Tables.OUTPUTS.getName() + " WHERE " + OutputFields.IDSITE.getName() + "=" + idSite;
         return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
 

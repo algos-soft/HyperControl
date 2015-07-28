@@ -7,36 +7,46 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
-import it.technocontrolsystem.hypercontrol.communication.BoardsCommandRequest;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.database.DB;
-import it.technocontrolsystem.hypercontrol.model.BoardModel;
+import it.technocontrolsystem.hypercontrol.model.OutputModel;
 
 /**
- * Display class for Boards
+ *
  */
-public class BoardDisplay extends ItemDisplay {
+public class OutputDisplay extends ItemDisplay {
 
-    public BoardDisplay(Context context,int boardId) {
-        super(context, boardId);
+    public OutputDisplay(Context context,int outputId) {
+        super(context, outputId);
 
         testView.setVisibility(View.GONE);
-        //statusView.setVisibility(View.GONE);
-        cyanText.setVisibility(View.INVISIBLE);
+        statusView.setVisibility(View.GONE);
+        cyanText.setVisibility(View.GONE);
         checkBox.setVisibility(View.GONE);
+        bswitch.setVisibility(View.GONE);
         //  setNumberWidth(100);
     }
 
-    public void update(BoardModel model){
-        setNumber(model.getBoard().getNumber());
-        setDescription(model.getBoard().getName());
+    @Override
+    public void switchPressed(int itemId, CompoundButton button, boolean partial) {
+
+    }
+
+    @Override
+    public void boxClicked(int itemId, CheckBox box, boolean buttonOn) {
+
+    }
+
+    public void update(OutputModel model){
+        setNumber(model.getOutput().getNumber());
+        setDescription(model.getOutput().getName());
 
 
         int statusCode = model.getStatus();
 
         int iconId;
-        switch (statusCode){
+      /*  switch (statusCode){
             case 0:
                 redText.getBackground().setAlpha(100);
                 getBswitch().setChecked(false);
@@ -50,26 +60,26 @@ public class BoardDisplay extends ItemDisplay {
             case 2:
                 yellowText.getBackground().setAlpha(100);
                 getBswitch().setChecked(true);
-              //  statusView.setVisibility(VISIBLE);
+                //  statusView.setVisibility(VISIBLE);
                 statusView.setText("TIMEOUT");
                 break;
             default:
                 getBswitch().setChecked(false);
                 getBswitch().setEnabled(false);
                 break;
-            }
+        }*/
 
 
     }
 
-
+/*
     @Override
     public void switchPressed(int itemId, CompoundButton button, boolean partial) {
         int boardNumber= DB.getBoard(itemId).getNumber();
 
-        Request req=new BoardsCommandRequest(boardNumber, button.isChecked(), false);
+        Request req=new BoardsCommanRequest(boardNumber, button.isChecked(), false);
 
-        Response resp=HyperControlApp.sendRequest(req);
+        Response resp= HyperControlApp.sendRequest(req);
 
         if(resp!=null){
             if (!resp.isSuccess()) {
@@ -82,5 +92,5 @@ public class BoardDisplay extends ItemDisplay {
     @Override
     public void boxClicked(int itemId, CheckBox box, boolean buttonOn) {
 
-    }
+    }*/
 }
