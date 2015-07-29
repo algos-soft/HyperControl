@@ -45,7 +45,7 @@ public class LoginRequest extends Request {
 
     @Override
     public Class getResponseClass() {
-        return Response.class;
+        return LoginResponse.class;
     }
 
 }
