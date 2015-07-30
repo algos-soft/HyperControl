@@ -9,7 +9,7 @@ public enum OutputFields {
     ID("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),
     NUMBER("number","INTEGER"),
     NAME("name", "TEXT"),
-    TYPE("type", "INTEGER"),
+    TYPE("type", "INTEGER"),    // per ora non usato
     IDSITE("idsite","INTEGER REFERENCES "+ Tables.SITES.getName()+"("+SiteFields.ID.getName()+") ON DELETE CASCADE")
     ;
 

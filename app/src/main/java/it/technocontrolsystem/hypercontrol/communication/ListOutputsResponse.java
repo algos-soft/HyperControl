@@ -6,7 +6,9 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Output;
+import it.technocontrolsystem.hypercontrol.domain.Plant;
 
 /**
  *
@@ -14,6 +16,7 @@ import it.technocontrolsystem.hypercontrol.domain.Output;
 public class ListOutputsResponse extends Response {
 
     private ArrayList<Output> outputs;
+    private Output.PlantEntry currentPlantEntry;
 
 
     public ListOutputsResponse(String string) {
@@ -29,9 +32,9 @@ public class ListOutputsResponse extends Response {
         // nel costruttore è troppo tardi perché la superclasse
         // invoca questo metodo dal costruttore
         if (outputs == null) {
-            outputs = new ArrayList<Output>();
+            outputs = new ArrayList();
         }
-        String name = getParser().getName();
+
         if (gotoFirstTag("Uscite")) {
             readOutputs();
         }
@@ -54,7 +57,7 @@ public class ListOutputsResponse extends Response {
                 found = gotoNextTag("Uscita");
             }
 
-            // acquisisce il sensore
+            // acquisisce l'uscita
             if (found) {
                 Output output = new Output();
                 outputs.add(output);
@@ -77,8 +80,8 @@ public class ListOutputsResponse extends Response {
             String name = parser.getName();
             if (name != null) {
                 if (name.equals("Numero")) {
-                    int numSensor = Integer.parseInt(parser.nextText());
-                    output.setNumber(numSensor);
+                    int numOutput = Integer.parseInt(parser.nextText());
+                    output.setNumber(numOutput);
                 } else if (name.equals("Nome")) {
                     output.setName(parser.nextText());
                 } else if (name.equals("Impianto")) {
@@ -129,9 +132,9 @@ public class ListOutputsResponse extends Response {
             if (name != null) {
                 if (name.equals("Numero")) {
                     int numPlant = Integer.parseInt(getParser().nextText());
-                    output.setNumPlant(numPlant);
+                    currentPlantEntry=output.addPlantEntry(numPlant);
                 } else if (name.equals("Area")) {
-                    readArea(output);
+                    readArea();
                 } else {
                     stop = true;
                 }
@@ -142,7 +145,7 @@ public class ListOutputsResponse extends Response {
     }
 
 
-    private void readArea(Output output) throws XmlPullParserException, IOException {
+    private void readArea() throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
 
@@ -152,7 +155,7 @@ public class ListOutputsResponse extends Response {
             if (name != null) {
                 if (name.equals("Numero")) {
                     int numArea = Integer.parseInt(getParser().nextText());
-                    output.addAreaNumber(numArea);
+                    currentPlantEntry.addArea(numArea);
                 } else {
                     stop = true;
                 }
@@ -166,4 +169,7 @@ public class ListOutputsResponse extends Response {
     public Output[] getOutputs() {
         return outputs.toArray(new Output[0]);
     }
+
+
+
 }

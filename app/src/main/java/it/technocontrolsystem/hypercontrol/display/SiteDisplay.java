@@ -15,15 +15,13 @@ import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.model.SiteModel;
 
 /**
- *
+ * View per un singolo sito nella lista dei siti
  */
 public class SiteDisplay extends ItemDisplay {
 
-    private SitesListActivity activity;
 
     public SiteDisplay(final SitesListActivity activity, int itemId) {
         super(activity, itemId);
-        this.activity=activity;
         testView.setVisibility(View.GONE);
         statusView.setVisibility(View.GONE);
         checkBox.setVisibility(View.GONE);
@@ -43,6 +41,7 @@ public class SiteDisplay extends ItemDisplay {
                 intent.putExtra("siteid", getItemId());
                 intent.putExtra("usesave", true);
                 intent.putExtra("usedelete", true);
+                intent.putExtra("showuuid", true);
                 activity.startActivityForResult(intent,SitesListActivity.ACTIVITY_EDIT_SITE);
             }
         });

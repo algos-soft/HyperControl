@@ -10,6 +10,7 @@ public enum SiteFields {
     PORT("port","INTEGER"),
     USER("user", "TEXT"),
     PASSWORD("password", "TEXT"),
+    UUID("uuid", "TEXT"),
     VERSION("version","INTEGER");//federico
 
     private String name;

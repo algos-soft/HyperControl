@@ -134,11 +134,12 @@ public class SimpleSender {
             JSONObject jData = new JSONObject();
             jData.put("messagetype", "alarm");
             jData.put("timestamp", "0000000000");
-            jData.put("sitenum", "1");
-            jData.put("plantnum", "3");
-            jData.put("areanum", "2");
-            jData.put("sensornum", "99");
-            jData.put("details", "qui altri eventuali dettagli dell'evento");
+            jData.put("siteid", "dd49f00b-6426-4db2-bc98-34c3a6173001");
+            jData.put("plantid", "3");
+            jData.put("areaid", "2");
+            jData.put("sensorid", "99");
+            jData.put("outputid", "7");
+            jData.put("details", "eventuali dettagli in forma di testo");
 
             // Prepara un JSON con il contenuto del messaggio GCM - a chi mandare cosa
             JSONObject jGcmData = new JSONObject();

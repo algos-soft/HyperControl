@@ -23,6 +23,8 @@ public class EditSiteActivity extends Activity {
     private TextView mPortView;
     private TextView mUsernameView;
     private TextView mPasswordView;
+    private TextView mUUIDView;
+
     private int idSite = 0;
     private int version = 0;//federico
 
@@ -30,7 +32,7 @@ public class EditSiteActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_site2);
+        setContentView(R.layout.activity_edit_site);
 
         boolean visible;
 
@@ -42,6 +44,7 @@ public class EditSiteActivity extends Activity {
         mPortView = (TextView) findViewById(R.id.port);
         mUsernameView = (TextView) findViewById(R.id.username);
         mPasswordView = (TextView) findViewById(R.id.password);
+        mUUIDView = (TextView) findViewById(R.id.uuidfield);
 
         // visibilità del bottone delete in base al parametro
         visible = getIntent().getBooleanExtra("usedelete", true);
@@ -76,6 +79,14 @@ public class EditSiteActivity extends Activity {
         String sTitle = getIntent().getStringExtra("title");
         vTitle.setText(sTitle);
 
+        // visibilità del campo UUID in base al parametro (default=false)
+        visible = getIntent().getBooleanExtra("showuuid", false);
+        View uuidgroup = findViewById(R.id.uuidgroup);
+        if (visible) {
+            uuidgroup.setVisibility(View.VISIBLE);
+        } else {
+            uuidgroup.setVisibility(View.GONE);
+        }
 
         //if we have a site id, load data
         this.idSite = getIntent().getIntExtra("siteid", 0);
@@ -132,6 +143,11 @@ public class EditSiteActivity extends Activity {
     private String getPassword() {
         return mPasswordView.getText().toString();
     }
+
+    private String getUUID() {
+        return mUUIDView.getText().toString();
+    }
+
 
     private void save() {
         if (checkValid()) {
@@ -257,7 +273,7 @@ public class EditSiteActivity extends Activity {
      */
     private Site createSite() {
 
-        Site site = new Site(getName(), getAddress(), getPort(), getUsername(), getPassword(), version);//federico
+        Site site = new Site(getName(), getAddress(), getPort(), getUsername(), getPassword(), getUUID(), version);//federico
         site.setId(this.idSite);
         return site;
     }
@@ -274,6 +290,7 @@ public class EditSiteActivity extends Activity {
         mPortView.setText(site.getPort() + "");
         mUsernameView.setText(site.getUsername());
         mPasswordView.setText(site.getPassword());
+        mUUIDView.setText(site.getUuid());
         version = site.getVersion();//federico
     }
 

@@ -92,6 +92,7 @@ public class SitesListActivity extends HCActivity {
                 intent.putExtra("siteid", site.getId());
                 intent.putExtra("usesave", true);
                 intent.putExtra("usedelete", true);
+                intent.putExtra("showuuid", true);
                 startActivityForResult(intent, SitesListActivity.ACTIVITY_EDIT_SITE);
                 return true;
             case R.id.site_menu_elimina:

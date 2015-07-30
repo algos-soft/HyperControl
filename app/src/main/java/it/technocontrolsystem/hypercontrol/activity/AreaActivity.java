@@ -6,6 +6,7 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -19,6 +20,8 @@ import it.technocontrolsystem.hypercontrol.asynctasks.UpdateAreaTask;
 import it.technocontrolsystem.hypercontrol.communication.Request;
 import it.technocontrolsystem.hypercontrol.communication.SensorCommandRequest;
 import it.technocontrolsystem.hypercontrol.database.DB;
+import it.technocontrolsystem.hypercontrol.display.SensorDisplay;
+import it.technocontrolsystem.hypercontrol.display.SiteDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.model.SensorModel;
@@ -67,6 +70,9 @@ public class AreaActivity extends HCSiteActivity {
 
         this.idArea = getIntent().getIntExtra("areaid", 0);
 
+        // registra la listview per il clic contestuale
+        registerForContextMenu(getListView());
+
         // carica i dati
         new PopulateAreaTask(this).execute();
 
@@ -88,24 +94,28 @@ public class AreaActivity extends HCSiteActivity {
     }
 
     public String getItemsType() {
-        String type="";
-        switch (mode){
-            case MODE_SENSORS:type="sensori";break;
-            case MODE_OUTPUTS:type="uscite";break;
+        String type = "";
+        switch (mode) {
+            case MODE_SENSORS:
+                type = "sensori";
+                break;
+            case MODE_OUTPUTS:
+                type = "uscite";
+                break;
         }
         return type;
     }
 
     @Override
     public int getNumItemsInList() {
-        int num=0;
-        switch (mode){
+        int num = 0;
+        switch (mode) {
             case MODE_SENSORS:
-                num=DB.getSensorCountByArea(getArea().getId());
+                num = DB.getSensorCountByArea(getArea().getId());
                 break;
 
             case MODE_OUTPUTS:
-                num=DB.getOutputCountByArea(getArea().getId());
+                num = DB.getOutputCountByArea(getArea().getId());
                 break;
         }
         return num;
@@ -121,16 +131,26 @@ public class AreaActivity extends HCSiteActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
         if (v.getId() == R.id.list) {
 
-            MenuInflater inflater = getMenuInflater();
-            inflater.inflate(R.menu.menu_list, menu);
-            menu.setHeaderTitle(" " + sensMod.getSensor().getName());
+            switch (mode) {
+                case MODE_SENSORS:
+                    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+                    sensMod = (SensorModel) getListAdapter().getItem(info.position);
 
-            if (sensMod.getStatus() == 1) {
-                menu.getItem(0).setTitle("Disabilita");
-            }
+                    MenuInflater inflater = getMenuInflater();
+                    inflater.inflate(R.menu.menu_list, menu);
+                    menu.setHeaderTitle(" " + sensMod.getSensor().getName());
 
-            if (sensMod.isTest()) {
-                menu.getItem(1).setTitle("Disattiva Test");
+                    if (sensMod.getStatus() == 1) {
+                        menu.getItem(0).setTitle("Disabilita");
+                    }
+
+                    if (sensMod.isTest()) {
+                        menu.getItem(1).setTitle("Disattiva Test");
+                    }
+                    break;
+
+                case MODE_OUTPUTS:
+                    break;
             }
 
 
@@ -139,45 +159,61 @@ public class AreaActivity extends HCSiteActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        boolean retvalue = true;
         int stato = sensMod.getStatus();
         int num = sensMod.getNumber();
         boolean test = sensMod.isTest();
         Request req;
 
 
-        switch (item.getItemId()) {
-            case R.id.Abilita:
-                if (stato == 0) {
-                    req = new SensorCommandRequest(num, 4, true);
-                    Toast.makeText(this, "Abilitato", Toast.LENGTH_LONG).show();
-                    HyperControlApp.sendRequest(req);
-                } else {
-                    req = new SensorCommandRequest(num, 4, false);
-                    Toast.makeText(this, "Disabilitato", Toast.LENGTH_LONG).show();
-                    HyperControlApp.sendRequest(req);
-                }
-                // add stuff here
-                return true;
+        switch (mode) {
+            case MODE_SENSORS:
+                switch (item.getItemId()) {
 
-            case R.id.Test:
-                if (!test) {
-                    req = new SensorCommandRequest(num, 5, true);
-                    Toast.makeText(this, "Test attivato", Toast.LENGTH_LONG).show();
-                    HyperControlApp.sendRequest(req);
-                } else {
-                    req = new SensorCommandRequest(num, 5, false);
-                    Toast.makeText(this, "Test disattivato", Toast.LENGTH_LONG).show();
-                    HyperControlApp.sendRequest(req);
+                    case R.id.Abilita:
+                        if (stato == 0) {
+                            req = new SensorCommandRequest(num, 4, true);
+                            Toast.makeText(this, "Abilitato", Toast.LENGTH_LONG).show();
+                            HyperControlApp.sendRequest(req);
+                        } else {
+                            req = new SensorCommandRequest(num, 4, false);
+                            Toast.makeText(this, "Disabilitato", Toast.LENGTH_LONG).show();
+                            HyperControlApp.sendRequest(req);
+                        }
+                        // add stuff here
+                        retvalue = true;
+                        break;
+
+                    case R.id.Test:
+                        if (!test) {
+                            req = new SensorCommandRequest(num, 5, true);
+                            Toast.makeText(this, "Test attivato", Toast.LENGTH_LONG).show();
+                            HyperControlApp.sendRequest(req);
+                        } else {
+                            req = new SensorCommandRequest(num, 5, false);
+                            Toast.makeText(this, "Test disattivato", Toast.LENGTH_LONG).show();
+                            HyperControlApp.sendRequest(req);
+                        }
+                        // edit stuff here
+                        retvalue = true;
+                        break;
+
+                    case R.id.Cancella:
+                        Toast.makeText(this, "Cancellato", Toast.LENGTH_LONG).show();
+                        // remove stuff here
+                        retvalue = true;
+                        break;
+
+                    default:
+                        retvalue = super.onContextItemSelected(item);
                 }
-                // edit stuff here
-                return true;
-            case R.id.Cancella:
-                Toast.makeText(this, "Cancellato", Toast.LENGTH_LONG).show();
-                // remove stuff here
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+                break;
+
+            case MODE_OUTPUTS:
+                break;
         }
+
+        return retvalue;
 
     }
 

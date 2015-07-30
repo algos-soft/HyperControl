@@ -12,10 +12,10 @@ public class Output {
     private int id;
     private int number;
     private String name;
-    private  int idSite;
-    private int idPlant;
-    private int numPlant;
-    private ArrayList<Integer> areaNums=new ArrayList<Integer>();
+
+    private ArrayList<PlantEntry> plantEntries = new ArrayList();
+
+//    private  int idSite;
     private int[] areaIds=new int[0];
 
     public String getName() {
@@ -42,34 +42,21 @@ public class Output {
         this.name = name;
     }
 
-    public int getIdSite() {
-        return idSite;
-    }
+//    public int getIdSite() {
+//        return idSite;
+//    }
+//
+//    public void setIdSite(int idSite) {
+//        this.idSite = idSite;
+//    }
 
-    public void setIdSite(int idSite) {
-        this.idSite = idSite;
-    }
+//    public Area[] getAreas() {
+//        return DB.getAreasBySensor(getId());
+//    }
 
-    public int getIdPlant() {
-        return idPlant;
-    }
-
-    public void setIdPlant(int idPlant) {
-        this.idPlant = idPlant;
-    }
-
-    public int getNumPlant() {
-        return numPlant;
-    }
-
-    public void setNumPlant(int numPlant) {
-        this.numPlant = numPlant;
-    }
-
-    public Area[] getAreas() {
-        return DB.getAreasBySensor(getId());
-    }
-
+    /**
+     * Ritorna gli id di tutte le aree
+     */
     public int[] getAreaIds() {
         return areaIds;
     }
@@ -78,11 +65,40 @@ public class Output {
         this.areaIds = areaIds;
     }
 
-    public void addAreaNumber(int areaNumber){
-        areaNums.add(areaNumber);
+//    /**
+//     * Aggiunge un id di area
+//     */
+//    public void addAreaId(int areaid){
+//        areaIds.add(areaid);
+//    }
+
+
+    /**
+     * Aggiunge un impianto
+     */
+    public PlantEntry addPlantEntry(int numPlant) {
+        PlantEntry entry = new PlantEntry(numPlant);
+        plantEntries.add(entry);
+        return entry;
     }
 
-    public Integer[] getAreaNums() {
-        return areaNums.toArray(new Integer[0]);
+
+    /**
+     * Classe interna per immagazzinare la struttura impianti e aree
+     */
+    public class PlantEntry {
+        int plantNumber;
+        ArrayList<Integer> areaNumbers = new ArrayList<>();
+
+        PlantEntry(int plantNumber) {
+            this.plantNumber = plantNumber;
+        }
+
+        public void addArea(int numArea){
+            areaNumbers.add(numArea);
+        }
+
     }
+
+
 }

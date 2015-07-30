@@ -3,7 +3,7 @@ package it.technocontrolsystem.hypercontrol.domain;
 import it.technocontrolsystem.hypercontrol.database.Tables;
 
 /**
- *
+ * Tabella di incrocio aree-uscite
  */
 public enum AreaOutputFields {
 
@@ -24,7 +24,6 @@ public enum AreaOutputFields {
     }
 
     public String getName() {
-
         return name;
     }
 }

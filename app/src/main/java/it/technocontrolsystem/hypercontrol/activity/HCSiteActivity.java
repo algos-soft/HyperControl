@@ -233,7 +233,7 @@ public abstract class HCSiteActivity extends HCActivity {
             }
             case MENU_OUTPUTS: {
                 Intent intent = new Intent();
-                intent.setClass(this, AreaOutputsActivity.class);
+                intent.setClass(this, OutputsActivity.class);
                 intent.putExtra("siteid", getSite().getId());
                 startActivity(intent);
                 break;

@@ -11,17 +11,19 @@ public class Site {
     private String address;
     private String username;
     private String password;
+    private String uuid;
 
     private int port;
     private int version;//federico
 
-     public Site(String name, String address,int port, String username, String password,int version) {//federico
+    public Site(String name, String address, int port, String username, String password, String uuid, int version) {//federico
         this.name = name;
         this.address = address;
         this.username = username;
         this.password = password;
-        this.port=port;
-        this.version=version;//federico
+        this.uuid = uuid;
+        this.port = port;
+        this.version = version;//federico
     }
 
     public int getId() {
@@ -52,6 +54,14 @@ public class Site {
         return password;
     }
 
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
     public int getPort() {
         return port;
     }
@@ -60,15 +70,15 @@ public class Site {
         return version;
     }//federico
 
-    public Plant[] getPlants(){
+    public Plant[] getPlants() {
         return DB.getPlants(getId());
     }
 
-    public Board[] getBoards(){
+    public Board[] getBoards() {
         return DB.getBoards(getId());
     }
 
-    public Menu[] getMenus(){
+    public Menu[] getMenus() {
         return DB.getMenus(getId());
     }
 

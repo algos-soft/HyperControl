@@ -52,32 +52,21 @@ public class HCGcmListenerService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
 
-        if(Prefs.isRiceviNotifiche()){
+        if (Prefs.isRiceviNotifiche()) {
 
             String messagetype = data.getString("messagetype");
             String timestamp = data.getString("timestamp");
-            String sitenum = data.getString("sitenum");
-            String plantnum = data.getString("plantnum");
-            String areanum = data.getString("areanum");
-            String sensornum = data.getString("sensornum");
+            String siteid = data.getString("siteid");
+            String plantid = data.getString("plantid");
+            String areaid = data.getString("areaid");
+            String sensorid = data.getString("sensorid");
+            String outputid = data.getString("outputid");
             String details = data.getString("details");
-            Log.d(TAG, "Message received from: "+from+", type: "+messagetype);
+            String message = data.getString("message");
+            Log.d(TAG, "Message received from: " + from + ", type: " + messagetype + ", message: " + message);
 
-
-            /**
-             * Production applications would usually process the message here.
-             * Eg: - Syncing with server.
-             *     - Store message in local database.
-             *     - Update UI.
-             */
-
-            /**
-             * In some cases it may be useful to show a notification indicating to the user
-             * that a message was received.
-             */
-            //String message=messagetype+" site:"+sitenum;
+            // invia una notifica al sistema
             sendNotification(data);
-
 
         }
     }
@@ -88,60 +77,83 @@ public class HCGcmListenerService extends GcmListenerService {
     private void sendNotification(Bundle data) {
         String messagetype = data.getString("messagetype");
 
-        switch (messagetype){
+        switch (messagetype) {
 
             // crea una notifica che quando cliccata apre il site in allarme
             case "alarm":
-                int siteid=1;   // provvisorio!!!
-                Intent intent = new Intent();
-                intent.setClass(this, SiteActivity.class);
-                intent.putExtra("siteid", siteid);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-                String title="Allarme";
-                Site site = DB.getSite(siteid);
-                if(site!=null){
-                    title+=" "+site.getName();
+                String siteUUID = data.getString("siteid");
+                Site site = DB.getSiteByUUID(siteUUID);
+
+                if (site != null) {
+
+                    Intent intent = new Intent();
+                    intent.setClass(this, SiteActivity.class);
+                    intent.putExtra("siteid", site.getId());
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+                    String title = "Allarme";
+                    title += " " + site.getName();
+
+
+//                String msg = "";
+//                try {
+//                    int plantnum = Integer.parseInt(data.getString("plantnum"));
+//                    Plant plant = DB.getPlantBySiteAndNumber(siteid, plantnum);
+//                    msg += plant.getName();
+//
+//                    int areanum = Integer.parseInt(data.getString("areanum"));
+//                    Area area = DB.getAreaByIdPlantAndAreaNumber(plant.getId(), areanum);
+//                    msg += " " + area.getName();
+//
+//                } catch (Exception e) {
+//                }
+
+                    String msg = data.getString("message");
+                    Uri defaultSoundUri = Lib.resourceToUri(R.raw.siren);
+                    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                            .setSmallIcon(R.drawable.ic_launcher)
+                            .setContentTitle(title)
+                            .setContentText(msg)
+                            .setAutoCancel(true)
+                            .setSound(defaultSoundUri)
+                            .setContentIntent(pendingIntent);
+
+                    Notification mNotification = notificationBuilder.build();
+                    mNotification.flags |= Notification.FLAG_INSISTENT;
+
+                    NotificationManager notificationManager =
+                            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                    notificationManager.notify(0, mNotification);
+
+
+                } else {
+                    Log.e(TAG, "site uuid " + siteUUID + " not found");
                 }
-                String msg="";
-                try{
-                    int plantnum=Integer.parseInt(data.getString("plantnum"));
-                    Plant plant=DB.getPlantBySiteAndNumber(siteid, plantnum);
-                    msg+=plant.getName();
-
-                    int areanum=Integer.parseInt(data.getString("areanum"));
-                    Area area=DB.getAreaByIdPlantAndAreaNumber(plant.getId(), areanum);
-                    msg+=" "+area.getName();
-
-                }catch (Exception e){}
-
-                Uri defaultSoundUri=Lib.resourceToUri(R.raw.siren);
-                NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle(title)
-                        .setContentText(msg)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
-
-                Notification mNotification = notificationBuilder.build();
-                mNotification.flags |= Notification.FLAG_INSISTENT;
-
-                NotificationManager notificationManager =
-                        (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-                notificationManager.notify(0, mNotification);
-
-                // sveglia il device
-                PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock wakeLock = pm.newWakeLock((PowerManager.FULL_WAKE_LOCK |  PowerManager.ACQUIRE_CAUSES_WAKEUP), getClass().getSimpleName());
-                wakeLock.acquire();
 
 
                 break;
+
+
+            // crea una notifica informativa
+            case "info":
+
+                // qui creare la notifica
+                // ...
+
+                break;
+
         }
+
+        // dopo la notifica sveglia il device
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = pm.newWakeLock((PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP), getClass().getSimpleName());
+        wakeLock.acquire();
 
 
     }
+
+
 }

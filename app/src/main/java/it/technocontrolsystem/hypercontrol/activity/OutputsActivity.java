@@ -4,25 +4,29 @@ import android.os.Bundle;
 
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
-import it.technocontrolsystem.hypercontrol.asynctasks.PopulateAreaOutputsTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.PopulateOutputsTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.UpdateBoardTask;
+import it.technocontrolsystem.hypercontrol.asynctasks.UpdateOutputsTask;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Site;
-import it.technocontrolsystem.hypercontrol.listadapters.OutputListAdapter;
 
-public class AreaOutputsActivity extends HCSiteActivity {
-    private int idArea;
+/**
+ * List of all Outputs for one site
+ */
+public class OutputsActivity extends HCSiteActivity {
 
+    private int idSite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_area);
+        setContentView(R.layout.activity_output);
 
-        this.idArea = getIntent().getIntExtra("areaid", 0);
+        this.idSite = getIntent().getIntExtra("siteid", 0);
 
         // carica i dati
-        new PopulateAreaOutputsTask(this).execute();
+        new PopulateOutputsTask(this).execute();
 
     }
 
@@ -34,47 +38,42 @@ public class AreaOutputsActivity extends HCSiteActivity {
 
     @Override
     public AbsUpdateTask getUpdateTask() {
-        return null;
+        return new UpdateOutputsTask(this);
     }
 
 
     public String getHeadline2(){
-        return getArea().getPlant().getName();
+        return "Lista uscite";
     }
 
     public String getHeadline3(){
-        return getArea().getName();
+        return null;
     }
 
     public String getItemsType(){return "Uscite";}
 
     public int getNumItemsInList() {
-        return DB.getOutputCountByArea(getArea().getId());
-    }
-
-    public Site getSite() {
-        return getArea().getPlant().getSite();
-    }
-
-    public Area getArea() {
-        return DB.getArea(idArea);
+        return DB.getOutputsCountBySite(getSite().getId());
     }
 
     public int getLiveCode() {
         return 0;
+    }   // @todo da assegnare!!
+
+    @Override
+    public Site getSite() {
+        return DB.getSite(idSite);
     }
 
     @Override
     public int getParamPlantNumCode() {
-        return getArea().getPlant().getNumber();
+        return -1;
     }
 
     @Override
     public int getParamAreaNumCode() {
-        return getArea().getNumber();
+        return -1;
     }
-
-
 
 
 }

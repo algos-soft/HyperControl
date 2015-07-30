@@ -73,6 +73,10 @@
             android:launchMode="singleTask" >
         </activity>
         <activity
+            android:name=".activity.OutputsActivity"
+            android:label="@string/title_activity_output" >
+        </activity>
+        <activity
             android:name=".activity.MenuActivity"
             android:label="@string/title_activity_menu" >
         </activity>
@@ -155,10 +159,6 @@
 
         <service android:name=".service_old.GcmIntentService" />
 
-        <activity
-            android:name=".activity.AreaOutputsActivity"
-            android:label="@string/title_activity_output" >
-        </activity>
     </application>
 
 </manifest>

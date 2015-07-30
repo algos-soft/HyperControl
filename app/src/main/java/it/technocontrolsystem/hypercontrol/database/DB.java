@@ -142,6 +142,7 @@ public class DB extends SQLiteOpenHelper {
         values.put(SiteFields.PORT.getName(), site.getPort());
         values.put(SiteFields.USER.getName(), site.getUsername());
         values.put(SiteFields.PASSWORD.getName(), site.getPassword());
+        values.put(SiteFields.UUID.getName(), site.getUuid());
         values.put(SiteFields.VERSION.getName(), site.getVersion());//federico
         return save(Tables.SITES.getName(), SiteFields.ID.getName(), values, site.getId());
     }
@@ -204,6 +205,32 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Recupera un Site dal uuid
+     */
+    public static Site getSiteByUUID(String uuid) {
+        Site site = null;
+
+        String sql;
+        sql = "SELECT "+SiteFields.ID.getName()+" FROM " + Tables.SITES.getName();
+        sql += " WHERE " + SiteFields.UUID.getName() + "=" + uuid;
+        Cursor cur = getReadableDb().rawQuery(sql, null);
+        int siteid=0;
+        if (cur.getCount() > 0) {
+            cur.moveToFirst();
+            int idx = cur.getColumnIndex(SiteFields.ID.getName());
+            siteid = cur.getInt(idx);
+        }
+        cur.close();
+
+        if(siteid>0){
+            site=getSite(siteid);
+        }
+
+        return site;
+    }
+
+
     public static Site getSite(int id) {
         Site site = null;
         String sql;
@@ -232,10 +259,13 @@ public class DB extends SQLiteOpenHelper {
             idx = cur.getColumnIndex(SiteFields.PASSWORD.getName());
             String password = cur.getString(idx);
 
+            idx = cur.getColumnIndex(SiteFields.UUID.getName());
+            String uuid = cur.getString(idx);
+
             idx = cur.getColumnIndex(SiteFields.VERSION.getName());//federico
             int version = cur.getInt(idx);//federico
 
-            site = new Site(name, address, port, user, password, version);//federico
+            site = new Site(name, address, port, user, password, uuid, version);//federico
             site.setId(id);
 
         }
@@ -481,7 +511,7 @@ public class DB extends SQLiteOpenHelper {
             area.setName(name);
 
             area.setSensorsIds(getSensorIdsByArea(area.getId()));
-         }
+        }
         return area;
 
     }
@@ -532,7 +562,6 @@ public class DB extends SQLiteOpenHelper {
 
         return aarea;
     }
-
 
 
     /**
@@ -761,7 +790,6 @@ public class DB extends SQLiteOpenHelper {
     }
 
 
-
     public static Board getBoard(int id) {
         Board board = null;
         if (id > 0) {
@@ -862,7 +890,6 @@ public class DB extends SQLiteOpenHelper {
         return id;
 
     }
-
 
 
     public static void deleteMenu(int id) {
@@ -1019,9 +1046,21 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
+
     public static Output[] getOutputsByArea(int idArea) {
         ArrayList<Output> outputs = new ArrayList<Output>();
         int[] outputIds = getOutputIdsByArea(idArea);
+        for (int id : outputIds) {
+            Output output = getOutput(id);
+            outputs.add(output);
+        }
+        Output[] aoutput = outputs.toArray(new Output[0]);
+        return aoutput;
+    }
+
+    public static Output[] getOutputsBySite(int idSite) {
+        ArrayList<Output> outputs = new ArrayList<Output>();
+        int[] outputIds = getOutputIdsBySite(idSite);
         for (int id : outputIds) {
             Output output = getOutput(id);
             outputs.add(output);
@@ -1045,6 +1084,23 @@ public class DB extends SQLiteOpenHelper {
 
         cur.close();
 
+        return aoutput;
+    }
+
+
+    public static int[] getOutputIdsBySite(int idSite) {
+        String[] columns = {OutputFields.ID.getName()};
+        String selection = OutputFields.IDSITE.getName() + "=" + idSite;
+        Cursor cur = getReadableDb().query(Tables.OUTPUTS.getName(), columns, selection, null, null, null, null);
+        int[] aoutput = new int[cur.getCount()];
+        int i = 0;
+        int idx = cur.getColumnIndex(OutputFields.ID.getName());
+        while (cur.moveToNext()) {
+            int idOutput = cur.getInt(idx);
+            aoutput[i] = idOutput;
+            i++;
+        }
+        cur.close();
         return aoutput;
     }
 
@@ -1089,6 +1145,11 @@ public class DB extends SQLiteOpenHelper {
 
     public static int getOutputCountByArea(int idArea) {
         String query = "SELECT COUNT(*) FROM " + Tables.AREA_OUTPUT.getName() + " WHERE " + AreaOutputFields.IDAREA.getName() + "=" + idArea;
+        return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
+    }
+
+    public static int getOutputsCountBySite(int idSite) {
+        String query = "SELECT COUNT(*) FROM " + Tables.OUTPUTS.getName() + " WHERE " + OutputFields.IDSITE.getName() + "=" + idSite;
         return (int) DatabaseUtils.longForQuery(getReadableDb(), query, null);
     }
 
@@ -1269,5 +1330,6 @@ public class DB extends SQLiteOpenHelper {
         values.put(AreaOutputFields.IDOUTPUT.getName(), idOutput);
         return save(Tables.AREA_OUTPUT.getName(), null, values, 0);
     }
+
 
 }

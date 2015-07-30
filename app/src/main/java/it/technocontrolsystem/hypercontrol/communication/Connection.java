@@ -28,6 +28,7 @@ public class Connection {
     private DataOutputStream dataOutputStream = null;
     private DataInputStream dataInputStream = null;
     private boolean open;
+    private String hpUUID;  // id del sito al quale si è connessi
 
     //coda delle richieste da tresmettere
     private ArrayList<Request> requestQueue;
@@ -127,10 +128,15 @@ public class Connection {
      * Se fallisce lancia un Exception
      */
     private void doLogin() throws Exception {
+        hpUUID ="";  // resetta il siteid
         Request request = new LoginRequest(getSite().getUsername(), getSite().getPassword());
         Response resp = sendRequest(request);
         if (resp != null) {
-            if (!resp.isSuccess()) {
+            if (resp.isSuccess()) {
+                // memorizza l'id del sito nella connessione per uso futuro
+                LoginResponse lresp=(LoginResponse)resp;
+                hpUUID =lresp.getHpUUID();
+            }else{
                 throw new Exception(resp.getText());
             }
         } else {//comunication failed
@@ -206,6 +212,10 @@ public class Connection {
         return site;
     }
 
+
+    public String getHpUUID() {
+        return hpUUID;
+    }
 
     public void setLiveListener(LiveListener listener) {
         liveListener = listener;

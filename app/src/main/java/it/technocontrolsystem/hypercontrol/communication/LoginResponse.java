@@ -10,7 +10,7 @@ import java.io.IOException;
  */
 public class LoginResponse extends Response {
 
-    private String idCentrale;
+    private String hpUUID;
 
     public LoginResponse(String string) {
         super(string);
@@ -21,11 +21,11 @@ public class LoginResponse extends Response {
         if (gotoFirstTag("GuidHP")) {
             XmlPullParser parser = getParser();
             String name=parser.nextText();
-            idCentrale=name;
+            hpUUID =name;
         }
     }
 
-    public String getIdCentrale() {
-        return idCentrale;
+    public String getHpUUID() {
+        return hpUUID;
     }
 }

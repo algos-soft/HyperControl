@@ -1,39 +1,35 @@
 package it.technocontrolsystem.hypercontrol.asynctasks;
 
-import it.technocontrolsystem.hypercontrol.activity.AreaOutputsActivity;
-import it.technocontrolsystem.hypercontrol.activity.AreaSensorsActivity;
+import it.technocontrolsystem.hypercontrol.activity.OutputsActivity;
 import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Output;
-import it.technocontrolsystem.hypercontrol.domain.Sensor;
 import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
 import it.technocontrolsystem.hypercontrol.listadapters.OutputListAdapter;
-import it.technocontrolsystem.hypercontrol.listadapters.SensorListAdapter;
 import it.technocontrolsystem.hypercontrol.model.OutputModel;
-import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 /**
  * Created by alex on 28-07-2015.
  */
-public class PopulateAreaOutputsTask extends AbsPopulateTask{
+public class PopulateOutputsTask extends AbsPopulateTask{
 
-    public PopulateAreaOutputsTask(AreaOutputsActivity activity, Runnable successRunnable, Runnable failRunnable) {
+    public PopulateOutputsTask(OutputsActivity activity, Runnable successRunnable, Runnable failRunnable) {
         super(activity, successRunnable, failRunnable);
     }
 
-    public PopulateAreaOutputsTask(AreaOutputsActivity activity) {
+    public PopulateOutputsTask(OutputsActivity activity) {
         this(activity, null, null);
     }
 
     @Override
     public HCListAdapter<?> createAdapter() {
-        return new OutputListAdapter(activity, getSpecActivity().getArea());
+        return new OutputListAdapter(activity, null);
     }
 
 
     @Override
     public void populateAdapter() {
 
-        Output[] outputs = DB.getOutputsByArea(getSpecActivity().getArea().getId());
+        Output[] outputs = DB.getOutputsBySite(getSpecActivity().getSite().getId());
         publishProgress(-2, outputs.length);
 
         OutputModel aModel;
@@ -57,8 +53,8 @@ public class PopulateAreaOutputsTask extends AbsPopulateTask{
         return "uscite";
     }
 
-    private AreaOutputsActivity getSpecActivity() {
-        return (AreaOutputsActivity) activity;
+    private OutputsActivity getSpecActivity() {
+        return (OutputsActivity) activity;
     }
 
 }

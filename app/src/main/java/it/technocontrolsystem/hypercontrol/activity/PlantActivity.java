@@ -84,7 +84,7 @@ public class PlantActivity extends HCSiteActivity {
                 return true;
             case R.id.plant_menu_outputs:
                 intent = new Intent();
-                intent.setClass(PlantActivity.this, AreaOutputsActivity.class);
+                intent.setClass(PlantActivity.this, OutputsActivity.class);
                 intent.putExtra("areaid", area.getId());
                 startActivity(intent);
                 return true;

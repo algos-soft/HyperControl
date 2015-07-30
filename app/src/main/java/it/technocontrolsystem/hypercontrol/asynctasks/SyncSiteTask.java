@@ -43,6 +43,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
 
     private SiteActivity activity;
     private Site site;
+    private String uuid;
     ProgressDialog progress;
     private PowerManager.WakeLock lock;
     private String logRow;
@@ -52,9 +53,10 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
     private static final String TAG = "SyncDB";
 
 
-    public SyncSiteTask(SiteActivity activity, Site site, Runnable successRunnable, Runnable failRunnable) {
+    public SyncSiteTask(SiteActivity activity, Site site, String uuid, Runnable successRunnable, Runnable failRunnable) {
         this.activity = activity;
         this.site = site;
+        this.uuid=uuid;
         this.successRunnable=successRunnable;
         this.failRunnable=failRunnable;
         progress = new ProgressDialog(activity);
@@ -63,7 +65,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
     }
 
     public SyncSiteTask(SiteActivity activity, Site site) {
-        this(activity, site, null, null);
+        this(activity, site, null, null, null);
     }
 
         @Override
@@ -241,6 +243,9 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         Log.d(TAG, "delete all records");
         deleteAllRecords();
 
+        // Aggiorna lo UUID nel sito se non presente
+        updateSiteUUID();
+
         // Riempie il DB con impianti e aree
         Log.d(TAG, "start receive plants and areas");
         logRow = "trasferimento impianti ed aree...";
@@ -276,6 +281,22 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         fillMenus();
         Log.d(TAG, "end receive menus");
 
+    }
+
+    /**
+     * Se non c'è lo uuid nel site lo scrive ora
+     */
+    private void updateSiteUUID(){
+        if(site.getUuid().equals("")){
+            site.setUuid(uuid);
+            try {
+                DB.saveSite(site);
+                Log.d(TAG, "Site UUID registered");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
 
@@ -441,30 +462,35 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
             for (Output output : sResp.getOutputs()) {
 
                 int idSite = getSite().getId();
-                int numPlant = output.getNumPlant();
-                Plant plant = DB.getPlantBySiteAndNumber(idSite, numPlant);
 
-                if (plant != null) {
 
-                    // recupera l'id plant e crea l'uscita sul db
-                    output.setIdPlant(plant.getId());
-                    int id = DB.saveOutput(output);
-                    output.setId(id);
+//                int numPlant = output.getNumPlant();
+//                Plant plant = DB.getPlantBySiteAndNumber(idSite, numPlant);
+//
+//                if (plant != null) {
+//
+//                    // recupera l'id plant e crea l'uscita sul db
+//                    output.setIdPlant(plant.getId());
+//                    int id = DB.saveOutput(output);
+//                    output.setId(id);
+//
+//                    String s = output.getId() + " " + output.getName();
+//                    Log.d(TAG, "Output " + s + " created");
+//                    logRow = "Uscita " + s + " creata";
+//                    publishProgress(-2);
+//                    createdCount++;
+//
+//                    // crea i record nella tabella di incrocio
+//                    Integer[] areaNums = output.getAreaNums();
+//                    for (int areaNum : areaNums) {
+//                        Area area = DB.getAreaByIdPlantAndAreaNumber(plant.getId(), areaNum);
+//                        DB.saveAreaOutput(area.getId(), output.getId());
+//                    }
+//
+//                }
 
-                    String s = output.getId() + " " + output.getName();
-                    Log.d(TAG, "Output " + s + " created");
-                    logRow = "Uscita " + s + " creata";
-                    publishProgress(-2);
-                    createdCount++;
 
-                    // crea i record nella tabella di incrocio
-                    Integer[] areaNums = output.getAreaNums();
-                    for (int areaNum : areaNums) {
-                        Area area = DB.getAreaByIdPlantAndAreaNumber(plant.getId(), areaNum);
-                        DB.saveAreaOutput(area.getId(), output.getId());
-                    }
 
-                }
             }
 
             Log.d(TAG, createdCount + " outputs created");

@@ -3,7 +3,7 @@ package it.technocontrolsystem.hypercontrol.domain;
 import it.technocontrolsystem.hypercontrol.database.Tables;
 
 /**
- *
+ * Tabella di incrocio aree-sensori
  */
 public enum AreaSensorFields {
     ID("id", "INTEGER PRIMARY KEY AUTOINCREMENT"),

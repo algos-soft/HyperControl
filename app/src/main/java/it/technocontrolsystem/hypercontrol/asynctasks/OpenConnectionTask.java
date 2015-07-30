@@ -21,6 +21,7 @@ public class OpenConnectionTask extends AsyncTask<Void, Void, Exception> {
     private Site site;
     private Runnable successRunnable;
     private Runnable failRunnable;
+    private String uuid;
     private static String TAG = "OpenConnection";
 
     public OpenConnectionTask(SiteActivity activity, Site site, Runnable successRunnable, Runnable failRunnable) {
@@ -38,6 +39,10 @@ public class OpenConnectionTask extends AsyncTask<Void, Void, Exception> {
             try {
                 HyperControlApp.setLastConnectionError(null);
                 conn.open();
+
+                // recupera lo UUID della centrale dalla Connection e lo registra
+                uuid = conn.getHpUUID();
+
             } catch (Exception e) {
                 e.printStackTrace();
                 exception=e;
@@ -52,7 +57,7 @@ public class OpenConnectionTask extends AsyncTask<Void, Void, Exception> {
     @Override
     protected void onPostExecute(Exception e) {
         if(e==null) {
-            SyncSiteTask task = new SyncSiteTask(activity, site, successRunnable, failRunnable);
+            SyncSiteTask task = new SyncSiteTask(activity, site, uuid, successRunnable, failRunnable);
             task.execute();
         }else{
 

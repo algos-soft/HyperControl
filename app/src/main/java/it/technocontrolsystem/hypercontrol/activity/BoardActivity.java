@@ -33,14 +33,9 @@ public class BoardActivity extends HCSiteActivity {
 
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
-
-        // aggiorna i dati
-        //updateStatus();
-
     }
 
     @Override
@@ -62,53 +57,6 @@ public class BoardActivity extends HCSiteActivity {
     public int getNumItemsInList() {
         return DB.getBoardsCountBySite(getSite().getId());
     }
-
-
-
-//    /**
-//     * AsyncTask per caricare i dati nell'adapter
-//     */
-//    class PopulateTask extends AbsPopulateTask {
-//
-//        public PopulateTask() {
-//            super(BoardActivity.this);
-//        }
-//
-//        @Override
-//        public void populateAdapter() {
-//
-//            Board[] boards = DB.getBoards(idSite);
-//            publishProgress(-2, boards.length);
-//
-//            BoardModel model;
-//            getListAdapter().clear();
-//            int i = 0;
-//            for (final Board board : boards) {
-//                model = new BoardModel(board);
-//                getListAdapter().add(model);
-//                i++;
-//                publishProgress(-3, i);
-//
-//                if (isCancelled()){
-//                    break;
-//                }
-//
-//            }
-//
-//        }
-//
-//        @Override
-//        public String getType() {
-//            return "schede";
-//        }
-//
-//        @Override
-//        public AsyncTask getUpdateTask() {
-//            return null;
-//        }
-//
-//
-//    }
 
 
     public int getLiveCode() {
