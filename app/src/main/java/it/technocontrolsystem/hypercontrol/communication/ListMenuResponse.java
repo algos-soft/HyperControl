@@ -50,7 +50,7 @@ public class ListMenuResponse extends Response{
             }
             else
             {
-             found = gotoNextTag("Sottomenu");
+             found = gotoNextStart("Sottomenu");
             }
 
             if (found) {

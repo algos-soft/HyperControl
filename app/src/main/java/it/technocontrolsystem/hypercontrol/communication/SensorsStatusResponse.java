@@ -40,7 +40,7 @@ public class SensorsStatusResponse extends Response{
     private void readSensori()throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
-            boolean found = gotoNextTag("Sensore");
+            boolean found = gotoNextStart("Sensore");
             if (found) {
                 SensorModel sensor = new SensorModel(null);
                 int num=readSensore(sensor);

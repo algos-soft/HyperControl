@@ -56,9 +56,9 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
     public SyncSiteTask(SiteActivity activity, Site site, String uuid, Runnable successRunnable, Runnable failRunnable) {
         this.activity = activity;
         this.site = site;
-        this.uuid=uuid;
-        this.successRunnable=successRunnable;
-        this.failRunnable=failRunnable;
+        this.uuid = uuid;
+        this.successRunnable = successRunnable;
+        this.failRunnable = failRunnable;
         progress = new ProgressDialog(activity);
         progress.setCanceledOnTouchOutside(false);
 
@@ -68,7 +68,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         this(activity, site, null, null, null);
     }
 
-        @Override
+    @Override
     protected void onPreExecute() {
         Log.d(TAG, "Start sync database");
         lock = Lib.acquireWakeLock();
@@ -79,7 +79,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
 
     @Override
     protected Exception doInBackground(Void... params) {
-        Exception exception=null;
+        Exception exception = null;
         try {
 
             HyperControlApp.setLastSyncDBError(null);
@@ -128,7 +128,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         PopulateSiteTask task = new PopulateSiteTask(activity, successRunnable, failRunnable);
         task.execute();
 
-        if (exception==null) {
+        if (exception == null) {
 
             // dopo che ha aggiornato la configurazione
             // manda alla centrale il comando di start live
@@ -142,8 +142,8 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
 
         } else {
 
-            Log.d(TAG, "database sync failed. "+exception.getMessage());
-            if(failRunnable!=null){
+            Log.d(TAG, "database sync failed. " + exception.getMessage());
+            if (failRunnable != null) {
                 failRunnable.run();
             }
         }
@@ -161,7 +161,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         String lan;
         LanguageRequest request;
         request = new LanguageRequest();
-        String langCode= Prefs.getPrefs().getString("language", ConfigActivity.Languages.IT.getLangCode());
+        String langCode = Prefs.getPrefs().getString("language", ConfigActivity.Languages.IT.getLangCode());
         request.setLan(langCode);
 //        lan = Locale.getDefault().getLanguage();
 //        if (langCode.equals("IT") || lan.equals("it")) {
@@ -204,7 +204,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
                         // il database scritto a metà.
                         DB.getWritableDb().beginTransaction();
                         Log.d(TAG, "Transaction started" + remoteConfig);
-                        try{
+                        try {
                             Log.d(TAG, "Starting configuration download");
                             publishProgress(-1);    // scaricamento configurazione in corso
                             fillDB();
@@ -214,7 +214,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
                             DB.saveSite(site);
                             DB.getWritableDb().setTransactionSuccessful();
                             Log.d(TAG, "Transaction completed successfully" + remoteConfig);
-                        }finally {
+                        } finally {
                             DB.getWritableDb().endTransaction();
                         }
 
@@ -253,6 +253,13 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         fillPlantsAndAreas();
         Log.d(TAG, "end receive plants and areas");
 
+        // Riempie il DB con le uscite e la tabella di incrocio aree-uscite
+        Log.d(TAG, "start receive outputs");
+        logRow = "trasferimento uscite...";
+        publishProgress(-2);
+        fillOutputs();
+        Log.d(TAG, "end receive outputs");
+
         // Riempie il DB con i sensori e la tabella di incrocio aree-sensori
         Log.d(TAG, "start receive sensors");
         logRow = "trasferimento sensori...";
@@ -267,13 +274,6 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         fillBoards();
         Log.d(TAG, "end receive boards");
 
-        // Riempie il DB con le uscite
-        Log.d(TAG, "start receive outputs");
-        logRow = "trasferimento uscite...";
-        publishProgress(-2);
-        fillOutputs();
-        Log.d(TAG, "end receive outputs");
-
         // Riempie il DB con i menu
         Log.d(TAG, "start receive menus");
         logRow = "trasferimento menu...";
@@ -286,8 +286,8 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
     /**
      * Se non c'è lo uuid nel site lo scrive ora
      */
-    private void updateSiteUUID(){
-        if(site.getUuid().equals("")){
+    private void updateSiteUUID() {
+        if (site.getUuid().equals("")) {
             site.setUuid(uuid);
             try {
                 DB.saveSite(site);
@@ -434,8 +434,8 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
                 board.setIdSite(getSite().getId());
                 DB.saveBoard(board);
 
-                String s=board.getId() + " " + board.getName();
-                Log.d(TAG, "Board "+s+" created");
+                String s = board.getId() + " " + board.getName();
+                Log.d(TAG, "Board " + s + " created");
                 logRow = "Scheda " + s + " creata";
                 publishProgress(-2);
 
@@ -461,7 +461,9 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
 
             for (Output output : sResp.getOutputs()) {
 
-                int idSite = getSite().getId();
+                output.setIdSite(getSite().getId());
+
+                int id = DB.saveOutput(output);
 
 
 //                int numPlant = output.getNumPlant();
@@ -490,7 +492,6 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
 //                }
 
 
-
             }
 
             Log.d(TAG, createdCount + " outputs created");
@@ -514,9 +515,9 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
                 menu.setIdSite(getSite().getId());
                 DB.saveMenu(menu);
 
-                String s= menu.getId() + " " + menu.getName();
-                Log.d(TAG, "Menu "+s+" created");
-                logRow = "Menu " +s+ " creato";
+                String s = menu.getId() + " " + menu.getName();
+                Log.d(TAG, "Menu " + s + " created");
+                logRow = "Menu " + s + " creato";
                 publishProgress(-2);
 
             }

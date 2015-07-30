@@ -1027,10 +1027,11 @@ public class DB extends SQLiteOpenHelper {
         values.put(OutputFields.NUMBER.getName(), output.getNumber());
         values.put(OutputFields.NAME.getName(), output.getName());
         //values.put(OutputFields.TYPE.getName(), output.get());
+        values.put(OutputFields.IDSITE.getName(), output.getIdSite());
         id = save(Tables.OUTPUTS.getName(), OutputFields.ID.getName(), values, output.getId());
         output.setId(id);
 
-        //delete all the outputs rows in the cross-table
+        //delete all the output rows in the cross-table
         String where = AreaOutputFields.IDOUTPUT + "=" + id;
         getWritableDb().delete(Tables.AREA_OUTPUT.getName(), where, null);
 

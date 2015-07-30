@@ -53,7 +53,7 @@ public class ListSensorsResponse extends Response {
             // se è già sensore non avanza
             boolean found = true;
             if (!getParser().getName().equals("Sensore")) {
-                found = gotoNextTag("Sensore");
+                found = gotoNextStart("Sensore");
             }
 
             // acquisisce il sensore

@@ -112,13 +112,13 @@ public class Response {
      */
     protected boolean gotoFirstTag(String tagName) throws XmlPullParserException, IOException{
         setInput();
-        return gotoNextTag(tagName);
+        return gotoNextStart(tagName);
     }
 
     /**
      * Va al prossimo tag con un dato nome
      */
-    protected boolean gotoNextTag(String tagName) throws XmlPullParserException, IOException{
+    protected boolean gotoNextStart(String tagName) throws XmlPullParserException, IOException{
         boolean found=false;
         boolean stopSearch = false;
         while (!stopSearch) {
@@ -137,6 +137,30 @@ public class Response {
         }
         return found;
     }
+
+    /**
+     * Va al prossimo start tag
+     */
+    protected boolean gotoNextStart() throws XmlPullParserException, IOException{
+        boolean found=false;
+        boolean stopSearch = false;
+        while (!stopSearch) {
+            getParser().next();
+            if (getParser().getEventType()==XmlPullParser.END_DOCUMENT){
+                stopSearch=true ;
+            }
+            else {
+                try {
+                    getParser().require(XmlPullParser.START_TAG, null, null);
+                    stopSearch = true;
+                    found=true;
+                } catch (Exception e) {
+                }
+            }
+        }
+        return found;
+    }
+
 
 
     public boolean isSuccess() {

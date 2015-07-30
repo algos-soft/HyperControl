@@ -19,9 +19,9 @@ public class LiveMessage extends Response {
         boolean stop = false;
         boolean found;
         while (!stop) {
-            found = gotoNextTag("Impianto");
+            found = gotoNextStart("Impianto");
             if (found) {
-                found = gotoNextTag("Numero");
+                found = gotoNextStart("Numero");
                 if (found) {
                     int num = Integer.parseInt(getParser().nextText());
                     numbers.add(num);
@@ -40,9 +40,9 @@ public class LiveMessage extends Response {
         boolean stop = false;
         boolean found;
         while (!stop) {
-            found = gotoNextTag("Area");
+            found = gotoNextStart("Area");
             if (found) {
-                found = gotoNextTag("NumeroArea");
+                found = gotoNextStart("NumeroArea");
                 if (found) {
                     int num = Integer.parseInt(getParser().nextText());
                     numbers.add(num);
@@ -61,9 +61,9 @@ public class LiveMessage extends Response {
         boolean stop = false;
         boolean found;
         while (!stop) {
-            found = gotoNextTag("Sensore");
+            found = gotoNextStart("Sensore");
             if (found) {
-                found = gotoNextTag("Numero");
+                found = gotoNextStart("Numero");
                 if (found) {
                     int num = Integer.parseInt(getParser().nextText());
                     numbers.add(num);
@@ -82,9 +82,9 @@ public class LiveMessage extends Response {
         boolean stop = false;
         boolean found;
         while (!stop) {
-            found = gotoNextTag("Scheda");
+            found = gotoNextStart("Scheda");
             if (found) {
-                found = gotoNextTag("Numero");
+                found = gotoNextStart("Numero");
                 if (found) {
                     int num = Integer.parseInt(getParser().nextText());
                     numbers.add(num);

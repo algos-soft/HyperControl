@@ -28,7 +28,7 @@ public class PlantsStatusResponse extends Response{
     private void readImpianti()throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
-            boolean found = gotoNextTag("Impianto");
+            boolean found = gotoNextStart("Impianto");
             if (found) {
                 readImpianto();
             } else {

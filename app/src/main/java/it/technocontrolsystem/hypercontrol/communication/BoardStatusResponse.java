@@ -31,7 +31,7 @@ public class BoardStatusResponse extends Response {
     private void readSchede() throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
-            boolean found = gotoNextTag("Scheda");
+            boolean found = gotoNextStart("Scheda");
             if (found) {
                  readScheda();
             } else {

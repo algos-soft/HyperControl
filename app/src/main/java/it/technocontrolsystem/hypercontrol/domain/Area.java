@@ -3,8 +3,8 @@ package it.technocontrolsystem.hypercontrol.domain;
 import it.technocontrolsystem.hypercontrol.database.DB;
 
 /**
-*Domain Class for a single area.
- * A plant can be present in many areas.
+ * Domain Class for a single area.
+ * An Area belongs to a Plant.
 */
 public class Area {
     private int id;

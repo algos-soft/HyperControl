@@ -65,7 +65,7 @@ public class ListEventResponse extends Response {
 
         boolean stop = false;
         while (!stop) {
-            boolean found = gotoNextTag("Evento");
+            boolean found = gotoNextStart("Evento");
             if (found){
                 Event event = new Event();
                 events.add(event);

@@ -11,11 +11,11 @@ public class Output {
 
     private int id;
     private int number;
+    private int idSite;
     private String name;
 
     private ArrayList<PlantEntry> plantEntries = new ArrayList();
 
-//    private  int idSite;
     private int[] areaIds=new int[0];
 
     public String getName() {
@@ -42,13 +42,13 @@ public class Output {
         this.name = name;
     }
 
-//    public int getIdSite() {
-//        return idSite;
-//    }
-//
-//    public void setIdSite(int idSite) {
-//        this.idSite = idSite;
-//    }
+    public int getIdSite() {
+        return idSite;
+    }
+
+    public void setIdSite(int idSite) {
+        this.idSite = idSite;
+    }
 
 //    public Area[] getAreas() {
 //        return DB.getAreasBySensor(getId());

@@ -47,7 +47,7 @@ public class ListPlantsResponse extends Response {
     private void readImpianti() throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
-            boolean found = gotoNextTag("Impianto");
+            boolean found = gotoNextStart("Impianto");
             if (found){
                 Plant plant = new Plant();
                 plants.add(plant);

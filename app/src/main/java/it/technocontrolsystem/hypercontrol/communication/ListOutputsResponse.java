@@ -6,9 +6,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import it.technocontrolsystem.hypercontrol.database.DB;
 import it.technocontrolsystem.hypercontrol.domain.Output;
-import it.technocontrolsystem.hypercontrol.domain.Plant;
 
 /**
  *
@@ -42,7 +40,7 @@ public class ListOutputsResponse extends Response {
     }
 
     /**
-     * Legge tra i TAG "Uscite"
+     * Legge tutti i tag <Uscita>></Uscita>
      *
      * @throws XmlPullParserException
      * @throws IOException
@@ -54,7 +52,7 @@ public class ListOutputsResponse extends Response {
             // se è già uscita non avanza
             boolean found = true;
             if (!getParser().getName().equals("Uscita")) {
-                found = gotoNextTag("Uscita");
+                found = gotoNextStart("Uscita");
             }
 
             // acquisisce l'uscita
@@ -69,13 +67,16 @@ public class ListOutputsResponse extends Response {
         }
     }
 
+    /**
+     * Legge un singolo tag <Uscita></Uscita>
+     */
     private void readOutput(Output output) throws XmlPullParserException, IOException {
         XmlPullParser parser = getParser();
         boolean stop = false;
 
         while (!stop) {
 
-            parser.next();
+            gotoNextStart();
 
             String name = parser.getName();
             if (name != null) {
@@ -98,7 +99,7 @@ public class ListOutputsResponse extends Response {
 
 
     /**
-     * Legge tutti i Tag "Impianto"
+     * Legge tutti i Tag <Impianto></Impianto>
      *
      * @throws XmlPullParserException
      * @throws IOException
@@ -110,7 +111,9 @@ public class ListOutputsResponse extends Response {
             String name = getParser().getName();
             if (name.equals("Impianto")) {
                 readPlant(output);
-                getParser().next();
+                if(!getParser().getName().equals("Impianto")){
+                    getParser().next();
+                }
             } else {
                 stop = true;
             }
@@ -118,23 +121,23 @@ public class ListOutputsResponse extends Response {
     }
 
 
+    /**
+     * Legge un singolo tag <Impianto></Impianto>
+     */
     private void readPlant(Output output) throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
 
-            // se è già area non avanza
-            boolean found = true;
-            if (!getParser().getName().equals("Area")) {
-                getParser().next();
-            }
+            getParser().next();
 
             String name = getParser().getName();
             if (name != null) {
                 if (name.equals("Numero")) {
-                    int numPlant = Integer.parseInt(getParser().nextText());
+                    String text = getParser().nextText();
+                    int numPlant = Integer.parseInt(text);
                     currentPlantEntry=output.addPlantEntry(numPlant);
                 } else if (name.equals("Area")) {
-                    readArea();
+                    readAreas(output);
                 } else {
                     stop = true;
                 }
@@ -144,8 +147,32 @@ public class ListOutputsResponse extends Response {
         }
     }
 
+    /**
+     * Legge tutti i Tag <Area></Area>
+     *
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private void readAreas(Output output) throws XmlPullParserException, IOException {
+        boolean stop = false;
+        while (!stop) {
+            String name = getParser().getName();
+            if (name.equals("Area")) {
+                readArea(output);
+                getParser().next();
+            } else {
+                stop = true;
+            }
+        }
+    }
 
-    private void readArea() throws XmlPullParserException, IOException {
+    /**
+     * Legge un singolo Tag <Area></Area>
+     *
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private void readArea(Output output) throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
 

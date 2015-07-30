@@ -47,7 +47,7 @@ public class ListAlarmsResponse extends Response {
     private void readAlarm() throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
-            boolean found = gotoNextTag("Impianto");
+            boolean found = gotoNextStart("Impianto");
             if (found) {
                 Alarm alarm = new Alarm();
                 alarms.add(alarm);

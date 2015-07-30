@@ -34,7 +34,7 @@ public class ListBoardsResponse extends Response {
     private void readSchede()throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
-            boolean found = gotoNextTag("Scheda");
+            boolean found = gotoNextStart("Scheda");
             if (found) {
                 Board board = new Board();
                 boards.add(board);
