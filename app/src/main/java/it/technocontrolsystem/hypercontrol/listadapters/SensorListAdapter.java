@@ -63,8 +63,7 @@ public class SensorListAdapter extends HCListAdapter<SensorModel> {
 
     @Override
     public void updateAll() {
-        Connection conn = HyperControlApp.getConnection();
-        if ((conn != null) && (conn.isOpen())) {
+        if(HyperControlApp.isConnected()) {
             SensorModel model;
             SensorsStatusResponse resp;
             int numPlant = area.getPlant().getNumber();
@@ -77,13 +76,10 @@ public class SensorListAdapter extends HCListAdapter<SensorModel> {
             for (int i = 0; i < getCount(); i++) {
                 model = getItem(i);
                 responseModel = responseMap.get(model.getSensor().getNumber());
-                model.setStatus(responseModel.getStatus());
-                model.setTamper(responseModel.isTamper());
-                model.setValue(responseModel.getValue());
-                model.setAlarm(responseModel.isAlarm());
-                model.setTest(responseModel.isTest());
+                model.updateStatus(responseModel);
             }
         }
+
     }
 
     @Override
@@ -104,10 +100,10 @@ public class SensorListAdapter extends HCListAdapter<SensorModel> {
 
     @Override
     public void updateByNumber(int number) {
-        SensorModel model;
-        SensorsStatusResponse resp;
-        Connection conn = HyperControlApp.getConnection();
-        if ((conn != null) && (conn.isOpen())) {
+
+        if(HyperControlApp.isConnected()){
+            SensorModel model;
+            SensorsStatusResponse resp;
             model = (SensorModel) getModel(number);
             SensorsStatusRequest request = new SensorsStatusRequest(number);
             resp = (SensorsStatusResponse) HyperControlApp.sendRequest(request);
@@ -118,16 +114,12 @@ public class SensorListAdapter extends HCListAdapter<SensorModel> {
                 SensorModel responseModel;
 
                 responseModel = responseMap.get(model.getSensor().getNumber());
-                model.setStatus(responseModel.getStatus());
-                model.setTamper(responseModel.isTamper());
-                model.setValue(responseModel.getValue());
-                model.setAlarm(responseModel.isAlarm());
-                model.setTest(responseModel.isTest());
+                model.updateStatus(responseModel);
 
             }
 
-        }
 
+        }
 
     }
 

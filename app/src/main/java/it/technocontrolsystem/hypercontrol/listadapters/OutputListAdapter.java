@@ -8,14 +8,18 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.communication.Connection;
 import it.technocontrolsystem.hypercontrol.communication.LiveMessage;
+import it.technocontrolsystem.hypercontrol.communication.SensorsStatusRequest;
+import it.technocontrolsystem.hypercontrol.communication.SensorsStatusResponse;
 import it.technocontrolsystem.hypercontrol.display.OutputDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.model.ModelIF;
 import it.technocontrolsystem.hypercontrol.model.OutputModel;
+import it.technocontrolsystem.hypercontrol.model.SensorModel;
 
 /**
  * Adapter per le liste di Outputs
@@ -40,37 +44,30 @@ public class OutputListAdapter extends HCListAdapter<OutputModel>{
 
     @Override
     public void updateAll() {
-//        ArrayList<Integer> numbers=new ArrayList<>();
-//        ModelIF model;
-//
-//        for (int i = 0; i < getCount(); i++) {
-//            model = getItem(i);
-//            int num = (model.getNumber());
-//            numbers.add(num);
-//        }
-//        update(numbers.toArray(new Integer[0]));
+        // eventualmente implementare come da SensorListAdapter
     }
 
     @Override
     public void update(Integer[] numbers) {
-//        for (int number:numbers){
-//            updateByNumber(number);
-//        }
-//
-//        //notifyDataSetChanged() va sempre invocato sullo UI Thread!
-//        getActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                notifyDataSetChanged();
-//            }
-//        });
-//
+        for (int number:numbers){
+            updateByNumber(number);
+        }
+
+        //notifyDataSetChanged() va sempre invocato sullo UI Thread!
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyDataSetChanged();
+            }
+        });
+
     }
 
     /**
      * Update one single item
      */
     public void updateByNumber(int number) {
+        // eventualmente implementare come da SensorListAdapter
     }
 
 

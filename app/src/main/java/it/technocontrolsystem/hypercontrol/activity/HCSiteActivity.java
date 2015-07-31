@@ -23,7 +23,7 @@ import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
  * Superclasse di tutte le HCActivity che sono relative a un Site
  * Created by alex on 15-07-2015.
  */
-public abstract class HCSiteActivity extends HCActivity {
+public abstract class HCSiteActivity extends HCListActivity {
 
     public static final int MENU_BOARDS = 2;
     public static final int MENU_EVENTI = 3;

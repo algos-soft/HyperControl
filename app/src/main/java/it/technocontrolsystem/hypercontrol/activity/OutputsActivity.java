@@ -1,6 +1,9 @@
 package it.technocontrolsystem.hypercontrol.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 
 import it.technocontrolsystem.hypercontrol.R;
 import it.technocontrolsystem.hypercontrol.asynctasks.AbsUpdateTask;
@@ -8,6 +11,8 @@ import it.technocontrolsystem.hypercontrol.asynctasks.PopulateOutputsTask;
 import it.technocontrolsystem.hypercontrol.asynctasks.UpdateBoardTask;
 import it.technocontrolsystem.hypercontrol.asynctasks.UpdateOutputsTask;
 import it.technocontrolsystem.hypercontrol.database.DB;
+import it.technocontrolsystem.hypercontrol.display.AreaDisplay;
+import it.technocontrolsystem.hypercontrol.display.OutputDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Area;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 
@@ -24,6 +29,18 @@ public class OutputsActivity extends HCSiteActivity {
         setContentView(R.layout.activity_output);
 
         this.idSite = getIntent().getIntExtra("siteid", 0);
+
+        // attacca un click listener alla ListView
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OutputDisplay display = (OutputDisplay) view;
+                Intent intent = new Intent();
+                intent.setClass(OutputsActivity.this, OutputDetailActivity.class);
+                intent.putExtra("itemid", display.getItemId());
+                startActivity(intent);
+            }
+        });
 
         // carica i dati
         new PopulateOutputsTask(this).execute();

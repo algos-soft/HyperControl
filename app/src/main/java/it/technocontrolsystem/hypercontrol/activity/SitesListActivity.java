@@ -19,7 +19,7 @@ import it.technocontrolsystem.hypercontrol.display.SiteDisplay;
 import it.technocontrolsystem.hypercontrol.domain.Site;
 import it.technocontrolsystem.hypercontrol.model.SiteModel;
 
-public class SitesListActivity extends HCActivity {
+public class SitesListActivity extends HCListActivity {
 
     public static  int ACTIVITY_EDIT_SITE=1;
     public static  int ACTIVITY_NEW_SITE=2;

@@ -159,6 +159,10 @@
 
         <service android:name=".service_old.GcmIntentService" />
 
+        <activity
+            android:name=".activity.OutputDetailActivity"
+            android:label="@string/title_activity_output_detail" >
+        </activity>
     </application>
 
 </manifest>

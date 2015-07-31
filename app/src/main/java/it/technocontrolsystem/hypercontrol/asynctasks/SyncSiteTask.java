@@ -387,31 +387,16 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
 
             for (Sensor sensor : sResp.getSensors()) {
 
-                int idSite = getSite().getId();
-                int numPlant = sensor.getNumPlant();
-                Plant plant = DB.getPlantBySiteAndNumber(idSite, numPlant);
+                sensor.setIdSite(getSite().getId());
+                sensor.resolveAreas();
+                DB.saveSensor(sensor);  // crea record base e tabella incrocio
 
-                if (plant != null) {
+                createdCount++;
+                String s = sensor.getId() + " " + sensor.getName();
+                Log.d(TAG, "Sensor " + s + " created");
+                logRow = "Sensore " + s + " creato";
+                publishProgress(-2);
 
-                    // recupera l'id plant e crea il sensore sul db
-                    sensor.setIdPlant(plant.getId());
-                    int id = DB.saveSensor(sensor);
-                    sensor.setId(id);
-
-                    String s = sensor.getId() + " " + sensor.getName();
-                    Log.d(TAG, "Sensor " + s + " created");
-                    logRow = "Sensore " + s + " creato";
-                    publishProgress(-2);
-                    createdCount++;
-
-                    // crea i record nella tabella di incrocio
-                    Integer[] areaNums = sensor.getAreaNums();
-                    for (int areaNum : areaNums) {
-                        Area area = DB.getAreaByIdPlantAndAreaNumber(plant.getId(), areaNum);
-                        DB.saveAreaSensor(area.getId(), sensor.getId());
-                    }
-
-                }
             }
 
             Log.d(TAG, createdCount + " sensors created");
@@ -421,6 +406,43 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         }
 
     }
+
+
+    /**
+     * Riempie la tabella uscite
+     */
+    private void fillOutputs() throws Exception {
+
+        Request req = new ListOutputsRequest();
+        Response resp = HyperControlApp.sendRequest(req);
+        if (resp != null) {
+
+            ListOutputsResponse sResp = (ListOutputsResponse) resp;
+
+            int createdCount = 0;
+
+            for (Output output : sResp.getOutputs()) {
+
+                output.setIdSite(getSite().getId());
+                output.resolveAreas();
+                DB.saveOutput(output);  // crea record base e tabella incrocio
+
+                createdCount++;
+                String s = output.getId() + " " + output.getName();
+                Log.d(TAG, "Output " + s + " created");
+                logRow = "Uscita " + s + " creata";
+                publishProgress(-2);
+
+            }
+
+            Log.d(TAG, createdCount + " outputs created");
+
+        } else {    // response null - timeout?
+            throw new Exception("Richiesta uscite fallita");
+        }
+
+    }
+
 
     /**
      * Riempie la tabella schede
@@ -446,61 +468,6 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         }
     }
 
-    /**
-     * Riempie la tabella uscite
-     */
-    private void fillOutputs() throws Exception {
-
-        Request req = new ListOutputsRequest();
-        Response resp = HyperControlApp.sendRequest(req);
-        if (resp != null) {
-
-            ListOutputsResponse sResp = (ListOutputsResponse) resp;
-
-            int createdCount = 0;
-
-            for (Output output : sResp.getOutputs()) {
-
-                output.setIdSite(getSite().getId());
-
-                int id = DB.saveOutput(output);
-
-
-//                int numPlant = output.getNumPlant();
-//                Plant plant = DB.getPlantBySiteAndNumber(idSite, numPlant);
-//
-//                if (plant != null) {
-//
-//                    // recupera l'id plant e crea l'uscita sul db
-//                    output.setIdPlant(plant.getId());
-//                    int id = DB.saveOutput(output);
-//                    output.setId(id);
-//
-//                    String s = output.getId() + " " + output.getName();
-//                    Log.d(TAG, "Output " + s + " created");
-//                    logRow = "Uscita " + s + " creata";
-//                    publishProgress(-2);
-//                    createdCount++;
-//
-//                    // crea i record nella tabella di incrocio
-//                    Integer[] areaNums = output.getAreaNums();
-//                    for (int areaNum : areaNums) {
-//                        Area area = DB.getAreaByIdPlantAndAreaNumber(plant.getId(), areaNum);
-//                        DB.saveAreaOutput(area.getId(), output.getId());
-//                    }
-//
-//                }
-
-
-            }
-
-            Log.d(TAG, createdCount + " outputs created");
-
-        } else {    // response null - timeout?
-            throw new Exception("Richiesta uscite fallita");
-        }
-
-    }
 
 
     /**

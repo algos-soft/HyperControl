@@ -1,46 +1,11 @@
 package it.technocontrolsystem.hypercontrol.domain;
 
-import java.util.ArrayList;
-
-import it.technocontrolsystem.hypercontrol.database.DB;
-
 /**
  * Domain Class for a single Sensor.
- * The same Sensor can be present in many Areas (see the cross table).
 */
-public class Sensor {
-    private int id;
-    private int number;
-    private String name;
+public class Sensor extends AbsInOut {
+
     private  int tipo;
-    private int idPlant;
-    private int numPlant;
-    private ArrayList<Integer> areaNums=new ArrayList<Integer>();
-    private int[] areaIds=new int[0];
-
-    public String getName() {
-        return name;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public int getTipo() {
         return tipo;
@@ -54,39 +19,4 @@ public class Sensor {
         return SensorType.get(getTipo());
     }
 
-    public int getIdPlant() {
-        return idPlant;
-    }
-
-    public void setIdPlant(int idPlant) {
-        this.idPlant = idPlant;
-    }
-
-    public int getNumPlant() {
-        return numPlant;
-    }
-
-    public void setNumPlant(int numPlant) {
-        this.numPlant = numPlant;
-    }
-
-    public Area[] getAreas() {
-        return DB.getAreasBySensor(getId());
-    }
-
-    public int[] getAreaIds() {
-        return areaIds;
-    }
-
-    public void setAreaIds(int[] areaIds) {
-        this.areaIds = areaIds;
-    }
-
-    public void addAreaNumber(int areaNumber){
-        areaNums.add(areaNumber);
-    }
-
-    public Integer[] getAreaNums() {
-        return areaNums.toArray(new Integer[0]);
-    }
 }

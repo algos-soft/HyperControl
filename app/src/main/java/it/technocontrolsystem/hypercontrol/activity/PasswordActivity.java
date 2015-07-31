@@ -18,7 +18,7 @@ import it.technocontrolsystem.hypercontrol.R;
  * Activity per inserire la password per la prima
  * volta o per cambiarla
  */
-public class PasswordActivity extends HCActivity {
+public class PasswordActivity extends HCListActivity {
 
     // se true sta registrando la password per la prima volta
     private boolean firstTimeMode=false;

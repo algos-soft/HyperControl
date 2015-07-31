@@ -1,5 +1,6 @@
 package it.technocontrolsystem.hypercontrol.asynctasks;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.util.Log;
@@ -7,11 +8,8 @@ import android.widget.ListView;
 
 import it.technocontrolsystem.hypercontrol.HyperControlApp;
 import it.technocontrolsystem.hypercontrol.Lib;
-import it.technocontrolsystem.hypercontrol.activity.HCActivity;
+import it.technocontrolsystem.hypercontrol.activity.HCListActivity;
 import it.technocontrolsystem.hypercontrol.activity.HCSiteActivity;
-import it.technocontrolsystem.hypercontrol.communication.Connection;
-import it.technocontrolsystem.hypercontrol.communication.LiveRequest;
-import it.technocontrolsystem.hypercontrol.communication.Response;
 import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
 
 /**
@@ -22,7 +20,7 @@ import it.technocontrolsystem.hypercontrol.listadapters.HCListAdapter;
  */
 public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception> {
 
-    protected HCActivity activity;
+    protected HCListActivity activity;
     PowerManager.WakeLock lock;
     private Runnable successRunnable;
     private Runnable failRunnable;
@@ -30,13 +28,13 @@ public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception
     private HCListAdapter adapter;
 
 
-    public AbsPopulateTask(HCActivity hcActivity,Runnable successRunnable,Runnable failRunnable) {
+    public AbsPopulateTask(HCListActivity hcActivity, Runnable successRunnable, Runnable failRunnable) {
         this.activity = hcActivity;
-        this.successRunnable=successRunnable;
-        this.failRunnable=failRunnable;
+        this.successRunnable = successRunnable;
+        this.failRunnable = failRunnable;
     }
 
-    public AbsPopulateTask(HCActivity activity) {
+    public AbsPopulateTask(HCListActivity activity) {
         this(activity, null, null);
     }
 
@@ -50,9 +48,14 @@ public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception
         lock = Lib.acquireWakeLock();
 
         // mostra il dialogo
-        activity.progress.setMessage("caricamento " + getType() + "...");
-        activity.progress.setProgress(0);
-        activity.progress.show();
+        if (activity != null) {
+            ProgressDialog progress = activity.progress;
+            if (progress != null) {
+                progress.setMessage("caricamento " + getType() + "...");
+                progress.setProgress(0);
+                progress.show();
+            }
+        }
 
     }
 
@@ -60,7 +63,7 @@ public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception
     protected Exception doInBackground(Void... params) {
 
         Exception exception = null;
-        Log.d(HCActivity.TAG, "PopulateTask - startBackground");
+        Log.d(HCListActivity.TAG, "PopulateTask - startBackground");
 
         try {
 
@@ -77,7 +80,7 @@ public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception
             exception = e1;
         }
 
-        Log.d(HCActivity.TAG, "PopulateTask - endBackground");
+        Log.d(HCListActivity.TAG, "PopulateTask - endBackground");
 
         return exception;
     }
@@ -120,7 +123,7 @@ public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception
 
         activity.progress.hide();
 
-        if(exception == null){
+        if (exception == null) {
 
             // assegna l'adapter alla ListView
             ListView view = activity.getListView();
@@ -128,7 +131,7 @@ public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception
 
 
             // se connesso attacca un live listener e lancia un update task
-            if(HyperControlApp.isConnected()){
+            if (HyperControlApp.isConnected()) {
 
                 // l'adapter attacca un live listener alla connessione
                 adapter.attachLiveListenerToConnection();
@@ -142,16 +145,16 @@ public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception
 
                 // lancia un update task
                 AbsUpdateTask updateTask = getHCSiteActivity().getUpdateTask();
-                if(updateTask!=null){
+                if (updateTask != null) {
                     updateTask.setSuccessRunnable(successRunnable);
                     updateTask.setFailRunnable(failRunnable);
                     updateTask.execute();
                 }
             }
 
-        }else{
+        } else {
 
-            if(failRunnable!=null){
+            if (failRunnable != null) {
                 failRunnable.run();
             }
         }
@@ -178,14 +181,13 @@ public abstract class AbsPopulateTask extends AsyncTask<Void, Integer, Exception
      */
     public abstract String getType();
 
-    private HCSiteActivity getHCSiteActivity(){
-        HCSiteActivity hcsa=null;
-        if ((activity!=null) && (activity instanceof HCSiteActivity)){
-            hcsa=(HCSiteActivity)activity;
+    private HCSiteActivity getHCSiteActivity() {
+        HCSiteActivity hcsa = null;
+        if ((activity != null) && (activity instanceof HCSiteActivity)) {
+            hcsa = (HCSiteActivity) activity;
         }
         return hcsa;
     }
-
 
 
 }

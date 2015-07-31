@@ -5,11 +5,12 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 import it.technocontrolsystem.hypercontrol.domain.Output;
 
 /**
- *
+ * Risposta ad una ListOutputsRequest
  */
 public class ListOutputsResponse extends Response {
 
@@ -111,7 +112,7 @@ public class ListOutputsResponse extends Response {
             String name = getParser().getName();
             if (name.equals("Impianto")) {
                 readPlant(output);
-                if(!getParser().getName().equals("Impianto")){
+                if (!getParser().getName().equals("Impianto")) {
                     getParser().next();
                 }
             } else {
@@ -135,9 +136,9 @@ public class ListOutputsResponse extends Response {
                 if (name.equals("Numero")) {
                     String text = getParser().nextText();
                     int numPlant = Integer.parseInt(text);
-                    currentPlantEntry=output.addPlantEntry(numPlant);
+                    currentPlantEntry = output.addPlantEntry(numPlant);
                 } else if (name.equals("Area")) {
-                    readAreas(output);
+                    readAreas();
                 } else {
                     stop = true;
                 }
@@ -153,12 +154,12 @@ public class ListOutputsResponse extends Response {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private void readAreas(Output output) throws XmlPullParserException, IOException {
+    private void readAreas() throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
             String name = getParser().getName();
             if (name.equals("Area")) {
-                readArea(output);
+                readArea();
                 getParser().next();
             } else {
                 stop = true;
@@ -172,7 +173,7 @@ public class ListOutputsResponse extends Response {
      * @throws XmlPullParserException
      * @throws IOException
      */
-    private void readArea(Output output) throws XmlPullParserException, IOException {
+    private void readArea() throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
 
@@ -196,7 +197,6 @@ public class ListOutputsResponse extends Response {
     public Output[] getOutputs() {
         return outputs.toArray(new Output[0]);
     }
-
 
 
 }

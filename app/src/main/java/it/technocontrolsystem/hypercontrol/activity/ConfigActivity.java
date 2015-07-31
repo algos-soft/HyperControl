@@ -20,7 +20,7 @@ import it.technocontrolsystem.hypercontrol.Prefs;
 import it.technocontrolsystem.hypercontrol.R;
 
 
-public class ConfigActivity extends HCActivity {
+public class ConfigActivity extends HCListActivity {
 
     private Spinner languageSpinner;
 

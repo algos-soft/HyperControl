@@ -79,4 +79,16 @@ public class SensorModel implements ModelIF {
         setValue("");
         setStatus(0);
     }
+
+
+    /**
+     * Update status from another model
+     */
+    public void updateStatus(SensorModel other){
+        setStatus(other.getStatus());
+        setTamper(other.isTamper());
+        setValue(other.getValue());
+        setAlarm(other.isAlarm());
+        setTest(other.isTest());
+    }
 }

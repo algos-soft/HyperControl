@@ -516,7 +516,7 @@ public class DB extends SQLiteOpenHelper {
 
     }
 
-    public static Area[] getAreasBySensor(int idSensor) {
+    public static Area[] getAreasBySensorId(int idSensor) {
         ArrayList<Area> areas = new ArrayList<Area>();
         int[] areaIds = getAreaIdsBySensor(idSensor);
         for (int id : areaIds) {
@@ -544,6 +544,18 @@ public class DB extends SQLiteOpenHelper {
 
         return aarea;
     }
+
+    public static Area[] getAreasByOutputId(int idOutput) {
+        ArrayList<Area> areas = new ArrayList<Area>();
+        int[] areaIds = getAreaIdsByOutput(idOutput);
+        for (int id : areaIds) {
+            Area area = getArea(id);
+            areas.add(area);
+        }
+        Area[] aarea = areas.toArray(new Area[0]);
+        return aarea;
+    }
+
 
     public static int[] getAreaIdsByOutput(int idOutput) {
         String[] columns = {AreaOutputFields.IDAREA.getName()};
@@ -624,6 +636,7 @@ public class DB extends SQLiteOpenHelper {
         values.put(SensorFields.NUMBER.getName(), sensor.getNumber());
         values.put(SensorFields.NAME.getName(), sensor.getName());
         values.put(SensorFields.TYPE.getName(), sensor.getTipo());
+        values.put(SensorFields.IDSITE.getName(), sensor.getIdSite());
         id = save(Tables.SENSORS.getName(), SensorFields.ID.getName(), values, sensor.getId());
         sensor.setId(id);
 
@@ -1126,6 +1139,10 @@ public class DB extends SQLiteOpenHelper {
             idx = cur.getColumnIndex(OutputFields.NAME.getName());
             String name = cur.getString(idx);
 
+            idx = cur.getColumnIndex(OutputFields.IDSITE.getName());
+            int idsite = cur.getInt(idx);
+
+
             cur.close();
 
             output = new Output();
@@ -1134,6 +1151,7 @@ public class DB extends SQLiteOpenHelper {
             output.setNumber(number);
             //output.setTipo(type);
             output.setName(name);
+            output.setIdSite(idsite);
             int[] areaIds = getAreaIdsByOutput(output.getId());
             output.setAreaIds(areaIds);
         }

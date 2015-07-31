@@ -48,8 +48,6 @@ public class AreaActivity extends HCSiteActivity {
         setContentView(R.layout.activity_area);
 
         SwitchCompat switchItem = (SwitchCompat) findViewById(R.id.contentSwitch);
-//        switchItem.setTextOn("Sensori");
-//        switchItem.setTextOn("Uscite");
         switchItem.setShowText(true);
         switchItem.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

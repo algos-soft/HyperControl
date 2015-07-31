@@ -6,6 +6,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import it.technocontrolsystem.hypercontrol.domain.Output;
 import it.technocontrolsystem.hypercontrol.domain.Sensor;
 
 /**
@@ -14,12 +15,12 @@ import it.technocontrolsystem.hypercontrol.domain.Sensor;
 public class ListSensorsResponse extends Response {
 
     private ArrayList<Sensor> sensors;
+    private Output.PlantEntry currentPlantEntry;
 
 
     public ListSensorsResponse(String string) {
         super(string);
     }
-
 
 
     @Override
@@ -30,9 +31,9 @@ public class ListSensorsResponse extends Response {
         // nel costruttore è troppo tardi perché la superclasse
         // invoca questo metodo dal costruttore
         if (sensors == null) {
-            sensors = new ArrayList<Sensor>();
+            sensors = new ArrayList();
         }
-        String name = getParser().getName();
+
         if (gotoFirstTag("Sensori")) {
             readSensors();
         }
@@ -41,7 +42,7 @@ public class ListSensorsResponse extends Response {
 
 
     /**
-     * Legge tra i TAG "Sensori"
+     * Legge tutti i tag <Sensore></Sensore>
      *
      * @throws XmlPullParserException
      * @throws IOException
@@ -68,14 +69,16 @@ public class ListSensorsResponse extends Response {
         }
     }
 
-
+    /**
+     * Legge un singolo tag <Sensore></Sensore>
+     */
     private void readSensor(Sensor sensor) throws XmlPullParserException, IOException {
         XmlPullParser parser = getParser();
         boolean stop = false;
 
         while (!stop) {
 
-            parser.next();
+            gotoNextStart();
 
             String name = parser.getName();
             if (name != null) {
@@ -85,9 +88,6 @@ public class ListSensorsResponse extends Response {
                 } else if (name.equals("Nome")) {
                     sensor.setName(parser.nextText());
                 } else if (name.equals("Tipo")) {
-                   //String type=parser.nextText();
-                   // int code=SensorType.getCode(type);
-                   //sensor.setTipo(code);
                    int type=Integer.parseInt(parser.nextText());
                    sensor.setTipo(type);
                 } else if (name.equals("Impianto")) {
@@ -105,7 +105,7 @@ public class ListSensorsResponse extends Response {
 
 
     /**
-     * Legge tutti i Tag "Impianto"
+     * Legge tutti i Tag <Impianto></Impianto>
      *
      * @throws XmlPullParserException
      * @throws IOException
@@ -115,10 +115,10 @@ public class ListSensorsResponse extends Response {
         while (!stop) {
             String name = getParser().getName();
             if (name.equals("Impianto")) {
-                //Area area = new Area();
-                //plantNumber.addArea(area);
                 readPlant(sensor);
-                getParser().next();
+                if (!getParser().getName().equals("Impianto")) {
+                    getParser().next();
+                }
             } else {
                 stop = true;
             }
@@ -126,23 +126,23 @@ public class ListSensorsResponse extends Response {
     }
 
 
+    /**
+     * Legge un singolo tag <Impianto></Impianto>
+     */
     private void readPlant(Sensor sensor) throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
 
-            // se è già area non avanza
-            boolean found = true;
-            if (!getParser().getName().equals("Area")) {
-                getParser().next();
-            }
+            getParser().next();
 
             String name = getParser().getName();
             if (name != null) {
                 if (name.equals("Numero")) {
-                    int numPlant = Integer.parseInt(getParser().nextText());
-                    sensor.setNumPlant(numPlant);
+                    String text = getParser().nextText();
+                    int numPlant = Integer.parseInt(text);
+                    currentPlantEntry = sensor.addPlantEntry(numPlant);
                 } else if (name.equals("Area")) {
-                    readArea(sensor);
+                    readAreas();
                 } else {
                     stop = true;
                 }
@@ -152,8 +152,33 @@ public class ListSensorsResponse extends Response {
         }
     }
 
+    /**
+     * Legge tutti i Tag <Area></Area>
+     *
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private void readAreas() throws XmlPullParserException, IOException {
+        boolean stop = false;
+        while (!stop) {
+            String name = getParser().getName();
+            if (name.equals("Area")) {
+                readArea();
+                getParser().next();
+            } else {
+                stop = true;
+            }
+        }
+    }
 
-    private void readArea(Sensor sensor) throws XmlPullParserException, IOException {
+
+    /**
+     * Legge un singolo Tag <Area></Area>
+     *
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private void readArea() throws XmlPullParserException, IOException {
         boolean stop = false;
         while (!stop) {
 
@@ -163,7 +188,7 @@ public class ListSensorsResponse extends Response {
             if (name != null) {
                 if (name.equals("Numero")) {
                     int numArea = Integer.parseInt(getParser().nextText());
-                    sensor.addAreaNumber(numArea);
+                    currentPlantEntry.addArea(numArea);
                 } else {
                     stop = true;
                 }
