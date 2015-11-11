@@ -56,7 +56,7 @@ public class HCGcmListenerService extends GcmListenerService {
 
             String messagetype = data.getString("messagetype");
             String timestamp = data.getString("timestamp");
-            String siteid = data.getString("siteid");
+            String siteid = data.getString("sitenum");
             String plantid = data.getString("plantid");
             String areaid = data.getString("areaid");
             String sensorid = data.getString("sensorid");
@@ -82,7 +82,7 @@ public class HCGcmListenerService extends GcmListenerService {
             // crea una notifica che quando cliccata apre il site in allarme
             case "alarm":
 
-                String siteUUID = data.getString("siteid");
+                String siteUUID = data.getString("sitenum");
                 Site site = DB.getSiteByUUID(siteUUID);
 
                 if (site != null) {

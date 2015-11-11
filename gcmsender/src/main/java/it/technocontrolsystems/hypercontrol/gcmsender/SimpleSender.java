@@ -28,8 +28,8 @@ import javax.swing.JTextField;
  */
 public class SimpleSender {
 
-    public static final String API_KEY = "AIzaSyCTc1hvMyJUd_F8jBOJzmrbxz9mV9KveWU";
-    public static final String DEVICE_ID = "c6wXmfH-fpw:APA91bGUCVKrpU0317xSBLRMFtaFFG5-dtq5_IEjyf1IMsZgzxVsxzIRo88BDR2cIqO7iyrg-ag_HA4INdBuQWCo8EGrAsmn2S-rSdnBFz8sDFKhOkymeeNb_HkwirsOvP6Q50XxVlsO";
+    public static final String API_KEY = "AIzaSyCvon6okvaGHIBb4ajwo0WCUZFXkXa_vrU";
+    public static final String DEVICE_ID = "cwnd70n1ySE:APA91bHMA79qqHxkpHU2Z28nhkw_H4FMlQIZB1mxKN6MrPm8d6J-heFT5aWQWTck8VcPOny46mMbEV2miVsmqyKNjEZd1rZfVzG-bz0fh87zrbylOx25YFEM0cVsXqVRTkSwWtOSjWnV";
 
     private JTextArea apiField;
     private JTextArea idField;
@@ -134,7 +134,7 @@ public class SimpleSender {
             JSONObject jData = new JSONObject();
             jData.put("messagetype", "alarm");
             jData.put("timestamp", "0000000000");
-            jData.put("siteid", "dd49f00b-6426-4db2-bc98-34c3a6173001");
+            jData.put("siteid", "65a6391b-279a-42dd-90d8-1da9e92edfce");
             jData.put("plantid", "3");
             jData.put("areaid", "2");
             jData.put("sensorid", "99");

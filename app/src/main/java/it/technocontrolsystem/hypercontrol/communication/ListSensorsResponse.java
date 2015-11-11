@@ -1,5 +1,7 @@
 package it.technocontrolsystem.hypercontrol.communication;
 
+import android.util.Log;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -53,8 +55,13 @@ public class ListSensorsResponse extends Response {
 
             // se è già sensore non avanza
             boolean found = true;
-            if (!getParser().getName().equals("Sensore")) {
-                found = gotoNextStart("Sensore");
+            String name = getParser().getName();
+            if(name!=null){
+                if (!name.equals("Sensore")) {
+                    found = gotoNextStart("Sensore");
+                }
+            }else{
+                found=false;
             }
 
             // acquisisce il sensore
@@ -62,7 +69,9 @@ public class ListSensorsResponse extends Response {
                 Sensor sens = new Sensor();
                 sensors.add(sens);
                 readSensor(sens);
-            } else {
+                Log.d("CREATE SENSOR",sens.getNumber()+" "+sens.getName());
+
+             } else {
                 stop = true;
             }
 
@@ -76,6 +85,7 @@ public class ListSensorsResponse extends Response {
         XmlPullParser parser = getParser();
         boolean stop = false;
 
+
         while (!stop) {
 
             gotoNextStart();
@@ -86,10 +96,11 @@ public class ListSensorsResponse extends Response {
                     int numSensor = Integer.parseInt(parser.nextText());
                     sensor.setNumber(numSensor);
                 } else if (name.equals("Nome")) {
-                    sensor.setName(parser.nextText());
+                    String s=parser.nextText();
+                    sensor.setName(s);
                 } else if (name.equals("Tipo")) {
-                   int type=Integer.parseInt(parser.nextText());
-                   sensor.setTipo(type);
+                    int type=Integer.parseInt(parser.nextText());
+                    sensor.setTipo(type);
                 } else if (name.equals("Impianto")) {
                     readPlants(sensor);
                     stop = true;
@@ -100,6 +111,15 @@ public class ListSensorsResponse extends Response {
                 stop = true;
             }
         }
+
+
+//        try {
+//
+//        }catch (Exception e){
+//            System.out.println(e);
+//        }
+
+
     }
 
 

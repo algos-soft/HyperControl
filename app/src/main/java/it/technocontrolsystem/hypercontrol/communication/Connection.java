@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -75,7 +77,7 @@ public class Connection {
      */
     public void open() throws Exception {
         if (Lib.isNetworkAvailable()) {
-            boolean oldStatus=open;
+            boolean oldStatus = open;
             createSocket();
             createRequestThread();
             createReceiveThread();
@@ -96,7 +98,7 @@ public class Connection {
      * Chiude il socket e ferma tutti i background threads.
      */
     public void close() {
-        boolean oldStatus=open;
+        boolean oldStatus = open;
         Log.d(TAG, "connection close requested");
 
         if (requestThread != null) {
@@ -128,15 +130,15 @@ public class Connection {
      * Se fallisce lancia un Exception
      */
     private void doLogin() throws Exception {
-        hpUUID ="";  // resetta il siteid
+        hpUUID = "";  // resetta il siteid
         Request request = new LoginRequest(getSite().getUsername(), getSite().getPassword());
         Response resp = sendRequest(request);
         if (resp != null) {
             if (resp.isSuccess()) {
                 // memorizza l'id del sito nella connessione per uso futuro
-                LoginResponse lresp=(LoginResponse)resp;
-                hpUUID =lresp.getHpUUID();
-            }else{
+                LoginResponse lresp = (LoginResponse) resp;
+                hpUUID = lresp.getHpUUID();
+            } else {
                 throw new Exception(resp.getText());
             }
         } else {//comunication failed
@@ -263,8 +265,6 @@ public class Connection {
             socket = socketCreator.getSocket();
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataInputStream = new DataInputStream(socket.getInputStream());
-
-
         } else {  // fallito
             Exception e = socketCreator.getException();
             throw e;
@@ -374,6 +374,7 @@ public class Connection {
 
                                 byte[] bytes = new byte[4096];
                                 int read = dataInputStream.read(bytes);
+
                                 if (read > -1) {
                                     for (int i = 0; i < read; i++) {
                                         byte b = bytes[i];
@@ -405,7 +406,16 @@ public class Connection {
                                                 }
                                             } else {//ricevuto EOF, risposta completa
                                                 Log.d(TAG, "response received # " + responseNumber);
-                                                processResponse(responseNumber, responseText.toString());
+                                                String s1 = responseText.toString();
+
+                                                byte[] aBytes=s1.getBytes();
+                                                //String sUTF = new String(aBytes,"UTF_8");
+                                                String sUTF = new String(aBytes, Charset.forName("UTF-8"));
+
+
+                                                // i caratteri ampersand mandano in crash l'XMLPullParser!
+                                                sUTF = sUTF.replaceAll("&", " and ");
+                                                processResponse(responseNumber, sUTF);
                                                 processingResponse = false;
                                             }
 
@@ -447,6 +457,7 @@ public class Connection {
             /**
              * Processa una response
              */
+
             private void processResponse(int responseNumber, String responseText) {
 
                 responseText = "<?xml version='1.0' encoding='utf-8'?>\n" + responseText;
@@ -489,6 +500,7 @@ public class Connection {
 
             }
 
+
         });
 
         receiveThread.setName("responses processing thread");
@@ -502,10 +514,10 @@ public class Connection {
 
     private void fireStatusChanged(boolean oldStatus, boolean newStatus) {
         for (OnConnectionStatusChangedListener l : connectionStatusChangedListeners) {
-            if((oldStatus==false) && (newStatus==true)){
+            if ((oldStatus == false) && (newStatus == true)) {
                 l.connectionOpened(this);
             }
-            if((oldStatus==true) && (newStatus==false)){
+            if ((oldStatus == true) && (newStatus == false)) {
                 l.connectionClosed(this);
             }
         }
@@ -513,6 +525,7 @@ public class Connection {
 
     public interface OnConnectionStatusChangedListener {
         public void connectionOpened(Connection conn);
+
         public void connectionClosed(Connection conn);
     }
 

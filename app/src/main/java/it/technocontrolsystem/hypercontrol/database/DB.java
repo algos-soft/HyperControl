@@ -213,7 +213,7 @@ public class DB extends SQLiteOpenHelper {
 
         String sql;
         sql = "SELECT "+SiteFields.ID.getName()+" FROM " + Tables.SITES.getName();
-        sql += " WHERE " + SiteFields.UUID.getName() + "=" + uuid;
+        sql += " WHERE " + SiteFields.UUID.getName() + "='" + uuid+"'";
         Cursor cur = getReadableDb().rawQuery(sql, null);
         int siteid=0;
         if (cur.getCount() > 0) {

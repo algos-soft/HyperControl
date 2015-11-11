@@ -102,10 +102,6 @@
             android:name=".activity.DeveloperActivity"
             android:label="@string/title_activity_deveoloper" >
         </activity>
-        <activity
-            android:name=".service_old.DemoActivity"
-            android:label="@string/title_activity_demo" >
-        </activity>
 
         <!-- [START gcm_receiver] -->
         <receiver
@@ -157,7 +153,6 @@
                 </receiver>
         -->
 
-        <service android:name=".service_old.GcmIntentService" />
 
         <activity
             android:name=".activity.OutputDetailActivity"

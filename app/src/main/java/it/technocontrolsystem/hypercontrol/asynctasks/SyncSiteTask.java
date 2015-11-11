@@ -411,6 +411,7 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
     /**
      * Riempie la tabella uscite
      */
+
     private void fillOutputs() throws Exception {
 
         Request req = new ListOutputsRequest();
@@ -442,7 +443,6 @@ public class SyncSiteTask extends AsyncTask<Void, Integer, Exception> {
         }
 
     }
-
 
     /**
      * Riempie la tabella schede
